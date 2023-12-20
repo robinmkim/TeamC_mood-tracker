@@ -1,8 +1,8 @@
 <template>
-  <PageHeader />
-  <div class="w-3/4 mx-auto">
-    <router-view />
-  </div>
+    <PageHeader />
+    <div class="w-3/4 mx-auto">
+      <router-view />
+    </div>
 </template>
 
 <script>
