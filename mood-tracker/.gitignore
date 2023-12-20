@@ -1,7 +1,12 @@
 .DS_Store
 node_modules
 /dist
+<<<<<<< HEAD
+src/assets
+
+=======
 /src/assets
+>>>>>>> 9b54a45f7d16b8b6198723ce6a418b4cecfe96b6
 
 # local env files
 .env.local
