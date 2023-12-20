@@ -1,14 +1,13 @@
-<!-- ProfileHome.vue -->
 <template>
-  <div class="relative"> <!-- relative 추가하여 프로필과 메뉴와 묶어준다 -->
-    <div class="absolute top-0 left-0 mt-4 ml-4 z-20">
-      <div class="rounded-lg shadow-lg w-64 bg-[#88AB8E] p-4">
+  <div class=""> <!-- relative 추가하여 프로필과 메뉴와 묶어준다 -->
+    <div class="">
+      <div class="rounded-lg shadow-lg w-auto mx-2 mt-2 bg-[#88AB8E] p-4">
 
         <!-- 사용자 정보 및 이미지 시작 -->
         <div class="mb-12"> <!-- 사용자 정보 좌우에 여백 추가 -->
           <div class="h-24 rounded-t-lg mb-4"></div>
           <img
-            src="@/assets/Pororo.png"
+            src=""
             height="100"
             width="100"
             class="rounded-full -mt-12 border-4 border-white mx-auto"
@@ -26,13 +25,11 @@
     </div>
 
     <!-- 메뉴 시작 -->
-    <nav class="fixed bottom-40 p-4 text-left">
-      <ul>
-        <li v-for="(item, index) in list" :key="index" class="mt-2">
-          <a :href="`#content${index + 1}`" class="text flex items-center">
-          </a>
-        </li>
-      </ul>
+    <nav class="p-4 text-left">
+      <router-link to="/postwrite"><div>게시물 작성</div></router-link>
+      <router-link to="/faceanalyze"><div>얼굴 인식</div></router-link>
+      <div>검색</div>
+      <div>문의</div>
     </nav>
     <!-- 메뉴 끝 -->
 
@@ -42,13 +39,10 @@
   
   <script>
 export default {
-  name: "ProfileHome",
-  data() {
-    return {
-      list: ['얼굴인식', '검색', '환경설정', '북마크'],
-    };
-  },
-};
+  name: "SideBar",
+
+  };
+
   </script>
   
   <style>

@@ -5,7 +5,7 @@
         <article class="w-full md:w-[500px] min-w-[500px] min-h-[200px] h-auto border-b-2 pb-5">
           <!-- 게시글 헤더 영역 -->
           <div class="flex flex-row mb-5">
-            <img @click="$router.push({path: '/memberDetail', params: {id: post.id}})" :src="post.userIcon" class="rounded-full w-9 h-9 cursor-pointer border" alt="user icon"/>
+            <img @click="$router.push({path: '/mypage', params: {id: post.id}})" :src="post.userIcon" class="rounded-full w-9 h-9 cursor-pointer border" alt="user icon"/>
             <div class="flex flex-row items-center mx-3">
               <div class="mr-2 cursor-pointer">{{ post.publisher }}</div>
               <div class="text-slate-400">{{ post.date }}</div>

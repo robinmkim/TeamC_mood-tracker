@@ -4,7 +4,7 @@
 
         <div id="chatroomList" class="flex  w-2/5 border-l border-r 1px solid border-gray-200 flex-col">
             <div class="flex items-center align-middle py-4 pl-6 pr-6">
-                <img class="p-1" src="./../../assets/chat/icon_email_outline.png">
+                <img class="p-1" src="" alt="hi">
                 <h2 class="p-1 text-lg ">Message</h2>
             </div>
             
@@ -14,7 +14,7 @@
                         
                         class="flex rounded-lg bg-gray-100 p-2 m-1 items-center hover:bg-gray-300">
                         <div class="flex items-center w-4/5"> 
-                            <img class="rounded-full h-14 mr-2" :src="require(`@/assets/chat/${chat.profileimage}`)">
+                            <img class="rounded-full h-14 mr-2" :src="(``)">
                             <div class="font-bold">{{ chat.title }}</div>
                         </div>
                         
@@ -22,7 +22,7 @@
                         <div class="flex w-1/5"> 
                             <div class="flex-col ml-auto">
                                 <button class="align-top" @click="toggleMenu(index, $event)">
-                                    <img class="" src="./../../assets/chat/icon_ellipses.png">
+                                    <img class="" src="">
                                 </button>
 
                                 <ul v-if="chat.isMenuOpen" class="menu-list" 
@@ -45,7 +45,7 @@
             
             <div class="flex pl-2 pr-2 pt-3 pb-3 items-center border-b  border-gray-200">
                 <img class="rounded-full h-12 mr-2" 
-                    src="./../../assets/chat/profileimage.png">
+                    src="">
                 <h2 class="text-lg font-bold">채팅방 1</h2>
             </div>
             
@@ -98,7 +98,7 @@
                     <div class="flex flex-col">
                         <div class="flex rounded-lg bg-gray-300 p-2 w-2/3">
                             <img class=""
-                                    src="./../../assets/chat/profileimage.png">
+                                    src="">
                         </div>
                         <div class="self-start text-xs mt-1 ">
                             오후 11:33
@@ -110,7 +110,7 @@
                     <div class="flex flex-col">
                         <div class="flex rounded-lg bg-gray-300 p-2 w-2/3">
                             <img class=""
-                                    src="./../../assets/chat/bigpsy.png">
+                                    src="">
                         </div>
                         <div class="self-start text-xs mt-1 ">
                             오후 11:33
@@ -125,7 +125,7 @@
                 <span class="rounded-lg hover:bg-gray-100">
 
                     <label for="file" class="">
-                        <img src="./../../assets/chat/icon_close_outline.png">
+                        <img src="">
                     </label>
                     <input type="file" name="file" id="file">
 
@@ -143,7 +143,7 @@
                     <button type="submit"
                             class="flex rounded-lg hover:bg-gray-100">
                         <img class=" self-center m-1"
-                            src="./../../assets/chat/mail-send-email-message--send-email-paper-airplane-deliver.png">
+                            src="">
                     </button>
                 </span>
             </div>
@@ -165,7 +165,7 @@
                 {title:"채팅방11", lastchattime:"7일 전", profileimage:"profileimage.png", isMenuOpen:false},
 
             ],
-        };
+        }; 
     },  
     methods: {
         autoExpand(event) {

@@ -13,7 +13,7 @@
                 <div class="profil-img flex items-center justify-center">
                     <img
                         class="w-20 h-20 rounded-full"
-                        src="@/assets/KakaoTalk_20231216_175822670.png"
+                        src=""
                         alt="이미지 설명"></div>
                     <div class="w-full flex-col ml-4">
                       <div class="flex h-16 flex-col-reverse">

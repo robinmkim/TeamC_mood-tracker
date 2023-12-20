@@ -13,10 +13,10 @@
           <div
             v-for="(tab, index) in tabs"
             :key="index"
-            class="text-sm h-10 flex-1 flex justify-center items-center"
+            class="text-sm h-10 flex-1 flex justify-center items-center border-b-4 border-transparent"
             :class="{
-              'border-b-4 border-solid border-[#B2CFAF]': currentTab === index ,
-              'hover:border-b-4 border-[#e0e0e0] ': currentTab !== index,
+              'border-[#88AB8E]': currentTab === index ,
+              'hover:border-[#e0e0e0]': currentTab !== index,
             }"
             @click="changeTab(index, tab.id)"
             role="tab"
