@@ -1,9 +1,9 @@
 <template>
 
   <div class="flex h-screen">
-    <div class="w-1/5 bg-sky-200">side menu</div>
+    <div class="w-1/5">side menu</div>
 
-    <div class="flex-1">
+    <div class="flex-1 border-x-2">
       <div class="notiHeader bg-white-500 px-4 flex items-center justify-start" style="flex: 1; height: 45px;">
         <h1 class="notiHeaderMessage text-black font-bold text-2xl">알림</h1>
       </div>
@@ -13,10 +13,10 @@
           <div
             v-for="(tab, index) in tabs"
             :key="index"
-            class="text-sm h-10 flex-1 flex justify-center items-center border-b-4 border-transparent"
+            class="text-base h-10 flex-1 flex justify-center items-center border-b-4"
             :class="{
-              'border-[#88AB8E]': currentTab === index ,
-              'hover:border-[#e0e0e0]': currentTab !== index,
+              'border-[#64CCC5]': currentTab === index ,
+              'hover:border-[#e0e0e0] border-transparent': currentTab !== index,
             }"
             @click="changeTab(index, tab.id)"
             role="tab"
@@ -75,7 +75,7 @@
 
     </div>
 
-    <div class="w-1/5 bg-sky-200">side menu</div>
+    <div class="w-1/5">side menu</div>
   </div>
 </template>
 

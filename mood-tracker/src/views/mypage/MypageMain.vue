@@ -1,7 +1,7 @@
 <template>
     <div class="flex h-screen">
         <!-- 왼쪽 사이드 메뉴 -->
-        <div class="w-1/5 bg-sky-200 p-4">
+        <div class="w-1/5 p-4">
             <p class="text-xl font-semibold">사이드 메뉴</p>
             <!-- 왼쪽 사이드 메뉴의 내용을 여기에 추가하세요 -->
         </div>
@@ -9,7 +9,7 @@
         <!-- 메인 콘텐츠 영역 -->
         <div class="flex-1">
             <!-- 자기 소개 부분 -->
-            <div class="flex w-full h-120 bg-slate-200">
+            <div class="flex w-full h-120 ">
                 <div class="profil-img flex items-center justify-center">
                     <img
                         class="w-20 h-20 rounded-full"
@@ -34,7 +34,7 @@
                         <div class="flex justify-center mr-16">
                             <div class="flex ">
                                 <div class="">
-                                    <button class="bg-green-500 text-white px-4 py-2 rounded-md">팔로잉</button>
+                                    <button class="bg-[#ffede6] px-4 py-2 rounded-md">팔로잉</button>
                                 </div>
                                 <div class="w-16"></div>
                                 <div>
@@ -47,42 +47,72 @@
                     </div>
                 </div>
 
-                <!-- 탭 네비게이션 -->
-                <div class="tab-box">
-                    <ul class="flex tab-btn-list space-x-4 p-4">
-                        <li
-                            v-for="(tab, index) in tabList"
-                            :key="index"
-                            :class="{ active: currentTab === index }">
-                            <a
-                                href="#"
-                                @click.prevent="currentTab = index"
-                                class="text-blue-500 hover:underline px-4 py-2 rounded-lg transition duration-300 ease-in-out {{ currentTab === index ? 'bg-blue-500 text-white' : 'bg-white' }}">
-                                {{ tab }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <div class="">
+        <nav class="flex" role="tablist">
+          <div
+            v-for="(tab, index) in tabs"
+            :key="index"
+            class="text-base h-10 flex-1 flex justify-center items-center border-b-4"
+            :class="{
+              'border-[#64CCC5]': currentTab === index ,
+              'hover:border-[#e0e0e0] border-transparent': currentTab !== index,
+            }"
+            @click="changeTab(index, tab.id)"
+            role="tab"
+          >
+            <span class="notiTabName align-middle">
+              {{ tab.name }}
+            </span>
+          </div>
+        </nav>
 
-                <!-- 탭 콘텐츠 -->
-                <div v-show="currentTab == 0" class="tab-cont p-4">
-                    <p class="text-lg font-semibold">내용 1</p>
-                    <!-- 탭 1에 대한 내용을 여기에 추가하세요 -->
+        <div class="mt-3">
+          <div v-for="(tab, index) in tabs" :key="index" :id="tab.id" v-show="currentTab === index" role="tabpanel">
+            
+            <!-- 전체 tab -->
+            <div v-if="tab.id === 'notiTabsAll'">
+              <div id="bar-with-underline-1">
+                <div class="notiItem bg-red-500 flex justify-start p-4 border-b border-gray-200 " style="height: 80px;">
+                  <div class="notiItemImg bg-blue-500" style="height: 50px; width: 50px; overflow: hidden;">
+                    <img class="object-contain h-full w-full rounded-full" src="..\..\assets\notiProfileImage01.jpg">
+                  </div>
+                  <div class="notiItemContent flex-1 flex bg-purple-400" style="height: 50px;">
+                    <div class="notiItemContent_ items-stretch flex w-3/4 bg-purple-600">
+                      <div class="notiItemContentTime bg-purple-100 flex items-center">
+                          <span class="notiItemContentTimeText text-[10px]">37초전</span>
+                      </div>
+                      <div class="notiItemContentMain bg-purple-200 flex items-center">
+                          5
+                      </div>
+                      <div class="notiItemContentTimePost bg-purple-300 flex items-center">
+                          9
+                      </div>
+                    </div>
+                    <div class="flex w-1/4 bg-rose-400">
+                      2
+                    </div>
+                  </div>
                 </div>
+              </div>
+            </div>
 
-                <div v-show="currentTab == 1" class="tab-cont p-4">
-                    <p class="text-lg font-semibold">내용 2</p>
-                    <!-- 탭 2에 대한 내용을 여기에 추가하세요 -->
-                </div>
+            <!-- 팔로잉 tab -->
+            <div v-else-if="tab.id === 'notiTabsFollow'">
+              
+            </div>
 
-                <div v-show="currentTab == 2" class="tab-cont p-4">
-                    <p class="text-lg font-semibold">내용 3</p>
-                    <!-- 탭 3에 대한 내용을 여기에 추가하세요 -->
-                </div>
+            <!-- 답글 tab -->
+            <div v-else-if="tab.id === 'notiTabsReply'">
+              
+            </div>
+
+          </div>
+        </div>
+      </div>
             </div>
 
             <!-- 오른쪽 사이드 메뉴 -->
-            <div class="w-1/5 bg-sky-200 p-4">
+            <div class="w-1/5  p-4">
                 <p class="text-xl font-semibold">사이드 메뉴</p>
 
             </div>
@@ -92,41 +122,26 @@
     <script>
         export default {
             data() {
-                return {
-                    currentTab: 0,
-                    tabList: ['게시물', '북마크', '미디어']
-                };
-            },
+      return {
+        currentTab: 0,
+        tabs: [
+          { name: '전체', id: 'notiTabsAll' },
+          { name: '팔로잉', id: 'notiTabsFollow' },
+          { name: '답글', id: 'notiTabsReply' },
+        ],
+      };
+    },
+    methods: {
+      changeTab(index, tabId) {
+        this.currentTab = index;
+        console.log(`현재 탭의 id: ${tabId}`);
+      },
+    },
             name: "PageHome"
         };
     </script>
 
     <style scoped="scoped">
-        /* 추가적인 스타일이 필요하면 여기에 추가하세요 */
-
-        .tab-btn-list a {
-            transition: background-color 0.3s, color 0.3s;
-            border-radius: 4px;
-            margin-top: 8px;
-            display: block;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-            border: 1px solid #ccc;
-        }
-
-        .tab-btn-list a:hover {
-            background-color: #1a365d;
-            /* 원하는 호버 배경색으로 변경하세요 */
-            color: #fff;
-        }
-
-        .tab-cont {
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-top: 8px;
-            padding: 20px;
-        }
-
+       
 
     </style>

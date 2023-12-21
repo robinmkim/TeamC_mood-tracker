@@ -1,22 +1,22 @@
 <template>
   <div class="flex min-h-screen">
-    <div class="w-1/5  bg-sky-200">
-      <profile-home></profile-home>
+    <div class="w-1/5">
+      <side-bar></side-bar>
     </div>
-    <div class="flex-1">
+    <div class="flex-1 border-x">
       <home-post></home-post>
     </div>
-    <div class="w-1/5 bg-sky-200">side menu</div>
+    <div class="w-1/5">side menu</div>
   </div>
 </template>
 
 <script>
-import ProfileHome from "@/components/SideBar"
+import SideBar from "@/components/SideBar"
 import HomePost from "@/components/home/HomePost.vue";
 export default {
   name: "PageHome",
   components: {
-    ProfileHome,
+    SideBar,
     HomePost,
   }
 };

@@ -1,13 +1,14 @@
 <template>
     <div class="flex h-screen">
-        <div class="w-1/5 bg-sky-200">side menu</div>
+        <div class="w-1/5">
+            <side-bar></side-bar>
+        </div>
 
         <div id="chatroomList" class="flex  w-2/5 border-l border-r 1px solid border-gray-200 flex-col">
             <div class="flex items-center align-middle py-4 pl-6 pr-6">
                 <img class="p-1" src="" alt="hi">
-                <h2 class="p-1 text-lg ">Message</h2>
+                <h2 class="p-1 font-bold text-2xl">Message</h2>
             </div>
-            
             <div class="overflow-auto">
                 <ul class="list-none">
                     <li v-for="(chat, index) in chatList" :key="index" 
@@ -15,7 +16,7 @@
                         class="flex rounded-lg bg-gray-100 p-2 m-1 items-center hover:bg-gray-300">
                         <div class="flex items-center w-4/5"> 
                             <img class="rounded-full h-14 mr-2" :src="(``)">
-                            <div class="font-bold">{{ chat.title }}</div>
+                            <div class="font-bold text-base">{{ chat.title }}</div>
                         </div>
                         
 
@@ -65,7 +66,7 @@
 
                 <div class="flex pl-4 pr-4 py-1 justify-end m-1 w-full">
                     <div class="flex flex-col">
-                        <div class="flex rounded-lg bg-gray-300 p-2 w-2/3 self-end">
+                        <div class="flex rounded-lg bg-[#DAFFFB] p-2 w-2/3 self-end">
                             <div class="overflow-auto">
                                 <div class="whitespace-normal break-all">
                                     mes saage0ge0messageage0ge0messageage0ge0mes sageage0ge0messag eage0ge0messageage0ge0messageage0ge0message0ge0messageage0ge0messageage0ge0messageessage0message0ge0mage0ge0messageage0ge0messageessage0message0ge0message0message0
@@ -96,7 +97,7 @@
 
                 <div class="flex pl-4 pr-4 py-1 justify-start m-1">
                     <div class="flex flex-col">
-                        <div class="flex rounded-lg bg-gray-300 p-2 w-2/3">
+                        <div class="flex rounded-lg bg-gray-100 p-2 w-2/3">
                             <img class=""
                                     src="">
                         </div>
@@ -154,8 +155,12 @@
   
   <script>
   import { reactive } from 'vue';
+  import SideBar from "@/components/SideBar";
   export default {
     name: "ChatMain",
+    components: {
+        SideBar,
+    },
     data() {
         return {
             menuPosition: { top: 0, left: 0 },

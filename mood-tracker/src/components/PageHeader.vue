@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#88AB8E] w-full py-3 flex justify-end items-center relative">
+  <div class="bg-[#64CCC5] w-full py-3 flex justify-end items-center relative">
     <div
       id="title"
       class="absolute left-1/2 transform -translate-x-1/2"
