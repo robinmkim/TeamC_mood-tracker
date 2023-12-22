@@ -2,27 +2,62 @@
   <div>
     <form>
       <div class="flex flex-col">
-        <div class="bg-red-400 h-32 px-2 pt-2">
+        <div
+          class="h-auto px-2 pt-2 border-b"
+          @drop.prevent="handleFileDrop"
+          @dragover.prevent
+        >
           <div>
-            <div class="w-10 bg-black rounded-full overflow-hidden">
-              <img
-                src="../../assets/logo.png"
-                class=""
-              >
+            <div class="flex items-center border-b">
+              <div class="w-10 rounded-full overflow-hidden">
+                <img src="@/assets/logo.png" class="" />
+              </div>
+              <span class="ml-2">ickhigh</span>
+
+              <div class="cursor-pointer ml-2" @click="toggleExpand">
+                {{ selectedEmoji }}
+              </div>
+              <div v-if="isExpanded" class="cursor-pointer">
+                <span
+                  v-for="emoji in emojis"
+                  :key="emoji"
+                  @click="selectEmoji(emoji)"
+                  class="ml-1"
+                >
+                  {{ emoji }}
+                </span>
+              </div>
             </div>
-            <div>
-              <textarea class="bg-inherit w-full">하고 싶은 말을 적어보세요!</textarea>
+            <div class="border-b mb-1">
+              <textarea
+                class="bg-inherit w-full h-auto resize-none focus:outline-none"
+                placeholder="오늘의 기분을 알려주세요 :)"
+                @input="adjustHeight"
+              ></textarea>
+            </div>
+            <div class="flex">
+              <div v-for="(file, index) in files" :key="index" class="py-1">
+                <img :src="file.preview" class="w-24 border" />
+              </div>
             </div>
           </div>
         </div>
-        <div class="bg-blue-400 flex justify-between px-3">
+        <div class="flex justify-between px-3 py-2 border-b">
+          <input
+            type="file"
+            ref="fileInput"
+            multiple
+            style="display: none"
+            @change="handleFileChange"
+          />
           <svg
+            @click="triggerFileInput"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="w-6 h-6"
+            class="w-6 h-6 cursor-pointer"
           >
             <path
               stroke-linecap="round"
@@ -31,7 +66,7 @@
             />
           </svg>
           <input
-            class="bg-green-200 rounded-md p-0.5"
+            class="bg-[#ffede6] w-16 h-8 rounded-md p-0.5"
             type="submit"
             value="입력"
           />
@@ -41,4 +76,59 @@
   </div>
 </template>
 <script>
+export default {
+  data() {
+    return {
+      text: "",
+      file: null,
+      files: [],
+      isExpanded: false,
+      selectedEmoji: "😊", // 기본 이모지
+      emojis: ["😀", "😂", "🤣", "😍", "😎", "😊"],
+    };
+  },
+  name: "PostWrite",
+  methods: {
+    adjustHeight(e) {
+      const element = e.target;
+      element.style.height = "auto";
+      element.style.height = element.scrollHeight + "px";
+    },
+    handleFileDrop(e) {
+      const files = e.dataTransfer.files;
+      Array.from(files).forEach((file) => {
+        this.readFile(file);
+      });
+    },
+
+    readFile(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.files.push({
+          name: file.name,
+          preview: e.target.result,
+        });
+      };
+      reader.readAsDataURL(file);
+    },
+
+    triggerFileInput() {
+      this.$refs.fileInput.click();
+    },
+    handleFileChange(event) {
+      const selectedFiles = event.target.files;
+      Array.from(selectedFiles).forEach((file) => {
+        this.readFile(file);
+      });
+    },
+    toggleExpand() {
+      this.isExpanded = !this.isExpanded;
+    },
+    selectEmoji(emoji) {
+      this.selectedEmoji = emoji;
+      this.isExpanded = false;
+    },
+  },
+  components: {},
+};
 </script>
