@@ -6,7 +6,7 @@ import chatRouter from "./routers/chatRouter";
 import myPageRouter from "./routers/myPageRouter";
 import notiRouter from "./routers/notiRouter";
 import faceRouter from "./routers/faceRouter";
-import postDetailPage from "./routers/postRouter";
+import postRouter from "./routers/postRouter";
 
 const routes = [
   {
@@ -21,7 +21,7 @@ const routes = [
   ...myPageRouter,
   ...notiRouter,
   ...faceRouter,
-  ...postDetailPage,
+  ...postRouter,
 ];
 
 const router = createRouter({
