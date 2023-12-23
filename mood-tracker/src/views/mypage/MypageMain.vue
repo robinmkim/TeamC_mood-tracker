@@ -26,7 +26,7 @@
               </div>
               <div class="flex-grow"></div>
               <div
-                class="bg-[#ffede6] text-[000000] rounded-md mr-5 text-sm cursor-pointer"
+                class="bg-[#ffede6] text-[000000] rounded-md mr-5 p-0.5 text-sm cursor-pointer  "
                 @click="goToEdit"
               >
                 프로필 편집
