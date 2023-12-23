@@ -22,7 +22,7 @@
                   <!-- 프로필 이미지 -->
                   <img
                     class="w-20 h-20 mt-2 rounded-full inline-block"
-                    :src="profileImageUrl || require()"
+                    :src="profileImageUrl || require('./../../assets/logo.png')"
                     alt="나의 프로필 이미지"
                   />
                 </label>
