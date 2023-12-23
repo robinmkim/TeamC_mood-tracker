@@ -1,28 +1,29 @@
 <template>
     <div class="flex h-screen">
-        <div class="w-1/5 bg-sky-200">side menu</div>
+        <div class="w-1/5">
+            <side-bar></side-bar>
+        </div>
 
         <div id="chatroomList" class="flex  w-2/5 border-l border-r 1px solid border-gray-200 flex-col">
             <div class="flex items-center align-middle py-4 pl-6 pr-6">
-                <img class="p-1" src="./../../assets/chat/icon_email_outline.png">
-                <h2 class="p-1 text-lg ">Message</h2>
+                <img class="p-1" src="" alt="hi">
+                <h2 class="p-1 font-bold text-2xl">Message</h2>
             </div>
-            
             <div class="overflow-auto">
                 <ul class="list-none">
                     <li v-for="(chat, index) in chatList" :key="index" 
                         
                         class="flex rounded-lg bg-gray-100 p-2 m-1 items-center hover:bg-gray-300">
                         <div class="flex items-center w-4/5"> 
-                            <img class="rounded-full h-14 mr-2" :src="require(`@/assets/chat/${chat.profileimage}`)">
-                            <div class="font-bold">{{ chat.title }}</div>
+                            <img class="rounded-full h-14 mr-2" :src="(``)">
+                            <div class="font-bold text-base">{{ chat.title }}</div>
                         </div>
                         
 
                         <div class="flex w-1/5"> 
                             <div class="flex-col ml-auto">
                                 <button class="align-top" @click="toggleMenu(index, $event)">
-                                    <img class="" src="./../../assets/chat/icon_ellipses.png">
+                                    <img class="" src="">
                                 </button>
 
                                 <ul v-if="chat.isMenuOpen" class="menu-list" 
@@ -45,7 +46,7 @@
             
             <div class="flex pl-2 pr-2 pt-3 pb-3 items-center border-b  border-gray-200">
                 <img class="rounded-full h-12 mr-2" 
-                    src="./../../assets/chat/profileimage.png">
+                    src="">
                 <h2 class="text-lg font-bold">채팅방 1</h2>
             </div>
             
@@ -65,7 +66,7 @@
 
                 <div class="flex pl-4 pr-4 py-1 justify-end m-1 w-full">
                     <div class="flex flex-col">
-                        <div class="flex rounded-lg bg-gray-300 p-2 w-2/3 self-end">
+                        <div class="flex rounded-lg bg-[#DAFFFB] p-2 w-2/3 self-end">
                             <div class="overflow-auto">
                                 <div class="whitespace-normal break-all">
                                     mes saage0ge0messageage0ge0messageage0ge0mes sageage0ge0messag eage0ge0messageage0ge0messageage0ge0message0ge0messageage0ge0messageage0ge0messageessage0message0ge0mage0ge0messageage0ge0messageessage0message0ge0message0message0
@@ -96,9 +97,9 @@
 
                 <div class="flex pl-4 pr-4 py-1 justify-start m-1">
                     <div class="flex flex-col">
-                        <div class="flex rounded-lg bg-gray-300 p-2 w-2/3">
+                        <div class="flex rounded-lg bg-gray-100 p-2 w-2/3">
                             <img class=""
-                                    src="./../../assets/chat/profileimage.png">
+                                    src="">
                         </div>
                         <div class="self-start text-xs mt-1 ">
                             오후 11:33
@@ -110,7 +111,7 @@
                     <div class="flex flex-col">
                         <div class="flex rounded-lg bg-gray-300 p-2 w-2/3">
                             <img class=""
-                                    src="./../../assets/chat/bigpsy.png">
+                                    src="">
                         </div>
                         <div class="self-start text-xs mt-1 ">
                             오후 11:33
@@ -125,7 +126,7 @@
                 <span class="rounded-lg hover:bg-gray-100">
 
                     <label for="file" class="">
-                        <img src="./../../assets/chat/icon_close_outline.png">
+                        <img src="">
                     </label>
                     <input type="file" name="file" id="file">
 
@@ -143,7 +144,7 @@
                     <button type="submit"
                             class="flex rounded-lg hover:bg-gray-100">
                         <img class=" self-center m-1"
-                            src="./../../assets/chat/mail-send-email-message--send-email-paper-airplane-deliver.png">
+                            src="">
                     </button>
                 </span>
             </div>
@@ -154,8 +155,12 @@
   
   <script>
   import { reactive } from 'vue';
+  import SideBar from "@/components/SideBar";
   export default {
     name: "ChatMain",
+    components: {
+        SideBar,
+    },
     data() {
         return {
             menuPosition: { top: 0, left: 0 },
@@ -165,7 +170,7 @@
                 {title:"채팅방11", lastchattime:"7일 전", profileimage:"profileimage.png", isMenuOpen:false},
 
             ],
-        };
+        }; 
     },  
     methods: {
         autoExpand(event) {

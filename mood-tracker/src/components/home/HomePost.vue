@@ -1,20 +1,20 @@
 <template>
   <div class="flex justify-center mx-10 mt-3">
     <div v-if="samplePosts.length">
-      <div v-for="post in samplePosts" :key="post.id" class="my-5">
-        <article class="w-full md:w-[500px] min-w-[500px] min-h-[200px] h-auto border-b-2 pb-5">
+      <div v-for="post in samplePosts" :key="post.id" class="my-5 border-b">
+        <article class="w-full md:w-[500px] min-w-[500px] min-h-[200px] h-auto pb-5">
           <!-- 게시글 헤더 영역 -->
           <div class="flex flex-row mb-5">
-            <img @click="$router.push({path: '/memberDetail', params: {id: post.id}})" :src="post.userIcon" class="rounded-full w-9 h-9 cursor-pointer border" alt="user icon"/>
+            <img @click="$router.push({path: '/mypage', params: {id: post.id}})" :src="post.userIcon" class="rounded-full w-14 h-14 cursor-pointer border" alt="user icon"/>
             <div class="flex flex-row items-center mx-3">
-              <div class="mr-2 cursor-pointer">{{ post.publisher }}</div>
-              <div class="text-slate-400">{{ post.date }}</div>
+              <div class="mr-2 cursor-pointer text-lg font-bold">{{ post.publisher }}</div>
+              <div class="text-slate-400 text-sm">{{ post.date }}</div>
             </div>
           </div>
           <!-- 게시글 이미지 영역 -->
           <div v-if="post.images.length" class="relative mb-3">
             <div class="flex items-center justify-center relative">
-              <img :src="post.images[post.activeImageIndex].url" alt="Post image" />
+              <img :src="post.images[post.activeImageIndex].url" alt="Post image" class=""/>
               <a v-if="post.activeImageIndex > 0" class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer left-2.5"
                 @click="prevImage(post)">
                 &#10094;
@@ -36,7 +36,7 @@
                 <img src="https://file.notion.so/f/f/4aa7ab7f-5a28-4d2f-a3a5-e523c0267871/2cd4e0de-ef93-4c7c-808e-8cfa7fe693e4/Untitled.png?id=6ed994aa-362b-409a-9e5a-d372b09ec1b5&table=block&spaceId=4aa7ab7f-5a28-4d2f-a3a5-e523c0267871&expirationTimestamp=1702994400000&signature=pH3une7RGKSDlfEPnUR9LemDu1dzg0emQ1E8bNbX6Oc&downloadName=Untitled.png" alt="comment">
               </div>
             </div>
-          <div>
+          <div class="text-left text-base">
               {{ post.content }}
           </div>
           </div>

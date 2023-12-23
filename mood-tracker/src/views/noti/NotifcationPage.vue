@@ -1,9 +1,11 @@
 <template>
 
   <div class="flex h-screen">
-    <div class="w-1/5 bg-sky-200">side menu</div>
+    <div class="w-1/5">
+      <side-bar></side-bar>
+    </div>
 
-    <div class="flex-1">
+    <div class="flex-1 border-x-2">
       <div class="notiHeader bg-white-500 px-4 flex items-center justify-start" style="flex: 1; height: 45px;">
         <h1 class="notiHeaderMessage text-black font-bold text-2xl">알림</h1>
       </div>
@@ -13,10 +15,10 @@
           <div
             v-for="(tab, index) in tabs"
             :key="index"
-            class="text-sm h-10 flex-1 flex justify-center items-center"
+            class="text-base h-10 flex-1 flex justify-center items-center border-b-4"
             :class="{
-              'border-b-4 border-solid border-[#B2CFAF]': currentTab === index ,
-              'hover:border-b-4 border-[#e0e0e0] ': currentTab !== index,
+              'border-[#64CCC5]': currentTab === index ,
+              'hover:border-[#e0e0e0] border-transparent': currentTab !== index,
             }"
             @click="changeTab(index, tab.id)"
             role="tab"
@@ -33,27 +35,76 @@
             <!-- 전체 tab -->
             <div v-if="tab.id === 'notiTabsAll'">
               <div id="bar-with-underline-1">
-                <div class="notiItem bg-red-500 flex justify-start p-4 border-b border-gray-200 " style="height: 80px;">
-                  <div class="notiItemImg bg-blue-500" style="height: 50px; width: 50px; overflow: hidden;">
-                    <img class="object-contain h-full w-full rounded-full" src="..\..\assets\notiProfileImage01.jpg">
+                <!-- 알림 content - follow -->
+                <div class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200 " >
+                  <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
+                    <!-- notiDisplay: 확인하지 않은 알림 표시 -->
+                    <div class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"></div>
+                    <img class="object-contain rounded-full" src="..\..\assets\notiProfileImage01.jpg">
                   </div>
-                  <div class="notiItemContent flex-1 flex bg-purple-400" style="height: 50px;">
-                    <div class="notiItemContent_ items-stretch flex w-3/4 bg-purple-600">
-                      <div class="notiItemContentTime bg-purple-100 flex items-center">
-                          <span class="notiItemContentTimeText text-[10px]">37초전</span>
-                      </div>
-                      <div class="notiItemContentMain bg-purple-200 flex items-center">
-                          5
+                  <div class="notiItemContent flex-1 flex h-14">
+                    <div class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3">
+                      <span class="notiItemContentTime text-sm text-slate-400 ">37초전</span>
+                      <div class="notiItemContentMain w-auto flex items-center">
+                        <span class="notiUserName font-bold text-lg">
+                         UserName
+                        </span>
+                        님이 팔로우 하셨습니다.
                       </div>
                       <div class="notiItemContentTimePost bg-purple-300 flex items-center">
-                          9
+                          
                       </div>
                     </div>
-                    <div class="flex w-1/4 bg-rose-400">
-                      2
+                    <div class="notiItemContentButton flex w-1/4 justify-center items-center">
+                      <div class="notiItemContentButtonYes rounded-full mr-3 bg-[#ffede6] h-10 w-20 flex justify-center items-center">
+                        수락
+                      </div>
+                      <div class="notiItemContentButtonNo rounded-full bg-slate-200 h-10 w-20 flex justify-center items-center">
+                        거절
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                <!-- 알림 content - like -->
+                <div class="notiItem likeNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200">
+                  <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
+                    <div class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"></div>
+                    <img class="object-contain rounded-full" src="..\..\assets\notiProfileImage01.jpg">
+                  </div>
+                  <div class="notiItemContent flex-1 pl-3 justify-start ">
+                    <span class="notiItemContentTime text-sm text-slate-400 flex">37초전</span>
+                    <div class="notiItemContentMain w-auto flex items-center">
+                      <span class="notiUserName font-bold text-lg">
+                        UserName
+                      </span>
+                      님이 게시글에 좋아요를 남겼습니다!
+                    </div>
+                    <div class="notiItemContentTimePost flex items-center text-sm text-slate-400 mt-2">
+                      님들아 나 사진 예쁜거 찍었음 봐줭
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 알림 content - comment -->
+                <div class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200">
+                  <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
+                    <img class="object-contain rounded-full" src="..\..\assets\notiProfileImage01.jpg">
+                  </div>
+                  <div class="notiItemContent flex-1 pl-3 justify-start ">
+                    <span class="notiItemContentTime text-sm text-slate-400 flex">37초전</span>
+                    <div class="notiItemContentMain w-auto flex items-center">
+                      <span class="notiUserName font-bold text-lg">
+                        UserName
+                      </span>
+                      님의 댓글
+                    </div>
+                    <div class="notiItemContentTimePost flex items-center text-sm mt-2">
+                      정말 예쁜 것 같아요!
+                    </div>
+                  </div>
+                </div>
+                
               </div>
             </div>
 
@@ -75,13 +126,13 @@
 
     </div>
 
-    <div class="w-1/5 bg-sky-200">side menu</div>
+    <div class="w-1/5">side menu</div>
   </div>
 </template>
 
   
 <script>
-  
+import SideBar from "@/components/SideBar"
   
   export default {
 
@@ -102,6 +153,9 @@
       },
     },
     name: "NotiPage",
+    components: {
+      SideBar,
+    }
   };
 
 
