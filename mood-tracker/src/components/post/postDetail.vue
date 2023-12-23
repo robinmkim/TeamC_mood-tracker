@@ -1,4 +1,5 @@
 <template>
+
     <div class="m-4">
         <!-- 게시글 헤더 영역 -->
         <div class="postHerder flex flex-row mb-3">
@@ -53,8 +54,11 @@
                 </div>
             </div>
         </div>
+
     </div>
+  </div>
 </template>
+
 
 <script>
 export default {
@@ -92,5 +96,5 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+
+<style scoped></style>
