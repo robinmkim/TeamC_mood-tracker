@@ -98,7 +98,7 @@
                 <div class="flex pl-4 pr-4 py-1 justify-start m-1">
                     <div class="flex flex-col">
                         <div class="flex rounded-lg bg-gray-100 p-2 w-2/3">
-                            <img class=""
+                            <img class="" alt="src"
                                     src="">
                         </div>
                         <div class="self-start text-xs mt-1 ">
@@ -110,7 +110,7 @@
                 <div class="flex pl-4 pr-4 py-1 justify-start m-1">
                     <div class="flex flex-col">
                         <div class="flex rounded-lg bg-gray-300 p-2 w-2/3">
-                            <img class=""
+                            <img class="" alt="src"
                                     src="">
                         </div>
                         <div class="self-start text-xs mt-1 ">
@@ -126,7 +126,7 @@
                 <span class="rounded-lg hover:bg-gray-100">
 
                     <label for="file" class="">
-                        <img src="">
+                        <img src="" >
                     </label>
                     <input type="file" name="file" id="file">
 
