@@ -11,11 +11,7 @@
       <!-- 자기 소개 부분 -->
       <div class="flex w-full h-120">
         <div class="profil-img flex items-center justify-center">
-          <img
-            class="w-20 h-20 rounded-full"
-            src="..\..\assets\notiProfileImage01.jpg"
-            alt="이미지 설명"
-          />
+          <img class="w-20 h-20 rounded-full" src="" alt="이미지 설명" />
         </div>
         <div class="w-full flex-col ml-4">
           <div class="flex h-16 flex-col-reverse">
@@ -26,7 +22,7 @@
               </div>
               <div class="flex-grow"></div>
               <div
-                class="bg-[#ffede6] text-[000000] rounded-md mr-5 p-0.5 text-sm cursor-pointer  "
+                class="bg-[#ffede6] text-[000000] rounded-md mr-5 p-0.5 text-sm cursor-pointer"
                 @click="goToEdit"
               >
                 프로필 편집
@@ -95,7 +91,7 @@
                   >
                     <img
                       class="object-contain h-full w-full rounded-full"
-                      src="..\..\assets\notiProfileImage01.jpg"
+                      src=""
                     />
                   </div>
                   <div
@@ -232,17 +228,14 @@ export default {
         });
       }
     },
-      // 편집버트 클릭
+    // 편집버트 클릭
     goToEdit() {
-        console.log('goToEdit 메소드 호출됨');
-        this.$router.push("/mypage/edit");
-        },
-
+      console.log("goToEdit 메소드 호출됨");
+      this.$router.push("/mypage/edit");
+    },
   },
 
-  
   name: "PageHome",
-
 };
 </script>
 

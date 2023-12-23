@@ -1,5 +1,4 @@
 <template>
-
     <div class="m-4">
         <!-- 게시글 헤더 영역 -->
         <div class="postHerder flex flex-row mb-3">
@@ -12,7 +11,7 @@
             </div>
             <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
                 <!-- 미트볼 아이콘-->
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="origin-center w-6 h-6 mr-5 ">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="origin-center w-6 h-6 mr-5 " @click="toggleMenu">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                 </svg>
             </div>
@@ -54,11 +53,10 @@
                 </div>
             </div>
         </div>
-
+      </div>
     </div>
   </div>
 </template>
-
 
 <script>
 export default {
@@ -67,12 +65,12 @@ export default {
       currentImageIndex: 1, // 현재 이미지 인덱스
       imageCount: 3, // 이미지 개수
       isLikeClicked: false, // likeButton 클릭 여부를 나타내는 상태 추가
-      showMenu : false,
+      showMenu: false,
     };
   },
   methods: {
     getImageUrl(index) {
-      return require(`../../assets/dog${String(index).padStart(2, '0')}.png`);
+      return require(`../../assets/dog${String(index).padStart(2, "0")}.png`);
     },
     prevImage() {
       this.currentImageIndex = Math.max(1, this.currentImageIndex - 1);
@@ -85,16 +83,16 @@ export default {
       this.isLikeClicked = !this.isLikeClicked;
       const path = this.$refs.likePath;
       if (this.isLikeClicked) {
-        path.setAttribute('fill', 'red');
-        path.setAttribute('stroke', 'red');
+        path.setAttribute("fill", "red");
+        path.setAttribute("stroke", "red");
       } else {
-        path.setAttribute('fill', 'none');
-        path.setAttribute('stroke', 'currentColor');
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "currentColor");
       }
-    }
+    },
   },
 };
 </script>
 
-
-<style scoped></style>
+<style scoped>
+</style>
