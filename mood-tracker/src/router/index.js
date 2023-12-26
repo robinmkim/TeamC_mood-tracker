@@ -11,10 +11,9 @@ import postDetailRouter from "./routers/postRouter";
 import questionRouter from "./routers/questionRouter";
 import adminRouter from "./routers/adminRouter";
 
-
 const routes = [
   {
-    path: "/",
+    path: "/timeline",
     component: PageHome,
   },
   {
@@ -28,7 +27,6 @@ const routes = [
   ...postDetailRouter,
   ...questionRouter,
   ...adminRouter,
-
 ];
 
 const router = createRouter({
