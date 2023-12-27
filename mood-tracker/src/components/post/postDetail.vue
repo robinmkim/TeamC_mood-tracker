@@ -1,5 +1,5 @@
 <template>
-  <div class="m-4">
+  <div class="m-4 border-b">
     <!-- 게시글 헤더 영역 -->
     <div class="postHerder flex flex-row mb-3">
       <div class="h-14 w-14 overflow-hidden relative">
