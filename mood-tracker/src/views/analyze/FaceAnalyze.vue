@@ -14,25 +14,22 @@
         </div>
 
         <!-- 클릭하여 파일 업로드 -->
-        <div class="flex mt-5 mb-2 bg-slate-200">
-          <span
-            @click="openFileInput"
-            class="cursor-pointer p-5 w-[700px] h-100 item-center text-center"
-          >
-            <p class="box-content">선택 또는 드래그 하여 사진 업로드</p>
+        <div class="flex mt-5">
+          <span class="p-5 w-[700px] h-100 item-center text-center">
+            <p>⬇⬇ 선택 또는 드래그 하여 사진 업로드 ⬇⬇</p>
 
-            <input
+            <!-- <input
               type="file"
               ref="fileInput"
               class="hidden"
               @change="handleFileSelect"
               accept=".jpg, .jpeg, .png"
-            />
+            /> -->
           </span>
         </div>
         <!-- 드래그하여 파일 업로드-->
         <div
-          class="flex m-2 w-[700px] h-[450px] bg-slate-200 box-content text-center"
+          class="flex m-1 w-[550px] h-[450px] bg-white box-content text-center"
           @dragover.prevent="handleDragOver"
           @drop="handleDrop"
         >
@@ -64,7 +61,7 @@
         <div class="flex justify-center mt-3">
           <span
             id="submit"
-            class="bg-[#64CCC5] w-24 h-18 rounded-full cursor-pointer"
+            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center"
             @click="goToResult"
             >분석하기</span
           >
