@@ -4,7 +4,7 @@
     <div class="postHerder flex flex-row mb-3">
       <div class="h-14 w-14 overflow-hidden relative">
         <img
-          class="postDetailUserImg object-contain rounded-full"
+          class="postDetailUserImg object-con tain rounded-full"
           src="..\..\assets\notiProfileImage01.jpg"
           alt="user icon"
         />
