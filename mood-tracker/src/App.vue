@@ -1,16 +1,18 @@
 <template>
-    <PageHeader />
-    <div class="w-3/4 mx-auto">
-      <router-view />
-    </div>
+  <PageHeader />
+  <div class="w-3/4 mx-auto">
+    <router-view />
+  </div>
+  <PageFooter />
 </template>
 
 <script>
 import PageHeader from "./components/PageHeader.vue";
+import PageFooter from "./components/PageFooter.vue";
 
 export default {
   name: "App",
-  components: { PageHeader },
+  components: { PageHeader, PageFooter },
 };
 </script>
 
