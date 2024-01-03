@@ -1,9 +1,11 @@
 <template>
-  <PageHeader />
-  <div class="w-3/4 mx-auto">
-    <router-view />
+  <div class="flex flex-col h-screen">
+    <PageHeader />
+    <div class="flex-grow overflow-auto w-3/4 mx-auto">
+      <router-view />
+    </div>
+    <PageFooter />
   </div>
-  <PageFooter />
 </template>
 
 <script>
