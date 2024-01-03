@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teamc.moodtracker.dao.PostDao">
+
+
+    <select id="selectList" resultType="PostDto">
+        select * from post
+    </select>
+
+    <insert id="writePost" parameterType="PostDto">
+        insert into post(pno, title, content, author, regdate, vcount)
+        values(pnoseq.nextVal , #{title} , #{content}, #{author}, sysdate ,0)
+    </insert>
+
+    <select id="detailPost" parameterType="int" resultType="PostDto">
+        select * from post where pno = #{pno}
+    </select>
+
+    <update id="updatePost" parameterType="PostDto">
+        update post
+        set title = #{title}, content = #{content}, author = #{author}
+        where pno = #{pno}
+    </update>
+
+    <delete id="deletePost" parameterType="int">
+        delete from post where pno = #{pno}
+    </delete>
+</mapper>

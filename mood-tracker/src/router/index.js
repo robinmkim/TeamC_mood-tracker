@@ -6,15 +6,14 @@ import chatRouter from "./routers/chatRouter";
 import myPageRouter from "./routers/myPageRouter";
 import notiRouter from "./routers/notiRouter";
 import faceRouter from "./routers/faceRouter";
-
 import postDetailRouter from "./routers/postRouter";
 import questionRouter from "./routers/questionRouter";
 import adminRouter from "./routers/adminRouter";
-
+import authRouter from "./routers/authRouter";
 
 const routes = [
   {
-    path: "/",
+    path: "/timeline",
     component: PageHome,
   },
   {
@@ -28,7 +27,7 @@ const routes = [
   ...postDetailRouter,
   ...questionRouter,
   ...adminRouter,
-
+  ...authRouter,
 ];
 
 const router = createRouter({

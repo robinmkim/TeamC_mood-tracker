@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teamc.moodtracker.dao.ChatDao">
+
+
+<!--    <select id="selectList" resultType="ChatDto">-->
+<!--        select * from chatDto-->
+<!--    </select>-->
+
+<!--    <insert id="sendChat" parameterType="ChatDto">-->
+<!--        insert into post(chatno, sender, receiver, message, regdate)-->
+<!--        values(chatnoseq.nextVal , #{sender} , #{receiver}, #{message}, sysdate)-->
+<!--    </insert>-->
+
+
+</mapper>
