@@ -85,12 +85,12 @@
 
 <script>
 import SideBar from "@/components/SideBar";
-import postDetail from "@/components/post/postDetail";
+import PostDetail from "@/components/post/PostDetail";
 export default {
   name: "PostDetailPage",
   components: {
     SideBar,
-    postDetail,
+    PostDetail,
   },
 };
 </script>
