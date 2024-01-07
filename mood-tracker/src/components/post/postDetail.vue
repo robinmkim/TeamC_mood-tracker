@@ -5,75 +5,67 @@
       <div class="h-14 w-14 overflow-hidden relative">
         <img
           class="postDetailUserImg object-contain rounded-full"
-          src="..\..\assets\notiProfileImage01.jpg"
+          src="../../assets/notiProfileImage01.jpg"
           alt="user icon"
         />
       </div>
       <div class="flex flex-row items-center mx-3">
         <div class="notiUserName font-bold text-lg">UserName</div>
-        <div class="text-slate-400 text-sm ml-2">2분전</div>
+        <div class="text-slate-400 text-sm ml-2">
+          {{ formatTime(board.regdate) }}
+        </div>
       </div>
       <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
-        <!-- 미트볼 아이콘-->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="origin-center w-6 h-6 mr-5"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"
-          />
-        </svg>
+        <!-- 미트볼 아이콘 -->
+        <!-- ... -->
       </div>
     </div>
+
     <!-- 게시글 이미지 영역 -->
-    <div class="postImage relative mb-3">
+    <div class="postImage relative mb-3" v-if="board.mediaList.length > 0">
       <div class="flex items-center justify-center relative">
         <div
           class="h-60 overflow-hidden relative rounded-lg flex items-center justify-center"
         >
           <img
-            :src="getImageUrl(currentImageIndex)"
+            :src="getImageUrl(board.mediaList[currentImageIndex - 1])"
             alt="Post image"
             class="items-center rounded-lg"
           />
         </div>
         <a
           v-if="currentImageIndex > 1"
-          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer left-2.5 text-white"
+          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer left-2.5 text-black"
           @click="prevImage"
         >
           &#10094;
         </a>
         <a
-          v-if="currentImageIndex < imageCount"
-          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer right-2.5 text-white"
+          v-if="currentImageIndex < board.mediaList.length"
+          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer right-2.5 text-black"
           @click="nextImage"
         >
           &#10095;
         </a>
       </div>
     </div>
+
     <!-- 게시글 본문 영역 -->
     <div>
       <div class="text-left text-base font-normal flex mb-3">
         <div v-if="!showMoreText">
           {{ shotText }}
-          <span v-if="isTextCheck"
-            >...<button @click="showMore" class="text-[#b3b3b3]">
+          <span v-if="showMoreText">
+            ...<button @click="expandText" class="text-[#b3b3b3]">
               더보기
-            </button></span
-          >
+            </button>
+          </span>
         </div>
         <div v-else>
-          {{ fullText }}
+          {{ board.b_content }}
         </div>
       </div>
+
       <!-- like, 이모지 -->
       <div class="flex flex-row">
         <div class="flex items-center">
@@ -85,7 +77,7 @@
             stroke-width="2"
             stroke="currentColor"
             class="w-6 h-6"
-            @click="handleSvgClick"
+            @click="toggleLike"
           >
             <path
               ref="likePath"
@@ -94,7 +86,7 @@
               d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
             />
           </svg>
-          <span @click="handleSvgClick" class="text-sm ml-1 mr-1">55</span>
+          <span class="text-sm ml-1 mr-1">55</span>
           <a href="/postDetail">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -112,61 +104,124 @@
             </svg>
           </a>
 
-          <span class="ml-2">&#128519;</span>
-          <!-- 이모티콘 -->
+          <span class="ml-2">{{ sentimentEmoji }}</span>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
+import axios from "axios";
+
 export default {
+  props: {
+    // Step 1: Props 정의
+    b_id: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
-      currentImageIndex: 1, // 현재 이미지 인덱스
-      imageCount: 3, // 이미지 개수
-      isLikeClicked: false, // likeButton 클릭 여부를 나타내는 상태 추가
-      showMenu: false,
-      fullText:
-        "강아지... 너무 좋아... 강아지 최고야 강아지 좋아요 강아쥐...........",
+      currentImageIndex: 1,
+      isLikeClicked: false,
       showMoreText: false,
+      board: {
+        b_id: null,
+        m_id: null,
+        b_content: "",
+        b_sentiment: "",
+        regdate: "",
+        mediaList: [],
+      },
+      emotionMap: {
+        "😆": "happy",
+        "😡": "angry",
+        "😬": "anxiety",
+        "🤕": "hurt",
+        "😐": "neutral",
+        "😢": "sad",
+        "😨": "surprise",
+      },
     };
   },
   computed: {
     shotText() {
-      return this.fullText.slice(0, 10);
+      // 본문의 일부만 보여주되, 본문이 존재하는 경우에만 작업을 수행합니다.
+      return this.board.b_content ? this.board.b_content.slice(0, 10) : "";
     },
-    isTextCheck() {
-      return this.fullText.length > 10;
+    sentimentEmoji() {
+      // 감정에 해당하는 이모지를 반환합니다.
+      return (
+        Object.keys(this.emotionMap).find(
+          (key) => this.emotionMap[key] === this.board.b_sentiment
+        ) || ""
+      );
+    },
+    imageCount() {
+      // mediaList 배열의 길이를 반환합니다.
+      return this.board.mediaList.length;
     },
   },
-
   methods: {
-    getImageUrl(index) {
-      return require(`../../assets/dog${String(index).padStart(2, "0")}.png`);
+    getImageUrl(media) {
+      // md_path와 md_name을 결합하여 이미지의 전체 경로를 반환합니다.
+      return `http://localhost:8083/${media.md_path}${media.md_name}`;
     },
     prevImage() {
-      this.currentImageIndex = Math.max(1, this.currentImageIndex - 1);
-    },
-    nextImage() {
-      this.currentImageIndex = (this.currentImageIndex % this.imageCount) + 1;
-    },
-    handleSvgClick() {
-      // likeButton 클릭 로직 (색만 바뀜)
-      this.isLikeClicked = !this.isLikeClicked;
-      const path = this.$refs.likePath;
-      if (this.isLikeClicked) {
-        path.setAttribute("fill", "red");
-        path.setAttribute("stroke", "red");
-      } else {
-        path.setAttribute("fill", "none");
-        path.setAttribute("stroke", "currentColor");
+      // 이전 이미지로 이동합니다.
+      if (this.currentImageIndex > 1) {
+        this.currentImageIndex -= 1;
       }
     },
-    showMore() {
+    nextImage() {
+      // 다음 이미지로 이동합니다.
+      if (this.currentImageIndex < this.imageCount) {
+        this.currentImageIndex += 1;
+      }
+    },
+    toggleLike() {
+      // 좋아요 버튼 상태를 토글합니다.
+      this.isLikeClicked = !this.isLikeClicked;
+    },
+    expandText() {
+      // 게시글 전문을 보여줍니다.
       this.showMoreText = true;
     },
+    loadBoardData() {
+      // 게시글 데이터를 로드합니다.
+      axios
+        .get(`http://192.168.0.84:8083/post/get/${this.b_id}`)
+        .then((response) => {
+          this.board = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+    },
+    formatTime(dateString) {
+      const now = new Date();
+      const postDate = new Date(dateString);
+      const diffInSeconds = Math.floor((now - postDate) / 1000);
+      if (diffInSeconds < 60) {
+        return `${diffInSeconds}초 전`;
+      }
+
+      const diffInMinutes = Math.floor(diffInSeconds / 60);
+      if (diffInMinutes < 60) {
+        return `${diffInMinutes}분 전`;
+      }
+
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      if (diffInHours < 24) {
+        return `${diffInHours}시간 전`;
+      }
+
+      return postDate.toLocaleDateString("ko-KR");
+    },
+  },
+  created() {
+    this.loadBoardData();
   },
 };
 </script>
