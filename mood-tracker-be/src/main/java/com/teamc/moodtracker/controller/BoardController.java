@@ -28,21 +28,23 @@ public class BoardController {
     @Autowired
     private BoardService service;
 
-    private final static String imageDirectory = Paths.get("").toAbsolutePath() + "/uploads/";
+    String imageDirectory = "src/main/resources/static/images/";
     @PostMapping("/add")
     public int addBoardContent(@ModelAttribute BoardDto dto,
-                               @RequestParam("mediaList") List<MultipartFile> mediaList) {
+                               @RequestParam(value = "mediaList", required = false) List<MultipartFile> mediaList) {
         List<MediaDto> mediaDtos = new ArrayList<>();
 
-        for (MultipartFile multipartFile : mediaList) {
-            MediaDto mediaDto = new MediaDto();
-            mediaDto.setMd_name(multipartFile.getOriginalFilename());
-            mediaDto.setMd_path(imageDirectory);
-            mediaDto.setMd_type(multipartFile.getContentType());
-            mediaDtos.add(mediaDto);
-            String filePath = imageDirectory + multipartFile.getOriginalFilename();
-            System.out.println(filePath);
-            uploadFile(multipartFile, filePath);
+        if(mediaList != null) {
+            for (MultipartFile multipartFile : mediaList) {
+                MediaDto mediaDto = new MediaDto();
+                mediaDto.setMd_name(multipartFile.getOriginalFilename());
+                mediaDto.setMd_path("images/");
+                mediaDto.setMd_type(multipartFile.getContentType());
+                mediaDtos.add(mediaDto);
+                String filePath = imageDirectory + multipartFile.getOriginalFilename();
+                System.out.println(filePath);
+                uploadFile(multipartFile, filePath);
+            }
         }
 
         service.addBoardContent(dto, mediaDtos);
@@ -64,14 +66,14 @@ public class BoardController {
             return "No File Selected!";
         }
     }
-    private String getExtension(MultipartFile multipartFile) {
-        // 업로드 된 파일의 이름을 변수에 저장
-        String fileName = multipartFile.getOriginalFilename();
-        int index = fileName.indexOf(".");
-        if (index > -1) {
-            return fileName.substring(index);
-        }
-        return "";
+
+    @GetMapping("/get/{b_id}")
+    public BoardDto getBoardDetail(@PathVariable int b_id) {
+        return service.getBoardDetail(b_id);
     }
 
+    @GetMapping("/list")
+    public List<Integer> getBoardList(@RequestParam(value="lastRowNum") int lastRowNum) {
+        return service.getBoardList(lastRowNum);
+    }
 }

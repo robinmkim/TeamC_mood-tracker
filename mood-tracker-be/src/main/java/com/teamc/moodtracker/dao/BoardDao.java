@@ -6,6 +6,7 @@ import com.teamc.moodtracker.dto.MediaDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface BoardDao {
@@ -13,5 +14,7 @@ public interface BoardDao {
 
     public void addMedia(MediaDto dto);
 
+    public BoardDto getBoardDetail(int b_id);
 
+    public List<Integer> getBoardList(Map<String, Object> params);
 }

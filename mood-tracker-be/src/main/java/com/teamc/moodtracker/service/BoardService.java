@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.print.attribute.standard.Media;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BoardService {
@@ -23,6 +25,16 @@ public class BoardService {
             mediaDto.setB_id(dto.getB_id());
             dao.addMedia(mediaDto);
         }
+    }
+
+    public BoardDto getBoardDetail(int b_id) {
+        return dao.getBoardDetail(b_id);
+    }
+
+    public List<Integer> getBoardList(int lastRowNum) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("lastRowNum", lastRowNum);
+        return dao.getBoardList(params);
     }
 
 }

@@ -16,4 +16,32 @@
         INSERT INTO media_table
         VALUES (#{md_id}, #{md_name}, #{md_path}, #{md_type}, #{b_id}, sysdate)
     </insert>
+    <resultMap id="BoardWithMediaResultMap" type="bvo">
+        <id property="b_id" column="b_id"/>
+        <result property="m_id" column="m_id"/>
+        <result property="b_content" column="b_content"/>
+        <result property="b_sentiment" column="b_sentiment"/>
+        <result property="regdate" column="regdate"/>
+        <collection property="mediaList" ofType="mdto">
+            <id property="md_id" column="md_id"/>
+            <result property="md_name" column="md_name"/>
+            <result property="md_path" column="md_path"/>
+            <result property="md_type" column="md_type"/>
+        </collection>
+    </resultMap>
+
+    <select id="getBoardDetail" resultMap="BoardWithMediaResultMap">
+        SELECT b.*, m.md_id, m.md_name, m.md_path, m.md_type
+        FROM board b
+                 LEFT JOIN media_table m ON b.b_id = m.b_id
+        WHERE b.b_id = #{b_id}
+    </select>
+
+    <select id="getBoardList" parameterType="map" resultType="java.lang.Integer">
+        SELECT b.b_id
+        FROM board b
+        WHERE (SELECT COUNT(*) FROM board WHERE b_id > b.b_id) BETWEEN #{lastRowNum} AND (#{lastRowNum} + 4)
+        ORDER BY b.b_id DESC
+    </select>
 </mapper>
+
