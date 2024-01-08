@@ -92,7 +92,7 @@ export default {
         "😢": "sad",
         "😨": "surprise",
       },
-      emotion: "",
+      emotion: "happy",
     };
   },
   name: "PostWrite",
