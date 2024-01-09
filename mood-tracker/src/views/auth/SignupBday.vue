@@ -3,81 +3,117 @@
     <div class="bg-white rounded-lg p-8 shadow-md w-full max-w-sm">
       <h2 class="text-center text-2xl font-semibold mb-6">Basic Information</h2>
       <form @submit.prevent="onNextClick" class="space-y-4">
-        <div>
-          <label
-            for="month"
-            class="block mb-2 text-sm font-medium text-gray-900"
-            >Month</label
-          >
-          <select
-            id="month"
-            v-model="month"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          >
-            <option value="">Select a month</option>
-            <option v-for="month in months" :key="month" :value="month">
-              {{ month }}
-            </option>
-          </select>
-          <span v-if="monthError">{{ monthError }}</span>
+        <div class="flex flex-col">
+          <div class="flex mb-2">
+            <div class="mr-2">
+              <label
+                for="month"
+                class="block mb-2 text-sm font-medium text-gray-900"
+                >Month</label
+              >
+              <select
+                id="month"
+                v-model="month"
+                class="border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:border-[#64CCC5] block w-[85px] p-2.5"
+              >
+                <option value="">Select a month</option>
+                <option v-for="month in months" :key="month" :value="month">
+                  {{ month }} 월
+                </option>
+              </select>
+              <span v-if="monthError">{{ monthError }}</span>
+            </div>
+            <div class="">
+              <label
+                for="day"
+                class="block mb-2 text-sm font-medium text-gray-900"
+                >Day</label
+              >
+              <select
+                id="day"
+                v-model="day"
+                class="border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:border-[#64CCC5] block w-[85px] p-2.5"
+              >
+                <!-- Day options -->
+                <option value="">Select a day</option>
+                <option v-for="day in days" :key="day" :value="day">
+                  {{ day }} 일
+                </option>
+              </select>
+              <span v-if="dayError">{{ dayError }}</span>
+            </div>
+            <div class="ml-2">
+              <label
+                for="year"
+                class="block mb-2 text-sm font-medium text-gray-900"
+                >Year</label
+              >
+              <select
+                id="year"
+                v-model="year"
+                class="border-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:border-[#64CCC5] block w-full p-2.5"
+              >
+                <!-- Year options -->
+                <option value="">Select a year</option>
+                <option v-for="year in years" :key="year" :value="year">
+                  {{ year }} 년
+                </option>
+              </select>
+              <span v-if="yearError">{{ yearError }}</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center mt-2">
+              <label
+                for="gender"
+                class="block mb-1 ml-1 text-sm font-medium text-gray-900"
+                >Gender</label
+              >
+              <!--s-->
+              <div class="flex ml-11" id="gender">
+                <button
+                  type="button"
+                  class="border-2 border-gray-300 mr-0 text-gray-900 text-sm rounded-l-lg block w-[75px] p-2.5"
+                  @click="gender = 'male'"
+                  :class="{
+                    'bg-[#64CCC5] text-white': gender === 'male',
+                  }"
+                >
+                  Male
+                </button>
+                <button
+                  type="button"
+                  class="border-t-2 border-b-2 border-gray-300 text-gray-900 text-sm block w-[75px] p-2.5"
+                  @click="gender = 'female'"
+                  :class="{
+                    'bg-[#64CCC5] text-white': gender === 'female',
+                  }"
+                >
+                  Female
+                </button>
+                <button
+                  type="button"
+                  class="border-2 border-gray-300 text-gray-900 text-sm rounded-r-lg block w-[75px] p-2.5"
+                  @click="gender = 'other'"
+                  :class="{
+                    'bg-[#64CCC5] text-white': gender === 'other',
+                  }"
+                >
+                  Other
+                </button>
+              </div>
+              <!--s-->
+            </div>
+            <span v-if="genderError">{{ genderError }}</span>
+          </div>
         </div>
-        <div>
-          <label for="day" class="block mb-2 text-sm font-medium text-gray-900"
-            >Day</label
-          >
-          <select
-            id="day"
-            v-model="day"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          >
-            <!-- Day options -->
-            <option value="">Select a month</option>
-            <option v-for="day in days" :key="day" :value="day">
-              {{ day }}
-            </option>
-          </select>
-          <span v-if="dayError">{{ dayError }}</span>
-        </div>
-        <div>
-          <label for="year" class="block mb-2 text-sm font-medium text-gray-900"
-            >Year</label
-          >
-          <select
-            id="year"
-            v-model="year"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          >
-            <!-- Year options -->
-            <option value="">Select a month</option>
-            <option v-for="year in years" :key="year" :value="year">
-              {{ year }}
-            </option>
-          </select>
-          <span v-if="yearError">{{ yearError }}</span>
-        </div>
-        <div>
-          <label
-            for="gender"
-            class="block mb-2 text-sm font-medium text-gray-900"
-            >Gender</label
-          >
-          <select
-            id="gender"
-            v-model="gender"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          >
-            <option value="">Select...</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-          <span v-if="genderError">{{ genderError }}</span>
-        </div>
+
         <button
           type="submit"
-          class="bg-[#64CCC5] text-white p-2 rounded-lg shadow hover:bg-[#3f827e]"
+          class="bg-[#64CCC5] text-white p-2 rounded-lg shadow hover:bg-[#3f827e] w-full"
         >
-          Next
+          다음
         </button>
       </form>
     </div>
@@ -144,7 +180,7 @@ export default {
 
     const goToNextStep = () => {
       router.push({
-        name: "SignupSuccess",
+        name: "SignupProfileImg",
         state: {
           userInfo: {
             ...userInfo.value,

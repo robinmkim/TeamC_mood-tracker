@@ -13,7 +13,19 @@
         </svg>
         <span class="text-xl font-semibold">회원가입 완료</span>
       </div>
-      <div class="flex flex-col justify-around items-start h-48">
+      <div class="flex flex-col justify-around items-start h-auto">
+        <!--
+        <div
+          class="rounded-full overflow-hidden w-32 h-32 border-[3px] border-[#64CCC5]"
+        >
+          <img
+            v-if="userInfo.profileImg"
+            :src="userInfo.profileImg"
+            alt="Profile"
+            class="w-full h-full object-cover rounded-full"
+          />
+        </div>
+        -->
         <span>email: {{ userInfo.userId }}</span>
         <span>password: {{ userInfo.password }}</span>
         <span>user name: {{ userInfo.userName }}</span>
