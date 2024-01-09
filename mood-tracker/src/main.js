@@ -13,8 +13,8 @@ app.config.globalProperties.$serverUrl = "//localhost:8081"; //api server
 // const serverUrl = '//localhost:8081';
 
 // 테스트를 위해 추가
-app.config.globalProperties.$serverUrl = "http://192.168.0.50:8083/cteam"; //api server
-const serverUrl = 'http://192.168.0.50:8083/cteam';
+app.config.globalProperties.$serverUrl = "http://192.168.0.13:8083/cteam"; //api server
+const serverUrl = 'http://192.168.0.13:8083/cteam';
 app.provide('$serverUrl', serverUrl);
 
 app.use(router).mount("#app");
