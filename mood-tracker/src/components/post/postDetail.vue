@@ -111,7 +111,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import apiClient from "@/api/apiClient";
 
 export default {
   props: {
@@ -190,8 +190,8 @@ export default {
     },
     loadBoardData() {
       // 게시글 데이터를 로드합니다.
-      axios
-        .get(`http://192.168.0.84:8083/post/get/${this.b_id}`)
+      apiClient
+        .get(`/post/get/${this.b_id}`)
         .then((response) => {
           this.board = response.data;
         })
