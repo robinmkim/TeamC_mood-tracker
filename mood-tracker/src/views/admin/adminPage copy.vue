@@ -250,22 +250,18 @@
                   class="accordion-content flex flex-col mt-4 m-2 border-b"
                 >
                   <input
-                    v-model="faqTitle"
                     type="text"
                     class="rounded-lg h-10 text-sm bg-slate-50 border placeholder-slate-400 border-slate-200 focus:outline-slate-400 mb-2"
                     placeholder=" FnA 질문을 입력해 주십시오."
                   />
                   <textarea
-                    v-model="faqContent"
                     class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
                     placeholder=" FnA 질문의 답변을 입력해 주십시오."
                   ></textarea>
                   <div class="flex justify-center items-center mt-4">
                     <div
                       class="rounded-full bg-[#ffede6] h-10 w-28 flex justify-center items-center mb-4 text-sm"
-                      @click="fnaInsert()"
                     >
-                      <!-- 현재 수정중 !!!!!!!!!!!!!!!!!!!!!!!!-->
                       등록하기
                     </div>
                   </div>
@@ -343,11 +339,13 @@
                               <input
                                 type="text"
                                 class="rounded-lg h-10 text-sm bg-slate-50 border placeholder-slate-400 border-slate-200 focus:outline-slate-400 mb-2"
-                                :value="'FnA 질문 내용' + (newIndex + 1)"
+                                :value="item.faq_title"
+                                @input="editedTitle = $event.target.value"
                               />
                               <textarea
                                 class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
-                                :value="'FnA 질문 답변' + (newIndex + 1)"
+                                :value="item.faq_content"
+                                @input="editedContent = $event.target.value"
                               ></textarea>
                               <div
                                 class="flex justify-center items-center mt-4"
@@ -602,6 +600,8 @@ export default {
         },
       ],
       FnaList: {},
+      editedTitle: "",
+      editedContent: "",
     };
   },
   //추가
@@ -609,10 +609,10 @@ export default {
     this.fnaGetList();
   },
   methods: {
+    //Fnq 리스트 가져오기
     fnaGetList() {
-      let apiUrl = this.$serverUrl + "/admin";
       this.$axios
-        .get(apiUrl)
+        .get(this.$serverUrl + "/admin")
         .then((res) => {
           //this.list = res.data  //서버에서 데이터를 목록으로 보내므로 바로 할당하여 사용할 수 있다.
           this.FnAitems = res.data;
@@ -632,8 +632,6 @@ export default {
         query: this.requestBody,
       });
     },
-    // Fnq 업데이트
-
     async updateFaq(qid) {
       console.log("faqId : " + qid);
       //FAQ 수정하기 버튼을 클릭했을 때 동작
@@ -662,30 +660,9 @@ export default {
     openSuccessPopup() {
       // 팝업 창을 띄우기 위한 코드
       alert("FAQ 업데이트 성공"); // 브라우저 기본 팝업 사용
-      window.location.href = "http://192.168.0.50:8081/admin";
+      window.location.href = "http://192.168.0.2:8081/admin";
     },
 
-    fnaInsert() {
-      let apiUrl = this.$serverUrl + "/admin/insert";
-      // 서버로 데이터 전송
-      // 서버로 보낼 데이터 객체 생성
-      const requestData = {
-        faq_title: this.faqTitle,
-        faq_content: this.faqContent,
-      };
-
-      //INSERT
-      console.log(apiUrl);
-      this.$axios
-        .post(apiUrl, requestData)
-        .then((res) => {
-          alert("FAQ글이 등록되었습니다.");
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
     formatRegDate(redate) {
       const date = new Date(redate);
       const year = date.getFullYear();

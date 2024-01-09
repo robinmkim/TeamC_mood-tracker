@@ -197,7 +197,7 @@
 
 <script>
 import SideBar from "@/components/SideBar.vue";
-import postDetail from "@/components/post/PostDetail.vue";
+import PostDetail from "@/components/post/PostDetail.vue";
 import BarChart from "@/components/BarChart.vue";
 import PostModal from "@/components/PostModal.vue";
 
@@ -205,7 +205,7 @@ export default {
   name: "PageHome",
   components: {
     SideBar,
-    postDetail,
+    PostDetail,
     BarChart,
     PostModal,
   },
