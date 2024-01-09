@@ -122,7 +122,7 @@
                           "
                           class="accordion-content bg-red-50 flex"
                         >
-                          <PostDetailPageVue></PostDetailPageVue>
+                          <postDetailPageVue></postDetailPageVue>
                         </div>
                       </li>
                     </ul>
@@ -226,9 +226,146 @@
               </nav>
               <!-- FnA tab -->
               <div v-if="currentSubTab === 0">
-                <FaqList></FaqList>
+                <div class="border-b-2 flex h-10">
+                  <div class="flex w-1/12 items-center justify-center">no</div>
+                  <div class="flex w-5/12 items-center">질문</div>
+                  <div class="flex w-2/12 items-center justify-center">
+                    등록일
+                  </div>
+                  <div class="flex w-2/12 items-center justify-center">
+                    <div
+                      class="rounded-full mr-1 bg-slate-200 h-7 w-20 flex justify-center items-center text-sm"
+                      @click.stop="openNewAccordion(index)"
+                    >
+                      등록하기
+                    </div>
+                  </div>
+                </div>
+                <!-- 새로운 FnA 등록 div-->
+                <div
+                  v-show="
+                    isAccordionOpen(newIndex) ||
+                    currentOpenedAccordionIndex === index
+                  "
+                  class="accordion-content flex flex-col mt-4 m-2 border-b"
+                >
+                  <input
+                    type="text"
+                    class="rounded-lg h-10 text-sm bg-slate-50 border placeholder-slate-400 border-slate-200 focus:outline-slate-400 mb-2"
+                    placeholder=" FnA 질문을 입력해 주십시오."
+                  />
+                  <textarea
+                    class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
+                    placeholder=" FnA 질문의 답변을 입력해 주십시오."
+                  ></textarea>
+                  <div class="flex justify-center items-center mt-4">
+                    <div
+                      class="rounded-full bg-[#ffede6] h-10 w-28 flex justify-center items-center mb-4 text-sm"
+                    >
+                      등록하기
+                    </div>
+                  </div>
+                </div>
+                <ul class="accordion-item">
+                  <li v-for="(item, newIndex) in FnAitems" :key="newIndex">
+                    <ul>
+                      <li
+                        class="accordion-title border-b flex h-8 hover:bg-slate-100"
+                        :class="{ 'bg-slate-50': isAccordionOpen(newIndex) }"
+                      >
+                        <div
+                          class="flex w-1/12 items-center justify-center text-sm text-slate-500 border-b-1"
+                          @click="toggleAccordion(newIndex)"
+                        >
+                          {{ newIndex + 1 }}
+                        </div>
+                        <div
+                          class="flex w-5/12 items-center text-sm text-slate-500 border-b-1"
+                          @click="toggleAccordion(newIndex)"
+                        >
+                          {{ item.faq_title }}
+                        </div>
+                        <div
+                          class="flex w-2/12 items-center justify-center text-sm text-slate-500 border-b-1"
+                          @click="toggleAccordion(newIndex)"
+                        >
+                          {{ formatRegDate(item.faq_regdate) }}
+                        </div>
+                        <div
+                          class="flex w-2/12 items-center justify-center text-sm text-slate-500 pr-1 border-b-1"
+                        ></div>
+                      </li>
+                      <li>
+                        <div
+                          v-show="
+                            isAccordionOpen &&
+                            currentAccordionIndex === newIndex
+                          "
+                          class="accordion-content flex border-b flex-col p-2"
+                        >
+                          <div
+                            v-show="!updateShow"
+                            class="read flex border-b text-sm p-2 pt-0 flex-col w-full text-left font-semibold"
+                          >
+                            FnA 질문 제목 {{ item.faq_title }}
+                          </div>
+                          <div
+                            v-show="!updateShow"
+                            class="flex text-sm p-2 text-left"
+                          >
+                            FnA 질문 내용 : {{ item.faq_content }}
+                          </div>
+                          <div
+                            class="flex justify-center items-center my-1"
+                            v-show="!updateShow"
+                          >
+                            <div
+                              class="rounded-full mr-1 bg-slate-200 h-7 w-20 flex justify-center items-center text-sm"
+                              @click="contentShowMethod(newIndex)"
+                            >
+                              수정
+                            </div>
+                            <div
+                              class="rounded-full bg-red-600 h-7 w-20 flex justify-center items-center text-white text-sm"
+                            >
+                              삭제
+                            </div>
+                          </div>
+                          <div v-show="updateShow === true" class="update">
+                            <div
+                              v-show="updateShow === true"
+                              class="accordion-content flex flex-col mt-4 m-2"
+                            >
+                              <input
+                                type="text"
+                                class="rounded-lg h-10 text-sm bg-slate-50 border placeholder-slate-400 border-slate-200 focus:outline-slate-400 mb-2"
+                                :value="item.faq_title"
+                                @input="editedTitle = $event.target.value"
+                              />
+                              <textarea
+                                class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
+                                :value="item.faq_content"
+                                @input="editedContent = $event.target.value"
+                              ></textarea>
+                              <div
+                                class="flex justify-center items-center mt-4"
+                              >
+                                <div
+                                  class="rounded-full bg-[#ffede6] h-10 w-28 flex justify-center items-center mb-4 text-sm"
+                                  @click="updateFaq(item.qid)"
+                                >
+                                  수정하기
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
               </div>
-              <!-- QnA 게시판 상세 tab -->
+              <!-- QnA 신고 tab -->
               <div v-else-if="currentSubTab === 1">
                 <div class="border-b-2 flex h-10">
                   <div class="flex w-1/12 items-center justify-center">no</div>
@@ -330,10 +467,10 @@
                               </div>
                             </div>
                             <!-- <div
-                                class="rounded-full bg-red-600 h-7 w-20 flex justify-center items-center text-white"
-                              >
-                                삭제
-                              </div> -->
+                              class="rounded-full bg-red-600 h-7 w-20 flex justify-center items-center text-white"
+                            >
+                              삭제
+                            </div> -->
                           </div>
                           <div v-show="updateShow === true" class="update">
                             <div
@@ -376,16 +513,11 @@
 <!-- <li v-for="(item, newIndex) in FnAitems" :key="newIndex"></li> -->
 <script>
 // FnAitems 에서 작성자 테스트를 위해 user삭제
-import PostDetailPageVue from "../post/PostDetailPage.vue";
+import postDetailPageVue from "../post/PostDetailPage.vue";
 import MypageMain from "../mypage/MypageMain.vue";
-import FaqList from "../../components/admin/FaqList.vue";
-// import Editor from "@toast-ui/editor";
-// import "@toast-ui/editor/dist/toastui-editor.css";
-
 export default {
   data() {
     return {
-      editor: null,
       currentTab: 0,
       currentSubTab: 0,
       currentAccordionIndex: null,
@@ -467,14 +599,70 @@ export default {
           date: "2023.12.19",
         },
       ],
-      FaqList: {},
+      FnaList: {},
       editedTitle: "",
       editedContent: "",
     };
   },
   //추가
-  components: { PostDetailPageVue, MypageMain, FaqList },
+  mounted() {
+    this.fnaGetList();
+  },
   methods: {
+    //Fnq 리스트 가져오기
+    fnaGetList() {
+      this.$axios
+        .get(this.$serverUrl + "/admin")
+        .then((res) => {
+          //this.list = res.data  //서버에서 데이터를 목록으로 보내므로 바로 할당하여 사용할 수 있다.
+          this.FnAitems = res.data;
+          console.log(`FnAitems ==========`, this.FnAitems);
+        })
+        .catch((err) => {
+          if (err.message.indexOf("Network Error") > -1) {
+            alert("네트워크가 원활하지 않습니다.\n잠시 후 다시 시도해주세요.");
+          }
+        });
+    },
+    fnaView(idx) {
+      this.requestBody.idx = idx;
+      console.log(`requestBody ==========`, this.requestBody.idx);
+      this.$router.push({
+        path: "./detail",
+        query: this.requestBody,
+      });
+    },
+    async updateFaq(qid) {
+      console.log("faqId : " + qid);
+      //FAQ 수정하기 버튼을 클릭했을 때 동작
+      try {
+        const requestData = {
+          faq_title: this.editedTitle,
+          faq_content: this.editedContent,
+        };
+
+        // 서버로 데이터를 전송하는 HTTP PATCH 요청
+        const response = this.$axios.patch(
+          `${this.$serverUrl}/admin/${qid}`,
+          requestData
+        );
+
+        console.log("FAQ 업데이트 성공", response);
+        this.openSuccessPopup();
+
+        //초기화
+        this.editedTitle = "";
+        this.editedContent = "";
+      } catch (error) {
+        console.error("오류발생", error);
+      }
+    },
+    openSuccessPopup() {
+      // 팝업 창을 띄우기 위한 코드
+      alert("FAQ 업데이트 성공"); // 브라우저 기본 팝업 사용
+      window.location.href = "http://192.168.0.2:8081/admin";
+    },
+
     formatRegDate(redate) {
       const date = new Date(redate);
       const year = date.getFullYear();
@@ -530,8 +718,6 @@ export default {
         this.updateShow = false;
         this.currentAccordionIndex = index;
       } else {
-        console.log("함수 들어가지 전");
-        //this.initializeEditor();
         this.updateShow = true;
       }
       // this.currentAccordionIndex = index;
@@ -545,6 +731,7 @@ export default {
       return this.adminComplaintTabs;
     },
   },
+  components: { postDetailPageVue, MypageMain },
 };
 </script>
 
