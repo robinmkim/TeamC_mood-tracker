@@ -3,6 +3,7 @@ import SignupEmail from "@/views/auth/SignupEmail";
 import SignupPassword from "@/views/auth/SignupPassword";
 import SignupUsername from "@/views/auth/SignupUsername";
 import SignupBday from "@/views/auth/SignupBday";
+import ProfileImg from "@/views/auth/SignupProfileImg";
 import SignupSuccess from "@/views/auth/SignupSuccess";
 
 export default [
@@ -31,6 +32,12 @@ export default [
     path: "/singup/birth",
     name: "SignupBday",
     component: SignupBday,
+  },
+  {
+    path: "/singup/profileImg",
+    name: "SignupProfileImg",
+    component: ProfileImg
+    ,
   },
   {
     path: "/singup/success",

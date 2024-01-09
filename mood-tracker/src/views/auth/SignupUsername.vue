@@ -15,14 +15,27 @@
       </div>
       <form class="flex flex-col space-y-4" @submit.prevent="onNextClick">
         <div class="flex flex-col">
-          <label for="username" class="text-left mb-2">닉네임</label>
-          <input
-            id="username"
-            type="text"
-            placeholder="닉네임"
-            v-model="username"
-            class="border-2 border-gray-300 p-2 mb-2 rounded-md focus:border-[#64CCC5] focus:outline-none"
-          />
+          <div class="flex">
+            <input
+              id="username"
+              type="text"
+              placeholder="닉네임"
+              v-model="username"
+              class="border-2 border-gray-300 p-2 mb-2 w-[240px] rounded-md focus:border-[#64CCC5] focus:outline-none"
+            />
+            <button
+              id="dupcheck"
+              type="button"
+              class="border-2 rounded-md ml-2 h-[44px] w-[75px] text-slate-500 border-[#64CCC5]"
+            >
+              중복확인
+            </button>
+          </div>
+          <!--
+          <span class="text-sm h-3 text-left text-red-500"
+            >중복확인문구넣을자리</span
+          >
+          -->
           <span class="text-sm h-3 text-left text-red-500">{{
             errors.username
           }}</span>
