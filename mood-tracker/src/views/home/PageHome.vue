@@ -15,7 +15,7 @@
 
 <script>
 import SideBar from "@/components/SideBar";
-import PostDetail from "@/components/post/PostDetail.vue";
+import PostDetail from "@/components/post/PostDetail";
 export default {
   name: "PageHome",
   components: {
