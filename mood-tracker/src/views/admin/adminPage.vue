@@ -250,22 +250,21 @@
                   class="accordion-content flex flex-col mt-4 m-2 border-b"
                 >
                   <input
-                    v-model="faqTitle"
                     type="text"
                     class="rounded-lg h-10 text-sm bg-slate-50 border placeholder-slate-400 border-slate-200 focus:outline-slate-400 mb-2"
                     placeholder=" FnA 질문을 입력해 주십시오."
+                    v-model="faqTitle"
                   />
                   <textarea
-                    v-model="faqContent"
                     class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
                     placeholder=" FnA 질문의 답변을 입력해 주십시오."
+                    v-model="faqContent"
                   ></textarea>
                   <div class="flex justify-center items-center mt-4">
                     <div
                       class="rounded-full bg-[#ffede6] h-10 w-28 flex justify-center items-center mb-4 text-sm"
-                      @click="fnaInsert()"
+                      @click="faqInsert()"
                     >
-                      <!-- 현재 수정중 !!!!!!!!!!!!!!!!!!!!!!!!-->
                       등록하기
                     </div>
                   </div>
@@ -331,6 +330,7 @@
                             </div>
                             <div
                               class="rounded-full bg-red-600 h-7 w-20 flex justify-center items-center text-white text-sm"
+                              @click="faqdelete(item.qid)"
                             >
                               삭제
                             </div>
@@ -340,15 +340,22 @@
                               v-show="updateShow === true"
                               class="accordion-content flex flex-col mt-4 m-2"
                             >
+                              <!-- <div>
+                                <div id="editor"></div>
+                              </div> -->
+
                               <input
                                 type="text"
                                 class="rounded-lg h-10 text-sm bg-slate-50 border placeholder-slate-400 border-slate-200 focus:outline-slate-400 mb-2"
-                                :value="'FnA 질문 내용' + (newIndex + 1)"
+                                :value="item.faq_title"
+                                @input="editedTitle = $event.target.value"
                               />
                               <textarea
                                 class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
-                                :value="'FnA 질문 답변' + (newIndex + 1)"
+                                :value="item.faq_content"
+                                @input="editedContent = $event.target.value"
                               ></textarea>
+
                               <div
                                 class="flex justify-center items-center mt-4"
                               >
@@ -517,9 +524,14 @@
 // FnAitems 에서 작성자 테스트를 위해 user삭제
 import postDetailPageVue from "../post/PostDetailPage.vue";
 import MypageMain from "../mypage/MypageMain.vue";
+
+// import Editor from "@toast-ui/editor";
+// import "@toast-ui/editor/dist/toastui-editor.css";
+
 export default {
   data() {
     return {
+      editor: null,
       currentTab: 0,
       currentSubTab: 0,
       currentAccordionIndex: null,
@@ -602,6 +614,8 @@ export default {
         },
       ],
       FnaList: {},
+      editedTitle: "",
+      editedContent: "",
     };
   },
   //추가
@@ -609,10 +623,50 @@ export default {
     this.fnaGetList();
   },
   methods: {
-    fnaGetList() {
-      let apiUrl = this.$serverUrl + "/admin";
+    //Fnq 리스트 가져오기
+    // initializeEditor() {
+    //   this.$nextTick(() => {
+    //     console.log("등장");
+    //     this.editor = new Editor({
+    //       el: document.querySelector("#editor"),
+    //       height: "1000px",
+    //       initialEditType: "markdown",
+    //       previewStyle: "vertical",
+    //     });
+    //   });
+    // },
+
+    faqInsert() {
+      console.log("실행실행");
+      let apiUrl = this.$serverUrl + "/admin/insert";
+      // 서버로 데이터 전송
+      // 서버로 보낼 데이터 객체 생성
+      const requestData = {
+        faq_title: this.faqTitle,
+        faq_content: this.faqContent,
+      };
+
+      //INSERT
+      console.log(apiUrl);
       this.$axios
-        .get(apiUrl)
+        .post(apiUrl, requestData)
+        .then((res) => {
+          console.log(res.data);
+
+          this.insertOpenSuccessPopup();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+
+    async save() {
+      var content = this.$refs.editor.getContent();
+      console.log(content);
+    },
+    fnaGetList() {
+      this.$axios
+        .get(this.$serverUrl + "/admin")
         .then((res) => {
           //this.list = res.data  //서버에서 데이터를 목록으로 보내므로 바로 할당하여 사용할 수 있다.
           this.FnAitems = res.data;
@@ -632,8 +686,6 @@ export default {
         query: this.requestBody,
       });
     },
-    // Fnq 업데이트
-
     async updateFaq(qid) {
       console.log("faqId : " + qid);
       //FAQ 수정하기 버튼을 클릭했을 때 동작
@@ -650,7 +702,7 @@ export default {
         );
 
         console.log("FAQ 업데이트 성공", response);
-        this.openSuccessPopup();
+        this.updateOpenSuccessPopup();
 
         //초기화
         this.editedTitle = "";
@@ -659,33 +711,37 @@ export default {
         console.error("오류발생", error);
       }
     },
-    openSuccessPopup() {
-      // 팝업 창을 띄우기 위한 코드
-      alert("FAQ 업데이트 성공"); // 브라우저 기본 팝업 사용
-      window.location.href = "http://192.168.0.50:8081/admin";
-    },
-
-    fnaInsert() {
-      let apiUrl = this.$serverUrl + "/admin/insert";
-      // 서버로 데이터 전송
-      // 서버로 보낼 데이터 객체 생성
-      const requestData = {
-        faq_title: this.faqTitle,
-        faq_content: this.faqContent,
-      };
-
-      //INSERT
-      console.log(apiUrl);
+    faqdelete(qid) {
+      // 삭제할 데이터
       this.$axios
-        .post(apiUrl, requestData)
-        .then((res) => {
-          alert("FAQ글이 등록되었습니다.");
-          console.log(res.data);
+        .delete(`${this.$serverUrl}/admin/${qid}`)
+        .then((response) => {
+          console.log("데이터 삭제 성공", response);
+          this.deleteOpenSuccessPopup();
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((error) => {
+          console.error("데이터 삭제 실패", error);
         });
     },
+
+    deleteOpenSuccessPopup() {
+      // 팝업 창을 띄우기 위한 코드
+      alert("FAQ 삭제성공"); // 브라우저 기본 팝업 사용
+      window.location.href = "http://192.168.0.13:8081/admin";
+    },
+
+    updateOpenSuccessPopup() {
+      // 팝업 창을 띄우기 위한 코드
+      alert("FAQ 업데이트 성공"); // 브라우저 기본 팝업 사용
+      window.location.href = "http://192.168.0.13:8081/admin";
+    },
+
+    insertOpenSuccessPopup() {
+      // 팝업 창을 띄우기 위한 코드
+      alert("FAQ 등록 성공"); // 브라우저 기본 팝업 사용
+      window.location.href = "http://192.168.0.13:8081/admin";
+    },
+
     formatRegDate(redate) {
       const date = new Date(redate);
       const year = date.getFullYear();
@@ -741,6 +797,8 @@ export default {
         this.updateShow = false;
         this.currentAccordionIndex = index;
       } else {
+        console.log("함수 들어가지 전");
+        //this.initializeEditor();
         this.updateShow = true;
       }
       // this.currentAccordionIndex = index;
