@@ -1,7 +1,7 @@
 package com.teamc.moodtracker.config;
 
 import com.teamc.moodtracker.filter.JwtTokenFilter;
-import lombok.RequiredArgsConstructor;<<<<<<<HEAD
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;>>>>>>>b170f72(✨채팅 백엔드 구현)
+import org.springframework.core.env.Environment;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;>>>>>>>a65b64c(✨회원 가입 및 로그인 구현+Spring Security/JWT 발급)
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -39,14 +40,40 @@ import java.util.List;
 public class SecurityConfig {
     // JWT 토큰을 검증하는 필터
     @Autowired
-    private JwtTokenFilter jwtAuthenticationFilter;
+    private JwtTokenFilter jwtAuthenticationFilter;<<<<<<<HEAD
 
     @Autowired
     private UserDetailsService userDetailsService;
     // 이 메소드는 DaoAuthenticationProvider 객체를 생성하고 구성
     // UserDetailsService와 PasswordEncoder를 설정하여 사용자 인증 정보를 관리한다.
+    =======>>>>>>>
+
+    c78a253 (✨ 회원 가입 및 로그인 구현 + Spring Security/JWT 발급)
 
     private final Environment env;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    // 이 메소드는 DaoAuthenticationProvider 객체를 생성하고 구성
+    // UserDetailsService와 PasswordEncoder를 설정하여 사용자 인증 정보를 관리한다.
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
