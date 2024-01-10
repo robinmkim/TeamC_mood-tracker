@@ -226,7 +226,8 @@
               </nav>
               <!-- FnA tab -->
               <div v-if="currentSubTab === 0">
-                <<<<<<< HEAD:mood-tracker/src/views/admin/AdminPage.vue
+                <<<<<<< HEAD:mood-tracker/src/views/admin/AdminPage.vue <<<<<<<
+                HEAD:mood-tracker/src/views/admin/AdminPage.vue
                 <FaqList></FaqList>
                 =======
                 <div class="border-b-2 flex h-10">
@@ -377,7 +378,10 @@
                   </li>
                 </ul>
                 >>>>>>> 6e2bca0 (✅ 물리 Merge
-                완료):mood-tracker/src/views/admin/adminPage.vue
+                완료):mood-tracker/src/views/admin/adminPage.vue =======
+                <FnaList></FnaList>
+                >>>>>>> 45d621c (✨ admin crud
+                추가):mood-tracker/src/views/admin/adminPage.vue
               </div>
               <!-- QnA 게시판 상세 tab -->
               <div v-else-if="currentSubTab === 1">
@@ -524,7 +528,7 @@
     </div>
   </div>
 </template>
-<!-- <li v-for="(item, newIndex) in FnAitems" :key="newIndex"></li> -->
+
 <script>
 // FnAitems 에서 작성자 테스트를 위해 user삭제
 import PostDetailPageVue from "../post/PostDetailPage.vue";
