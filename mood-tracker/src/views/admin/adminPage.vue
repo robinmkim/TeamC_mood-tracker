@@ -122,7 +122,7 @@
                           "
                           class="accordion-content bg-red-50 flex"
                         >
-                          <postDetailPageVue></postDetailPageVue>
+                          <PostDetailPageVue></PostDetailPageVue>
                         </div>
                       </li>
                     </ul>
@@ -226,7 +226,7 @@
               </nav>
               <!-- FnA tab -->
               <div v-if="currentSubTab === 0">
-                <FnaList></FnaList>
+                <FaqList></FaqList>
               </div>
               <!-- QnA 게시판 상세 tab -->
               <div v-else-if="currentSubTab === 1">
@@ -330,10 +330,10 @@
                               </div>
                             </div>
                             <!-- <div
-                              class="rounded-full bg-red-600 h-7 w-20 flex justify-center items-center text-white"
-                            >
-                              삭제
-                            </div> -->
+                                class="rounded-full bg-red-600 h-7 w-20 flex justify-center items-center text-white"
+                              >
+                                삭제
+                              </div> -->
                           </div>
                           <div v-show="updateShow === true" class="update">
                             <div
@@ -376,9 +376,9 @@
 
 <script>
 // FnAitems 에서 작성자 테스트를 위해 user삭제
-import postDetailPageVue from "../post/PostDetailPage.vue";
+import PostDetailPageVue from "../post/PostDetailPage.vue";
 import MypageMain from "../mypage/MypageMain.vue";
-import FnaList from "../../components/admin/FnaList.vue";
+import FaqList from "../../components/admin/FaqList.vue";
 // import Editor from "@toast-ui/editor";
 // import "@toast-ui/editor/dist/toastui-editor.css";
 
@@ -467,13 +467,13 @@ export default {
           date: "2023.12.19",
         },
       ],
-      FnaList: {},
+      FaqList: {},
       editedTitle: "",
       editedContent: "",
     };
   },
   //추가
-  components: { postDetailPageVue, MypageMain, FnaList },
+  components: { PostDetailPageVue, MypageMain, FaqList },
   methods: {
     formatRegDate(redate) {
       const date = new Date(redate);
