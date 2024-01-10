@@ -75,7 +75,7 @@
   </div>
 </template>
 <script>
-import apiClient from "@/api/apiClient";
+import apiClient from "@/utils/apiClient";
 export default {
   data() {
     return {

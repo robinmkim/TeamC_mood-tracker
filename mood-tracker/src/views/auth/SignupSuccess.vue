@@ -26,11 +26,11 @@
           />
         </div>
         -->
-        <span>email: {{ userInfo.userId }}</span>
-        <span>password: {{ userInfo.password }}</span>
-        <span>user name: {{ userInfo.userName }}</span>
-        <span>birthday: {{ userInfo.birthday }}</span>
-        <span>gender: {{ userInfo.gender }}</span>
+        <span>email: {{ userInfo.m_email }}</span>
+        <span>password: {{ userInfo.m_pwd }}</span>
+        <span>user name: {{ userInfo.m_handle }}</span>
+        <span>birthday: {{ userInfo.m_bdate }}</span>
+        <span>gender: {{ userInfo.m_gender }}</span>
       </div>
       <button
         @click="goToLogin"
