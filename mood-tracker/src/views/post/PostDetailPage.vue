@@ -6,7 +6,7 @@
     <div class="flex-1 border-x flex">
       <div class="flex-1">
         <!-- post 내용 -->
-        <PostDetail></PostDetail>
+        <postDetail></postDetail>
       </div>
       <div class="flex-1 border-l border-l-slate-300">
         <!-- 댓글창 -->
@@ -14,7 +14,7 @@
           <div class="postHerder flex flex-row m">
             <div class="h-14 w-14 overflow-hidden relative rounded-full">
               <img
-                class="PostDetailUserImg object-contain rounded-full"
+                class="postDetailUserImg object-contain rounded-full"
                 src="..\..\assets\notiProfileImage01.jpg"
                 alt="user icon"
               />
@@ -48,7 +48,7 @@
           <div class="postHerder flex flex-row m">
             <div class="h-14 w-14 overflow-hidden relative rounded-full">
               <img
-                class="PostDetailUserImg object-contain rounded-full"
+                class="postDetailUserImg object-contain rounded-full"
                 src="..\..\assets\notiProfileImage01.jpg"
                 alt="user icon"
               />
