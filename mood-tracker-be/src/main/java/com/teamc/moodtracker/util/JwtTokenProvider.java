@@ -1,8 +1,6 @@
 package com.teamc.moodtracker.util;
 
-<<<<<<<HEAD
-
-import com.teamc.moodtracker.dto.MemberDto;=======>>>>>>>c78a253(✨회원 가입 및 로그인 구현+Spring Security/JWT 발급)
+import com.teamc.moodtracker.dto.MemberDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -22,29 +20,21 @@ public class JwtTokenProvider {
 
     Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-    <<<<<<<HEAD
     // 인증된 사용자에 대한 JWT를 생성을 하고
-    =======
-    // 인증된 사용자에 대한 JWT를 생성을 하고
-    >>>>>>>
-
-    c78a253 (✨ 회원 가입 및 로그인 구현 + Spring Security/JWT 발급)
-
     public String createToken(Authentication authentication) {
         // Spring Security에서 Authentication 객체로부터
         // 사용자의 UserDetails를 얻어 사용자 이름을 주제(subject)로 설정하고,
         // 현재 시간과 만료 시간을 포함한 토큰을 생성
-<<<<<<< HEAD
+
         MemberDto memberDetails = (MemberDto) authentication.getPrincipal();
         System.out.println(("member name: " + memberDetails.getUsername()));
-=======
+
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
->>>>>>> c78a253 (✨ 회원 가입 및 로그인 구현 + Spring Security/JWT 발급)
+
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + 3600000);
 
         return Jwts.builder()
-<<<<<<< HEAD
                 .setSubject(memberDetails.getUsername())
                 .claim("m_id", memberDetails.getM_id())
                 .setIssuedAt(new Date())
@@ -52,14 +42,6 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
-
-    =======.setSubject(userDetails.getUsername()).setIssuedAt(new Date()).setExpiration(expiryDate).signWith(key,SignatureAlgorithm.HS512).compact();}
-
-    >>>>>>>c78a253(✨
-
-    회원 가입
-    및 로그인 구현+
-    Spring Security/JWT 발급)
 
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
@@ -98,7 +80,7 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
-    }<<<<<<<HEAD
+    }
 
     public int getMemberId(String token) {
         Claims claims = Jwts.parserBuilder()
