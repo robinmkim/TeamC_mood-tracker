@@ -226,157 +226,7 @@
               </nav>
               <!-- FnA tab -->
               <div v-if="currentSubTab === 0">
-                <<<<<<< HEAD
-                <FaqList></FaqList>
-                =======
-                <div class="border-b-2 flex h-10">
-                  <div class="flex w-1/12 items-center justify-center">no</div>
-                  <div class="flex w-5/12 items-center">질문</div>
-                  <div class="flex w-2/12 items-center justify-center">
-                    등록일
-                  </div>
-                  <div class="flex w-2/12 items-center justify-center">
-                    <div
-                      class="rounded-full mr-1 bg-slate-200 h-7 w-20 flex justify-center items-center text-sm"
-                      @click.stop="openNewAccordion(index)"
-                    >
-                      등록하기
-                    </div>
-                  </div>
-                </div>
-                <!-- 새로운 FnA 등록 div-->
-                <div
-                  v-show="
-                    isAccordionOpen(newIndex) ||
-                    currentOpenedAccordionIndex === index
-                  "
-                  class="accordion-content flex flex-col mt-4 m-2 border-b"
-                >
-                  <input
-                    type="text"
-                    class="rounded-lg h-10 text-sm bg-slate-50 border placeholder-slate-400 border-slate-200 focus:outline-slate-400 mb-2"
-                    placeholder=" FnA 질문을 입력해 주십시오."
-                    v-model="faqTitle"
-                  />
-                  <textarea
-                    class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
-                    placeholder=" FnA 질문의 답변을 입력해 주십시오."
-                    v-model="faqContent"
-                  ></textarea>
-                  <div class="flex justify-center items-center mt-4">
-                    <div
-                      class="rounded-full bg-[#ffede6] h-10 w-28 flex justify-center items-center mb-4 text-sm"
-                      @click="faqInsert()"
-                    >
-                      등록하기
-                    </div>
-                  </div>
-                </div>
-                <ul class="accordion-item">
-                  <li v-for="(item, newIndex) in FnAitems" :key="newIndex">
-                    <ul>
-                      <li
-                        class="accordion-title border-b flex h-8 hover:bg-slate-100"
-                        :class="{ 'bg-slate-50': isAccordionOpen(newIndex) }"
-                      >
-                        <div
-                          class="flex w-1/12 items-center justify-center text-sm text-slate-500 border-b-1"
-                          @click="toggleAccordion(newIndex)"
-                        >
-                          {{ newIndex + 1 }}
-                        </div>
-                        <div
-                          class="flex w-5/12 items-center text-sm text-slate-500 border-b-1"
-                          @click="toggleAccordion(newIndex)"
-                        >
-                          {{ item.faq_title }}
-                        </div>
-                        <div
-                          class="flex w-2/12 items-center justify-center text-sm text-slate-500 border-b-1"
-                          @click="toggleAccordion(newIndex)"
-                        >
-                          {{ formatRegDate(item.faq_regdate) }}
-                        </div>
-                        <div
-                          class="flex w-2/12 items-center justify-center text-sm text-slate-500 pr-1 border-b-1"
-                        ></div>
-                      </li>
-                      <li>
-                        <div
-                          v-show="
-                            isAccordionOpen &&
-                            currentAccordionIndex === newIndex
-                          "
-                          class="accordion-content flex border-b flex-col p-2"
-                        >
-                          <div
-                            v-show="!updateShow"
-                            class="read flex border-b text-sm p-2 pt-0 flex-col w-full text-left font-semibold"
-                          >
-                            FnA 질문 제목 {{ item.faq_title }}
-                          </div>
-                          <div
-                            v-show="!updateShow"
-                            class="flex text-sm p-2 text-left"
-                          >
-                            FnA 질문 내용 : {{ item.faq_content }}
-                          </div>
-                          <div
-                            class="flex justify-center items-center my-1"
-                            v-show="!updateShow"
-                          >
-                            <div
-                              class="rounded-full mr-1 bg-slate-200 h-7 w-20 flex justify-center items-center text-sm"
-                              @click="contentShowMethod(newIndex)"
-                            >
-                              수정
-                            </div>
-                            <div
-                              class="rounded-full bg-red-600 h-7 w-20 flex justify-center items-center text-white text-sm"
-                              @click="faqdelete(item.qid)"
-                            >
-                              삭제
-                            </div>
-                          </div>
-                          <div v-show="updateShow === true" class="update">
-                            <div
-                              v-show="updateShow === true"
-                              class="accordion-content flex flex-col mt-4 m-2"
-                            >
-                              <!-- <div>
-                                <div id="editor"></div>
-                              </div> -->
-
-                              <input
-                                type="text"
-                                class="rounded-lg h-10 text-sm bg-slate-50 border placeholder-slate-400 border-slate-200 focus:outline-slate-400 mb-2"
-                                :value="item.faq_title"
-                                @input="editedTitle = $event.target.value"
-                              />
-                              <textarea
-                                class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
-                                :value="item.faq_content"
-                                @input="editedContent = $event.target.value"
-                              ></textarea>
-
-                              <div
-                                class="flex justify-center items-center mt-4"
-                              >
-                                <div
-                                  class="rounded-full bg-[#ffede6] h-10 w-28 flex justify-center items-center mb-4 text-sm"
-                                  @click="updateFaq(item.qid)"
-                                >
-                                  수정하기
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-                >>>>>>> 6e2bca0 (✅ 물리 Merge 완료)
+                <FnaList></FnaList>
               </div>
               <!-- QnA 게시판 상세 tab -->
               <div v-else-if="currentSubTab === 1">
@@ -523,12 +373,12 @@
     </div>
   </div>
 </template>
-<!-- <li v-for="(item, newIndex) in FnAitems" :key="newIndex"></li> -->
+
 <script>
 // FnAitems 에서 작성자 테스트를 위해 user삭제
 import PostDetailPageVue from "../post/PostDetailPage.vue";
 import MypageMain from "../mypage/MypageMain.vue";
-import FaqList from "../../components/admin/FaqList.vue";
+import FnaList from "../../components/admin/FnaList.vue";
 // import Editor from "@toast-ui/editor";
 // import "@toast-ui/editor/dist/toastui-editor.css";
 
