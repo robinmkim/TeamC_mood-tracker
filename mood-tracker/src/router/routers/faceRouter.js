@@ -8,6 +8,7 @@ export default [
   },
   {
     path: "/faceanalyze/result",
+    name: "AnalyzeResult",
     component: AnalyzeResult,
   },
 ];

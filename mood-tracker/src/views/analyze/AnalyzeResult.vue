@@ -37,12 +37,30 @@
 
             <div class="w-72 h-auto">
               <img
-                src="..\..\assets\resSample.png"
+                v-bind:src="generatedImageSrc"
                 alt="Post image"
                 class="w-665 h-65"
               />
             </div>
-            <p class="w-auto m-2 text-lg">Neutral</p>
+
+            <p class="w-auto m-2 text-lg">*lastResultId={{ lastResultId }}</p>
+            <p class="w-auto m-2 text-lg">*myExpresion={{ myExpresion }}</p>
+            <p class="w-auto m-2 text-lg">
+              *faceAnalyzeResult={{ faceAnalyzeResult }}
+            </p>
+            <p class="w-auto m-2 text-lg">
+              *generatedImageFileName={{ generatedImageFileName }}
+            </p>
+
+            <button
+              class="flex rounded-lg bg-[#DAFFFB] p-2"
+              v-on:click="notHappyWithResult"
+            >
+              분석결과가 마음에 안 드시나요?
+            </button>
+            <!-- <p class="w-auto m-2 text-lg">**{{ faceAnalyzeResult }}</p>
+            <p class="w-auto m-2 text-lg">**{{ myExpresion }}</p> -->
+            <!-- <p class="w-auto m-2 text-lg">Neutral</p> -->
 
             <!-- <div class="text-center">와아 즐겁다아</div> -->
           </div>
@@ -121,11 +139,79 @@
 // import { Radar } from "vue-chartjs";
 // import ResultChart from "./ResultChart.vue";
 import SideBar from "@/components/SideBar";
+import axios from "axios";
 export default {
   name: "AnalyzeResult",
   components: {
     // ResultChart,
     SideBar,
+  },
+  data() {
+    return {
+      myExpresion: null,
+      faceAnalyzeResult: null,
+      lastResultId: null,
+      generatedImageFileName: null,
+      generatedImageSrc: null,
+    };
+  },
+  mounted() {
+    this.lastResultId = this.$route.query.lastResultId;
+
+    // 스프링 -> ar_id = lastResultId 조회해서
+    // generated_img, content_max, content 조회해온다.
+    axios
+      .get("http://192.168.0.93:8083/faceresult/detail", {
+        params: {
+          ar_id: this.lastResultId,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        this.myExpresion = res.data.ar_content_max;
+        this.faceAnalyzeResult = res.data.ar_content;
+        this.generatedImageFileName = res.data.ar_generated_img;
+
+        //this.generatedImageFileName 장고로 보내 사진 불러오기
+        axios
+          .get("http://192.168.0.2:9000/face/getGeneratedImage", {
+            params: {
+              imageName: this.generatedImageFileName,
+            },
+          })
+          // .get("http://192.168.0.2:9000/face/getGeneratedImage")
+          .then((res) => {
+            console.log(res.data);
+            this.generatedImageSrc = `data:image/jpeg;base64, ${res.data.generatedImg}`;
+            // 이미지 데이터를 base64 데이터 URL로 설정
+            // this.faceAnalyzeResultImage = `data:image/jpeg;base64, ${res.data.generated}`;
+          });
+      });
+
+    // const dataParam = this.$route.query.resdata;
+    // // this.$route.params.data가 정의되어 있는지 확인
+    // if (dataParam) {
+    //   try {
+    //     this.faceAnalyzeResult = JSON.parse(dataParam);
+    //   } catch (error) {
+    //     console.error("Error parsing JSON data:", error);
+    //     // 유효한 JSON이 아닐 경우 기본값 설정
+    //     this.faceAnalyzeResult = "X JSON"; // 또는 다른 적절한 기본값 설정
+    //   }
+    // } else {
+    //   // 데이터가 없을 경우 기본값 설정
+    //   this.faceAnalyzeResult = "NO DATA"; // 또는 다른 적절한 기본값 설정
+    // }
+  },
+  methods: {
+    notHappyWithResult: function () {
+      // 피드백 테이블에 피드백 결과 insert 하기
+      console.log("맘에안들ㄹ어요");
+      alert(
+        this.lastResultId +
+          "\n분석결과가 마음에 들지 않으신가요?\n더 나은 서비스를 위해 피드백을 남겨주세요"
+      );
+    },
   },
 };
 </script>
