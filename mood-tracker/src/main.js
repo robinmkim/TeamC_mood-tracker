@@ -8,13 +8,9 @@ import router from "./router/index";
 const app = createApp(App);
 
 app.config.globalProperties.$axios = axios; //전역변수로 설정 컴포넌트에서 this.$axios 호출할 수 있게 설정
-// 이전 api
-app.config.globalProperties.$serverUrl = "//localhost:8081"; //api server
-// const serverUrl = '//localhost:8081';
 
-// 테스트를 위해 추가
-app.config.globalProperties.$serverUrl = "http://192.168.0.13:8083/cteam"; //api server
-const serverUrl = 'http://192.168.0.13:8083/cteam';
-app.provide('$serverUrl', serverUrl);
+app.config.globalProperties.$serverUrl = "//localhost:8081"; //api server
+
+
 
 app.use(router).mount("#app");
