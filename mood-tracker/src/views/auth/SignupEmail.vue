@@ -17,10 +17,24 @@
         <div class="flex flex-col">
           <div class="flex">
             <input
+              id="username"
+              type="text"
+              placeholder="이름"
+              v-model="name"
+              class="border-2 border-gray-300 p-2 mb-2 w-full rounded-md focus:border-[#64CCC5] focus:outline-none"
+            />
+          </div>
+          <span v-if="errors.name" class="text-sm text-left text-red-500">{{
+            errors.name
+          }}</span>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex">
+            <input
               id="userid"
               type="email"
               placeholder="이메일"
-              v-model="id"
+              v-model="email"
               class="border-2 border-gray-300 p-2 mb-2 w-[240px] rounded-md focus:border-[#64CCC5] focus:outline-none"
             />
             <button
@@ -31,7 +45,9 @@
               인증하기
             </button>
           </div>
-          <span class="text-sm text-left text-red-500">{{ idError }}</span>
+          <span v-if="errors.email" class="text-sm text-left text-red-500">{{
+            errors.email
+          }}</span>
         </div>
         <button
           type="submit"
@@ -49,39 +65,40 @@ import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
 import { useRouter } from "vue-router"; // router를 임포트
 
+const validationSchema = yup.object().shape({
+  name: yup.string().required("이름을 입력하세요"),
+  email: yup
+    .string()
+    .required("이메일을 입력하세요")
+    .email("이메일 형식이 아닙니다"),
+});
+
 export default {
   name: "SignupEmail",
   setup() {
-    const { value: id, errorMessage: idError } = useField(
-      "id",
-      yup
-        .string()
-        .required("이메일을 입력하세요")
-        .email("이메일 형식이 아닙니다")
-    );
-
     const router = useRouter();
 
-    const { handleSubmit } = useForm();
+    const { handleSubmit, errors } = useForm({ validationSchema });
+    const { value: name } = useField("name");
+    const { value: email } = useField("email");
 
-    const onNextClick = () => {
-      handleSubmit(() => {
-        goToNextStep();
-      })();
-    };
+    const onNextClick = handleSubmit(() => {
+      goToNextStep();
+    });
 
     const goToNextStep = () => {
       router.push({
         name: "SignupPassword",
         state: {
-          userInfo: { userId: id.value },
+          userInfo: { m_name: name.value, m_email: email.value },
         },
       });
     };
 
     return {
-      id,
-      idError,
+      name,
+      email,
+      errors,
       onNextClick,
     };
   },
