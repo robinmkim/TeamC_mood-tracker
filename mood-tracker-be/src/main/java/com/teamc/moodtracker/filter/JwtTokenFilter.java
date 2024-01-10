@@ -37,7 +37,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // 토큰을 추출하기 위한 resolveToken() 요청
         System.out.println(request);
         String token = jwtTokenProvider.resolveToken(request);
-        System.out.println("token: " + token);
         // Check if the token is valid
         // 추출된 토큰이 null이 아니고, 토큰이 유효한지 검증하는 validateToken() 요청
         if (token != null && jwtTokenProvider.validateToken(token)) {
@@ -58,7 +57,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
         // filterChain.doFilter(request, response)를 호출하여 요청처리를 계속 진행한다.
         filterChain.doFilter(request, response);
-        System.out.println("여긴 왔나...?");
     }
     /*
      * 1. JwtTokenFilter는 모든 HTTP 요청에 대해 JWT 토큰의 유효성을 검사해서 유효한 토큰이 있을 경우 해당 사용자의

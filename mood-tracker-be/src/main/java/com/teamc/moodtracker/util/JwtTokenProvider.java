@@ -1,5 +1,6 @@
 package com.teamc.moodtracker.util;
 
+import com.teamc.moodtracker.dto.MemberDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -24,12 +25,14 @@ public class JwtTokenProvider {
         // Spring Security에서 Authentication 객체로부터
         // 사용자의 UserDetails를 얻어 사용자 이름을 주제(subject)로 설정하고,
         // 현재 시간과 만료 시간을 포함한 토큰을 생성
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        MemberDto memberDetails = (MemberDto) authentication.getPrincipal();
+        System.out.println(("member name: "+memberDetails.getUsername()));
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + 3600000);
 
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setSubject(memberDetails.getUsername())
+                .claim("m_id", memberDetails.getM_id())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(key,SignatureAlgorithm.HS512)
@@ -74,5 +77,15 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+    public int getMemberId(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        // 'm_id' 클레임을 추출하고 int 타입으로 반환
+        return claims.get("m_id", Integer.class);
     }
 }

@@ -2,11 +2,14 @@ package com.teamc.moodtracker.controller;
 
 import com.teamc.moodtracker.dto.BoardDto;
 import com.teamc.moodtracker.dto.MediaDto;
+import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.service.BoardService;
+import com.teamc.moodtracker.util.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,13 +31,17 @@ public class BoardController {
     @Autowired
     private BoardService service;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     String imageDirectory = "src/main/resources/static/images/";
 
     @PostMapping("/add")
-    public int addBoardContent(@ModelAttribute BoardDto dto,
+    public int addBoardContent(@AuthenticationPrincipal MemberDto memberDto,
+            @ModelAttribute BoardDto dto,
             @RequestParam(value = "mediaList", required = false) List<MultipartFile> mediaList) {
         List<MediaDto> mediaDtos = new ArrayList<>();
-        System.out.print(dto);
+        dto.setM_id(memberDto.getM_id());
         if (mediaList != null) {
             for (MultipartFile multipartFile : mediaList) {
                 MediaDto mediaDto = new MediaDto();
