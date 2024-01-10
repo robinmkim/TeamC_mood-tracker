@@ -75,7 +75,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import apiClient from "@/api/apiClient";
 export default {
   data() {
     return {
@@ -92,7 +92,7 @@ export default {
         "😢": "sad",
         "😨": "surprise",
       },
-      emotion: "",
+      emotion: "happy",
     };
   },
   name: "PostWrite",
@@ -150,8 +150,8 @@ export default {
       for (let [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);
       }
-      axios
-        .post("http://192.168.0.84:8083/post/add", formData, {
+      apiClient
+        .post("/post/add", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

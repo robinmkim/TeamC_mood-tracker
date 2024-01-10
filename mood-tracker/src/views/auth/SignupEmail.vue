@@ -15,13 +15,22 @@
       </div>
       <form class="flex flex-col space-y-4" @submit.prevent="onNextClick">
         <div class="flex flex-col">
-          <input
-            id="userid"
-            type="email"
-            placeholder="사용자 아이디 또는 이메일"
-            v-model="id"
-            class="border-2 border-gray-300 p-2 mb-2 rounded-md focus:border-[#64CCC5] focus:outline-none"
-          />
+          <div class="flex">
+            <input
+              id="userid"
+              type="email"
+              placeholder="이메일"
+              v-model="id"
+              class="border-2 border-gray-300 p-2 mb-2 w-[240px] rounded-md focus:border-[#64CCC5] focus:outline-none"
+            />
+            <button
+              type="button"
+              id="certify"
+              class="border-2 rounded-md ml-2 h-[44px] w-[75px] text-slate-500 border-[#64CCC5]"
+            >
+              인증하기
+            </button>
+          </div>
           <span class="text-sm text-left text-red-500">{{ idError }}</span>
         </div>
         <button

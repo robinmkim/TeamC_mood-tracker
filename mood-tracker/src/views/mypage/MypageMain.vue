@@ -197,7 +197,9 @@
 
 <script>
 import SideBar from "@/components/SideBar.vue";
+
 import PostDetail from "@/components/post/PostDetail.vue";
+
 import BarChart from "@/components/BarChart.vue";
 import PostModal from "@/components/PostModal.vue";
 
