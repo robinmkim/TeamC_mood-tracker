@@ -15,7 +15,10 @@
 
 <script>
 import SideBar from "@/components/SideBar";
+
+import PostWrite from "../post/PostWrite.vue";
 import PostDetail from "@/components/post/PostDetail.vue";
+
 export default {
   name: "PageHome",
   components: {
