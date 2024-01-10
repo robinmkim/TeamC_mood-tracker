@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface MemberDao {
     public int addMember(MemberDto dto);
+
     public MemberDto getMemberByMEmail(String m_email);
+
     public int checkEmailExists(String email);
 }
