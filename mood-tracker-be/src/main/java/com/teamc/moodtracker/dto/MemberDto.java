@@ -16,6 +16,4 @@ public class MemberDto {
     private String banstate; // 정지상태
     private String banstart; // 정지 시작일
     private String banend;   // 정지 종료일
-
-
 }

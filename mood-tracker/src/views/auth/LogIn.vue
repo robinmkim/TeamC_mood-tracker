@@ -85,7 +85,7 @@ export default {
       yup
         .string()
         .required("비밀번호를 입력하세요")
-        .min(10, "비밀번호는 최소 10자 입니다")
+        .min(8, "비밀번호는 최소 8자 입니다")
     );
 
     const { handleSubmit } = useForm();

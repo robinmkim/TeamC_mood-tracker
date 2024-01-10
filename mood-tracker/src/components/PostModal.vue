@@ -112,11 +112,13 @@
 </template>
 
 <script>
-import postDetail from "./post/PostDetail.vue";
+
+import PostDetail from "./post/PostDetail.vue";
+
 export default {
   name: "PostModal",
   components: {
-    postDetail,
+    PostDetail,
   },
   props: {
     isOpen: {
