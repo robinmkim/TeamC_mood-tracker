@@ -224,11 +224,11 @@
                   </div>
                 </div>
               </nav>
-              <!-- FnA 신고 tab -->
+              <!-- FnA tab -->
               <div v-if="currentSubTab === 0">
                 <FaqList></FaqList>
               </div>
-              <!-- QnA 신고 tab -->
+              <!-- QnA 게시판 상세 tab -->
               <div v-else-if="currentSubTab === 1">
                 <div class="border-b-2 flex h-10">
                   <div class="flex w-1/12 items-center justify-center">no</div>
@@ -385,6 +385,7 @@ import FaqList from "../../components/admin/FaqList.vue";
 export default {
   data() {
     return {
+      editor: null,
       currentTab: 0,
       currentSubTab: 0,
       currentAccordionIndex: null,
@@ -444,26 +445,8 @@ export default {
           date: "2023.12.19",
         },
       ],
-      FnAitems: [
-        {
-          number: 1,
-          content: "FnA 질문 제목 1",
-          user: "user041",
-          date: "2023.12.17",
-        },
-        {
-          number: 2,
-          content: "FnA 질문 제목 2",
-          user: "user071",
-          date: "2023.12.18",
-        },
-        {
-          number: 3,
-          content: "FnA 질문 제목 3",
-          user: "user121",
-          date: "2023.12.19",
-        },
-      ],
+      FnAitems: [],
+      idx: null,
       QnAitems: [
         {
           number: 1,
@@ -492,6 +475,13 @@ export default {
   //추가
   components: { PostDetailPageVue, MypageMain, FaqList },
   methods: {
+    formatRegDate(redate) {
+      const date = new Date(redate);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    },
     changeTab(index, tabId) {
       this.currentTab = index;
       this.currentSubTab = 0;
@@ -540,6 +530,8 @@ export default {
         this.updateShow = false;
         this.currentAccordionIndex = index;
       } else {
+        console.log("함수 들어가지 전");
+        //this.initializeEditor();
         this.updateShow = true;
       }
       // this.currentAccordionIndex = index;
