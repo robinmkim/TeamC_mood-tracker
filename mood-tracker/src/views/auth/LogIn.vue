@@ -68,11 +68,12 @@
 <script>
 import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
+import AuthService from "@/services/AuthService";
+import router from "@/router";
 
 export default {
   name: "LogIn",
   setup() {
-    // 각 필드를 useField를 사용하여 등록
     const { value: id, errorMessage: idError } = useField(
       "id",
       yup
@@ -90,9 +91,21 @@ export default {
 
     const { handleSubmit } = useForm();
 
-    // 폼 제출 핸들러
     const onSubmit = handleSubmit(() => {
-      console.log("Form values: ", { id: id.value, password: password.value });
+      console.log("id:" + id.value);
+      console.log("password:" + password.value);
+      AuthService.login({ username: id.value, password: password.value }).then(
+        (response) => {
+          if (response.data.accessToken) {
+            console.log(
+              "response.data.accessToken:" + response.data.accessToken
+            );
+            window.localStorage.clear();
+            window.localStorage.setItem("jwtToken", response.data.accessToken);
+            router.push("/");
+          }
+        }
+      );
     });
 
     return {
