@@ -10,11 +10,12 @@ const apiClient = axios.create({
   withCredentials: true,
 });
 
-const token = localStorage.getItem("jwtToken");
-
 apiClient.interceptors.request.use(
   (config) => {
-    config.headers.Authorization = `Bearer ${token}`;
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
