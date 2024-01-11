@@ -17,10 +17,10 @@ public class FaceresultServiceImpl implements FaceresultService{
     private FaceresultDao faceresultDao;
 
     // 입력
-    @Override
-    public void insertFaceResult(FaceresultDto faceresultDto) {
-        faceresultDao.insertFaceResult(faceresultDto);
-    }
+//    @Override
+//    public void insertFaceResult(FaceresultDto faceresultDto) {
+//        faceresultDao.insertFaceResult(faceresultDto);
+//    }
 
     // 조회
     @Override
