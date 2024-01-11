@@ -122,7 +122,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { reactive } from "vue";
 import SockJS from "sockjs-client";
