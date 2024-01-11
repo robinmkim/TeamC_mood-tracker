@@ -38,10 +38,11 @@ public class SecurityConfig {
     CorsConfigurationSource myCorsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        String allowedOriginsProperty = env.getProperty(env.getProperty("allowed-origins"));
+        String allowedOriginsProperty = env.getProperty("allowed-origins");
         List<String> allowedOrigins = (allowedOriginsProperty != null)
                 ? Arrays.asList(allowedOriginsProperty.split(","))
                 : Collections.emptyList();
+        System.out.println("allowedOrigins: " + allowedOrigins);
         configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
