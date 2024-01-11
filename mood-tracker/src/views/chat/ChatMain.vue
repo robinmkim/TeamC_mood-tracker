@@ -1,5 +1,6 @@
 <template>
     <div class="flex h-screen">
+        <new-chat v-if="showModal" :show="showModal" :members="members" @close="showModal = false"></new-chat>
         <div class="w-1/5">
             <side-bar></side-bar>
         </div>
@@ -89,7 +90,6 @@
         </div>
     </div>
 </template>
-  
 <script>
 import { reactive } from 'vue';
 import SockJS from 'sockjs-client';
@@ -123,6 +123,7 @@ export default {
             subscribedRooms: [],
             showModal: false,
             members: [],
+            subscriptionId : null,
         }; 
     }, 
     async created() {
@@ -167,8 +168,7 @@ export default {
             this.showModal = true;
         },
         getMemberList() {
-            // /chat은 테스트용 프로젝트 경로 수정 필요
-            axios.get('http://192.168.0.214:80/chat/member/list')
+            axios.get('http://192.168.0.214:8083/member/list')
                 .then((res) => {
                     this.members = res.data;
                 })
@@ -177,7 +177,7 @@ export default {
                 })
         },
         connect() {
-            const socket = new SockJS('http://192.168.0.214/chat/ws');
+            const socket = new SockJS('http://192.168.0.214:8083/ws');
             this.stompClient = Stomp.over(socket);
 
             this.stompClient.connect({}, frame => {
@@ -186,25 +186,21 @@ export default {
                 console.log(error);
             });
         },
-        subscribe(roomId) {
-            // roomId에 해당하는 채팅방 구독
-            // 서버에서 메시지가 도착 -> onMessageReceived() 호출
-            this.stompClient.subscribe(`/topic/${roomId}`, this.onMessageReceived);
-        },
         onerror(error) {
             console.error('Connection error: ' + error);
         },
         onMessageReceived(payload) {
+            // 내 메시지와 다른 사람의 메시지 구분을 위해 isMine 값 추가
             let parseMessage = JSON.parse(payload.body);
             if (parseMessage.memberId === this.memberId)
                 parseMessage.isMine = true;
             else
                 parseMessage.isMine = false;
 
+            // 날짜 포맷
             const hours = parseMessage.sendTime.substring(11, 13);
             const minutes = parseMessage.sendTime.substring(14, 16);
             const period = hours >= 12 ? '오후' : '오전';
-
             parseMessage.sendTime = `${period} ${hours}:${minutes}`;
             this.messages.push(parseMessage);
         },
@@ -218,7 +214,6 @@ export default {
                 memberId: this.memberId,
                 message: this.message,
             };
-
             if (this.stompClient) {
                 // webstomp-client의 send() 메서드를 사용하여 서버로 메시지 전송
                 // send(destination, body, headers)
@@ -227,7 +222,8 @@ export default {
             }
         },
         loadChatRooms() {
-            axios.get(`http://192.168.0.214:80/chat/rooms/${this.memberId}`)
+            // 현재 로그인한 사용자의 채팅방 목록 조회
+            axios.get(`http://192.168.0.214:8083/rooms/${this.memberId}`)
                 .then(response => {
                     this.rooms = "";
                     this.rooms = response.data;
@@ -235,31 +231,35 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
-        }
-        ,
+        },
         // 채팅방 클릭 시 해당 방에 해당하는 채팅 목록을 불러오는 메서드
         loadMessages(roomId) {
-
-            // 기존 방을 구독 중이 아니라면 구독
-            if(!this.isSubscribed(roomId)) {
-                this.subscribe(roomId);
-                this.addSubscribedRoom(roomId);
-            }
+            // 기존 방 구독 해제
+            // subscribe 시 생성된 subscriptionId를 사용하여 구독 해제
+            this.stompClient.unsubscribe(`${this.subscriptionId}`, {});
+            // this.subscribedRooms = this.subscribedRooms.filter(room => room !== this.roomId)
             
+            //  새로운 방 구독
+            // if(!this.subscribedRooms.includes(roomId)) {
+            //     this.subscribedRooms.push(roomId);
+            this.subscriptionId = this.stompClient.subscribe(`/topic/${roomId}`, this.onMessageReceived).id;
+            // }
             this.roomId = roomId;
-            axios.get(`http://192.168.0.214:80/chat/rooms/${roomId}/messages`)
+            axios.get(`http://192.168.0.214:8083/rooms/${roomId}/messages`)
                 .then(response => {
                     // 서버에서 roomId에 해당하는 채팅방의 메시지 목록을 가져옴
                     // 가져온 메시지 목록으로 this.messages 초기화  
                     this.messages = [];
                     this.messages = response.data;
                     
+                    // 가져온 메시지들을 내 메시지와 상대 메시지를 구분하기 위해 isMine 값 추가
                     for (let i = 0; i < this.messages.length; i++) {
                         if (this.messages[i].memberId === this.memberId) {
                             this.messages[i].isMine = true;
                         } else {
                             this.messages[i].isMine = false;
                         }
+                        // 날짜 포맷
                         const hours = this.messages[i].sendTime.substring(11, 13);
                         const minutes = this.messages[i].sendTime.substring(14, 16);
                         const period = hours >= 12 ? '오후' : '오전';
@@ -271,12 +271,6 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
-        },
-        isSubscribed(roomId) {
-            return this.subscribedRooms.includes(roomId);
-        },
-        addSubscribedRoom(roomId) {
-            this.subscribedRooms.push(roomId);
         },
     },
 };
