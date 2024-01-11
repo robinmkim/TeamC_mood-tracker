@@ -1,13 +1,13 @@
 package com.teamc.moodtracker.config;
 
 import com.teamc.moodtracker.filter.JwtTokenFilter;
-import lombok.RequiredArgsConstructor;<<<<<<<HEAD
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;=======
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +37,6 @@ public class SecurityConfig {
         @Autowired
         private JwtTokenFilter jwtAuthenticationFilter;
 
-        <<<<<<<HEAD
         @Autowired
         private UserDetailsService userDetailsService;
         // 이 메소드는 DaoAuthenticationProvider 객체를 생성하고 구성
@@ -49,22 +48,9 @@ public class SecurityConfig {
                 provider.setUserDetailsService(userDetailsService);
                 provider.setPasswordEncoder(passwordEncoder());
                 return provider;
-        }=======<<<<<<<HEAD
+        }
 
-        @Autowired
-        private UserDetailsService userDetailsService;
-        // 이 메소드는 DaoAuthenticationProvider 객체를 생성하고 구성
-        // UserDetailsService와 PasswordEncoder를 설정하여 사용자 인증 정보를 관리한다.
-
-    private final Environment env;>>>>>>>
-
-        @Bean
-        public DaoAuthenticationProvider daoAuthenticationProvider() {
-                DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-                provider.setUserDetailsService(userDetailsService);
-                provider.setPasswordEncoder(passwordEncoder());
-                return provider;
-        }>>>>>>>9159c69 (✨ 채팅 백엔드 구현)
+        private final Environment env;
 
         @Bean
         public PasswordEncoder passwordEncoder() {
@@ -104,12 +90,12 @@ public class SecurityConfig {
 
         CorsConfigurationSource myCorsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowCredentials(true);
-
-                String allowedOriginsProperty = env.getProperty(env.getProperty("allowed-origins"));
+                String allowedOriginsProperty = env.getProperty("allowed-origins");
                 List<String> allowedOrigins = (allowedOriginsProperty != null)
                                 ? Arrays.asList(allowedOriginsProperty.split(","))
                                 : Collections.emptyList();
+                System.out.println("allowedOrigins: " + allowedOrigins);
+                configuration.setAllowCredentials(true);
                 configuration.setAllowedOrigins(allowedOrigins);
                 configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
                 configuration.setAllowedHeaders(Arrays.asList("*"));
