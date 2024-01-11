@@ -4,12 +4,10 @@
       <side-bar></side-bar>
     </div>
 
-    <div class="flex-1 w-full h-screen bg-[#E7F1E5]">
+    <div class="flex-1 w-full bg-[#E7F1E5] h-screen overflow-auto">
       <!-- 여기서부터 ~~~ -->
       <div class="flex flex-col justify-center items-center">
-        <div
-          class="flex flex-col w-[700px] h-screen mt-5 items-center justify-center"
-        >
+        <div class="flex flex-col w-[700px] mt-5 items-center justify-center">
           <!-- 감정 이모티콘 -->
           <div class="flex flex-col w-[500px] h-auto" id="imoji">
             <div class="relative m-2">
@@ -24,6 +22,7 @@
             </div>
             <div class="flex flex-col justify-center text-center">
               <p class="w-auto mt-1">오늘의 기분은 ?<br /></p>
+              <p class="w-auto m-2 text-lg">"{{ myExpresion }}"</p>
             </div>
           </div>
 
@@ -42,22 +41,42 @@
                 class="w-665 h-65"
               />
             </div>
+            <button
+              class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
+              v-on:click="imageDownload"
+            >
+              이미지 다운로드
+            </button>
+            <button
+              class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
+              v-on:click="writePost"
+            >
+              게시물 작성하기
+            </button>
 
-            <p class="w-auto m-2 text-lg">*lastResultId={{ lastResultId }}</p>
-            <p class="w-auto m-2 text-lg">*myExpresion={{ myExpresion }}</p>
+            <!-- <p class="w-auto m-2 text-lg">*lastResultId={{ lastResultId }}</p>
             <p class="w-auto m-2 text-lg">
               *faceAnalyzeResult={{ faceAnalyzeResult }}
-            </p>
-            <p class="w-auto m-2 text-lg">
+            </p> -->
+            <!-- <p class="w-auto m-2 text-lg">
               *generatedImageFileName={{ generatedImageFileName }}
-            </p>
+            </p> -->
 
-            <button
-              class="flex rounded-lg bg-[#DAFFFB] p-2"
-              v-on:click="notHappyWithResult"
-            >
-              분석결과가 마음에 안 드시나요?
-            </button>
+            <div><p>분석결과 피드백 하기</p></div>
+            <div class="flex">
+              <button
+                class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
+                v-on:click="feedbackGood"
+              >
+                마음에 들어요
+              </button>
+              <button
+                class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
+                v-on:click="feedbackBad"
+              >
+                마음에 안 들어요
+              </button>
+            </div>
             <!-- <p class="w-auto m-2 text-lg">**{{ faceAnalyzeResult }}</p>
             <p class="w-auto m-2 text-lg">**{{ myExpresion }}</p> -->
             <!-- <p class="w-auto m-2 text-lg">Neutral</p> -->
@@ -141,6 +160,8 @@
 import SideBar from "@/components/SideBar";
 import axios from "axios";
 export default {
+  props: ["lastResultId"],
+  // props: ["formData"],
   name: "AnalyzeResult",
   components: {
     // ResultChart,
@@ -148,18 +169,24 @@ export default {
   },
   data() {
     return {
+      memberNum: 1,
       myExpresion: null,
       faceAnalyzeResult: null,
-      lastResultId: null,
+      // lastResultId: null,
       generatedImageFileName: null,
       generatedImageSrc: null,
     };
   },
   mounted() {
-    this.lastResultId = this.$route.query.lastResultId;
+    // axios
+    //   .post("http://192.168.0.93:8083/faceresult/lastResultId", {
+    //     memberNum: this.memberNum,
+    //   })
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     this.lastResultId = res.data;
 
-    // 스프링 -> ar_id = lastResultId 조회해서
-    // generated_img, content_max, content 조회해온다.
+    //   });
     axios
       .get("http://192.168.0.93:8083/faceresult/detail", {
         params: {
@@ -172,45 +199,91 @@ export default {
         this.faceAnalyzeResult = res.data.ar_content;
         this.generatedImageFileName = res.data.ar_generated_img;
 
-        //this.generatedImageFileName 장고로 보내 사진 불러오기
+        //  장고로부터 사진 base64형태로 반환받음
         axios
           .get("http://192.168.0.2:9000/face/getGeneratedImage", {
             params: {
               imageName: this.generatedImageFileName,
             },
           })
-          // .get("http://192.168.0.2:9000/face/getGeneratedImage")
           .then((res) => {
             console.log(res.data);
             this.generatedImageSrc = `data:image/jpeg;base64, ${res.data.generatedImg}`;
-            // 이미지 데이터를 base64 데이터 URL로 설정
-            // this.faceAnalyzeResultImage = `data:image/jpeg;base64, ${res.data.generated}`;
           });
       });
 
-    // const dataParam = this.$route.query.resdata;
-    // // this.$route.params.data가 정의되어 있는지 확인
-    // if (dataParam) {
-    //   try {
-    //     this.faceAnalyzeResult = JSON.parse(dataParam);
-    //   } catch (error) {
-    //     console.error("Error parsing JSON data:", error);
-    //     // 유효한 JSON이 아닐 경우 기본값 설정
-    //     this.faceAnalyzeResult = "X JSON"; // 또는 다른 적절한 기본값 설정
-    //   }
-    // } else {
-    //   // 데이터가 없을 경우 기본값 설정
-    //   this.faceAnalyzeResult = "NO DATA"; // 또는 다른 적절한 기본값 설정
-    // }
+    // console.log(this.formData);
+    // // console.log(this.formData.get("lastResultId"));
+    // console.log(this.formData["lastResultId"]);
+    // // this.lastResultId = this.$route.query.lastResultId;
+    // this.lastResultId = this.formData.lastResultId;
+
+    // 스프링 -> ar_id = lastResultId 조회해서
+    // generated_img, content_max, content 조회해온다.
   },
   methods: {
     notHappyWithResult: function () {
-      // 피드백 테이블에 피드백 결과 insert 하기
-      console.log("맘에안들ㄹ어요");
-      alert(
-        this.lastResultId +
-          "\n분석결과가 마음에 들지 않으신가요?\n더 나은 서비스를 위해 피드백을 남겨주세요"
-      );
+      this.showFeedbackMenus = !this.showFeedbackMenus;
+      console.log("피드백 하기 클릭됨");
+      // alert(
+      //   this.lastResultId +
+      //     "\n분석결과가 마음에 들지 않으신가요?\n더 나은 서비스를 위해 피드백을 남겨주세요"
+      // );
+    },
+    feedbackBad: function () {
+      const formData = new FormData();
+      formData.append("ar_id", this.lastResultId);
+
+      axios
+        .post("http://192.168.0.93:8083/faceresult/feedback/bad", {
+          ar_id: this.lastResultId,
+        })
+        .then(() => {
+          console.log("feedback Bad Success");
+          alert("feedback Bad Success");
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    },
+    feedbackGood: function () {
+      axios
+        .post("http://192.168.0.93:8083/faceresult/feedback/good", {
+          ar_id: this.lastResultId,
+        })
+        .then(() => {
+          console.log("feedback Good Success");
+          alert("feedback Good Success");
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    },
+    imageDownload: function () {
+      axios
+        .get("http://192.168.0.2:9000/face/downloadGeneratedImage", {
+          params: {
+            imageName: this.generatedImageFileName,
+          },
+          responseType: "blob",
+        })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", this.generatedImageFileName);
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    writePost: function () {
+      // confirm("게시물 작성하러 가기");
+      this.$router.push({
+        path: "/postwrite",
+      });
     },
   },
 };

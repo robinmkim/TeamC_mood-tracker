@@ -66,14 +66,14 @@
             >분석하기</span
           >
         </div>
-        <p class="w-auto m-2 text-lg">{{ this.faceAnalyzeResultMaxCate }}</p>
+        <!-- <p class="w-auto m-2 text-lg">{{ this.faceAnalyzeResultMaxCate }}</p>
         <p class="w-auto m-2 text-lg">
           {{ this.faceAnalyzeResultFullData }}
         </p>
         <img
           v-if="faceAnalyzeResultImage"
           v-bind:src="faceAnalyzeResultImage"
-        />
+        /> -->
       </div>
       <!-- 여까지 -->
     </div>
@@ -93,10 +93,10 @@ export default {
   data() {
     return {
       image: null,
-      userNum: 1, // 로그인 기능 구현 이후 삭제합니다.
-      faceAnalyzeResultMaxCate: null,
-      faceAnalyzeResultFullData: null,
-      faceAnalyzeResultImage: null,
+      memberNum: 1, // 로그인 기능 구현 이후 삭제합니다.
+      // faceAnalyzeResultMaxCate: null,
+      // faceAnalyzeResultFullData: null,
+      // faceAnalyzeResultImage: null,
     };
   },
   methods: {
@@ -130,7 +130,7 @@ export default {
     goToResult() {
       const formData = new FormData();
       formData.append("file1", this.$refs.fileInput.files[0]);
-      formData.append("userNum", this.userNum); // 임시 유저 회원번호 (로그인 되면 수정 필수)
+      formData.append("memberNum", this.memberNum); // 임시 유저 회원번호 (로그인 되면 수정 필수)
 
       axios
         .post("http://192.168.0.2:9000/face/predictFace", formData, {
@@ -141,31 +141,61 @@ export default {
         .then((res) => {
           console.log(res.data);
           if (res.data.error != null) {
-            // const faceAnalyzeResultError = res.data.error;
-            // alert(faceAnalyzeResultError);
+            // 이미지를 안 넣었거나, 얼굴이 없거나 하는 경우 error 메세지 alert
             alert(res.data.error);
           } else {
-            this.faceAnalyzeResultMaxCate = res.data.maxcate;
-            this.faceAnalyzeResultFullData = res.data.fulldata;
-            // this.faceAnalyzeResultImage = res.data.generated;
+            // this.faceAnalyzeResultMaxCate = res.data.maxcate;
+            // this.faceAnalyzeResultFullData = res.data.fulldata;
+            // // 이미지 데이터를 base64 데이터 URL로 설정
+            // this.faceAnalyzeResultImage = `data:image/jpeg;base64, ${res.data.generated}`;
+            //스프링 ->
+            // axios
+            //   .get(
+            //     "http://192.168.0.93:8083/faceresult/lastResultId?memberNum=" +
+            //       this.memberNum
+            //   )
+            //   .then((res) => {
+            //     console.log(res.data);
+            //     const lastResultId = res.data;
+            //     this.$router.push({
+            //       name: "AnalyzeResult",
+            //       query: { lastResultId: lastResultId },
+            //     });
+            //   });
+            //
 
-            // 이미지 데이터를 base64 데이터 URL로 설정
-            this.faceAnalyzeResultImage = `data:image/jpeg;base64, ${res.data.generated}`;
-          }
-          //스프링 ->
-          axios
-            .get(
-              "http://192.168.0.93:8083/faceresult/lastResultId?memberNum=" +
-                this.userNum
-            )
-            .then((res) => {
-              console.log(res.data);
-              const lastResultId = res.data;
-              this.$router.push({
-                name: "AnalyzeResult",
-                query: { lastResultId: lastResultId },
+            // this.$router.push({
+            //   name: "AnalyzeResult",
+            // });
+
+            axios
+              .post("http://192.168.0.93:8083/faceresult/lastResultId", {
+                memberNum: this.memberNum,
+              })
+              .then((res) => {
+                console.log(res.data);
+                const lastResultId = res.data;
+
+                const formData = new FormData();
+                formData.append("lastResultId", lastResultId);
+                // this.$router.push({
+                //   name: "AnalyzeResult",
+                //   params: { formData: formData },
+                // });
+
+                this.$router.push({
+                  name: "AnalyzeResult",
+                  params: { lastResultId: lastResultId },
+                });
+                // this.$router.push({
+                //   name: "AnalyzeResult",
+                //   query: { lastResultId: lastResultId },
+                // });
+              })
+              .catch((error) => {
+                console.log("error", error);
               });
-            });
+          }
         })
         .catch((error) => {
           console.log(error.message);
