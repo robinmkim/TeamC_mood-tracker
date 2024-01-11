@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface FaceresultDao {
     // 입력
-    public void insertFaceResult(FaceresultDto faceresultDto);
+//    public void insertFaceResult(FaceresultDto faceresultDto);
 
     // 조회
     public List<FaceresultDto> selectList();

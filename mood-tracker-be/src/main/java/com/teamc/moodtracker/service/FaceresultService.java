@@ -8,7 +8,7 @@ import java.util.List;
 @Service
 public interface FaceresultService {
     //입력
-    public void insertFaceResult(FaceresultDto faceresultDto);
+//    public void insertFaceResult(FaceresultDto faceresultDto);
 
     //조회
     public List<FaceresultDto> selectList();

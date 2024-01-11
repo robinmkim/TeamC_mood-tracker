@@ -21,10 +21,10 @@ public class FaceresultController {
 
 
     // 입력 (장고에서 처리함)
-    @PostMapping("/insert")
-    public void insertFaceResult(FaceresultDto faceresultDto){
-        faceresultService.insertFaceResult(faceresultDto);
-    }
+//    @PostMapping("/insert")
+//    public void insertFaceResult(FaceresultDto faceresultDto){
+//        faceresultService.insertFaceResult(faceresultDto);
+//    }
 
     // 조회
     @GetMapping("/list") // 관리자 : 모든 얼굴분석결과 리스트 조회 ( 추후 삭제 가능 )
