@@ -11,4 +11,6 @@ public class FaceresultDto {
     private String ar_content; // 분석결과_내용
     private String ar_content_max; // 분석결과_내용 중 가장 확률이 높은 항목
     private String ar_analyze_date; // 분석_날짜
+
+
 }

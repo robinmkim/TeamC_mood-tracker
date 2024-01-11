@@ -33,5 +33,16 @@
             WHERE ar_id = #{ar_id}
     </delete>
 
+    <update id="updateFeedbackBad" parameterType="int" >
+        UPDATE analyze_result
+        SET ar_feedback = 'bad'
+        WHERE ar_id = #{ar_id}
+    </update>
+    <update id="updateFeedbackGood" parameterType="int" >
+        UPDATE analyze_result
+        SET ar_feedback = 'good'
+        WHERE ar_id = #{ar_id}
+    </update>
+
 
 </mapper>

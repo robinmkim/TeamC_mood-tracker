@@ -20,6 +20,10 @@ public interface FaceresultDao {
     // 삭제
     public void deleteFaceResult(int resultId);
 
+    // 피드백 업데이트
+    public void updateFeedbackBad(int ar_id);
+    public void updateFeedbackGood(int ar_id);
+
 
 //    public List<PostDto> selectList();
 //    public void writePost(PostDto post);
