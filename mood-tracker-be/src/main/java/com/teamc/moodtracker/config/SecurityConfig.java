@@ -1,7 +1,7 @@
 package com.teamc.moodtracker.config;
 
 import com.teamc.moodtracker.filter.JwtTokenFilter;
-import lombok.RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor;<<<<<<<HEAD
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;>>>>>>>a65b64c(✨회원 가입 및 로그인 구현+Spring Security/JWT 발급)
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;>>>>>>>a65b64c(✨회원 가입 및 로그인 구현+Spring Security/JWT 발급)=======
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;>>>>>>>b170f72(✨채팅 백엔드 구현)
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -92,7 +96,6 @@ public class SecurityConfig {
 
     CorsConfigurationSource myCorsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(true);
         String allowedOriginsProperty = env.getProperty("allowed-origins");
         List<String> allowedOrigins = (allowedOriginsProperty != null)
                 ? Arrays.asList(allowedOriginsProperty.split(","))
