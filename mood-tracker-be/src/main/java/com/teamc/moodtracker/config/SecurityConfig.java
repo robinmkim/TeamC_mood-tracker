@@ -1,7 +1,7 @@
 package com.teamc.moodtracker.config;
 
 import com.teamc.moodtracker.filter.JwtTokenFilter;
-import lombok.RequiredArgsConstructor;<<<<<<<HEAD
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,10 +38,15 @@ public class SecurityConfig {
         @Autowired
         private JwtTokenFilter jwtAuthenticationFilter;
 
+        <<<<<<<HEAD
         @Autowired
         private UserDetailsService userDetailsService;
         // 이 메소드는 DaoAuthenticationProvider 객체를 생성하고 구성
         // UserDetailsService와 PasswordEncoder를 설정하여 사용자 인증 정보를 관리한다.
+        =======
+        private final Environment env;>>>>>>>
+
+        b170f72 (✨ 채팅 백엔드 구현)
 
         @Bean
         public DaoAuthenticationProvider daoAuthenticationProvider() {
