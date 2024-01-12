@@ -13,6 +13,7 @@
       </div>
 
       <div class="">
+        <!-- [ST] 탭리스트 -->
         <nav class="flex" role="tablist">
           <div
             v-for="(tab, index) in tabs"
@@ -30,6 +31,78 @@
             </span>
           </div>
         </nav>
+        <!-- [ED] 탭리스트 -->
+
+        <!-- [ST] 알림 리스트 -->
+        <div class="mt-3">
+          {{ showList }}
+          <div>-----------------------</div>
+          <div v-for="(bean, index) in showList" :key="index" :id="bean.n_id">
+            <div>
+              <!-- {{ bean.n_type }} - {{ bean.n_content }} -->
+              <div v-if="bean.n_type == 'follow'">
+                <!-- 알림 content - follow -->
+                <div
+                  class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200"
+                >
+                  <div
+                    class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
+                  >
+                    <!-- notiDisplay: 확인하지 않은 알림 표시 -->
+                    <div
+                      class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
+                    ></div>
+                    <!-- 프로필이미지 -->
+                    <img
+                      class="object-contain rounded-full"
+                      src="..\..\assets\notiProfileImage01.jpg"
+                    />
+                  </div>
+                  <div class="notiItemContent flex-1 flex h-14">
+                    <div
+                      class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
+                    >
+                      <span class="notiItemContentTime text-sm text-slate-400"
+                        >37초전</span
+                      >
+                      <div class="notiItemContentMain w-auto flex items-center">
+                        <span class="notiUserName font-bold text-lg">
+                          남긴사람
+                        </span>
+                        {{ bean.n_content }}
+                      </div>
+                      <div
+                        class="notiItemContentTimePost bg-purple-300 flex items-center"
+                      ></div>
+                    </div>
+                    <div
+                      class="notiItemContentButton flex w-1/4 justify-center items-center"
+                    >
+                      <div
+                        class="notiItemContentButtonYes rounded-full mr-3 bg-[#ffede6] h-10 w-20 flex justify-center items-center"
+                      >
+                        수락
+                      </div>
+                      <div
+                        class="notiItemContentButtonNo rounded-full bg-slate-200 h-10 w-20 flex justify-center items-center"
+                      >
+                        거절
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- [ED] follow -->
+              </div>
+
+              <div v-if="bean.n_type == 'comment'">{{ bean.n_content }}</div>
+              <div v-if="bean.n_type == 'like'">{{ bean.n_content }}</div>
+            </div>
+          </div>
+          -------------------------
+        </div>
+        <!-- [ED] 알림 리스트 -->
+
+        <!-- [ST] 알림 리스트 2 -->
 
         <div class="mt-3">
           <div
@@ -53,6 +126,7 @@
                     <div
                       class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
                     ></div>
+                    <!-- 프로필이미지 -->
                     <img
                       class="object-contain rounded-full"
                       src="..\..\assets\notiProfileImage01.jpg"
@@ -126,7 +200,7 @@
                   </div>
                 </div>
 
-                <!-- 알림 content - comment -->
+                <!-- [ST] 알림 content - comment -->
                 <div
                   class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
                 >
@@ -156,16 +230,96 @@
                     </div>
                   </div>
                 </div>
+                <!-- [ED] 알림 content - comment -->
               </div>
             </div>
 
             <!-- 팔로잉 tab -->
-            <div v-else-if="tab.id === 'notiTabsFollow'"></div>
+            <div v-else-if="tab.id === 'notiTabsFollow'">
+              <!-- 알림 content - follow -->
+              <div
+                class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200"
+              >
+                <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
+                  <!-- notiDisplay: 확인하지 않은 알림 표시 -->
+                  <div
+                    class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
+                  ></div>
+                  <img
+                    class="object-contain rounded-full"
+                    src="..\..\assets\notiProfileImage01.jpg"
+                  />
+                </div>
+                <div class="notiItemContent flex-1 flex h-14">
+                  <div
+                    class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
+                  >
+                    <span class="notiItemContentTime text-sm text-slate-400"
+                      >37초전</span
+                    >
+                    <div class="notiItemContentMain w-auto flex items-center">
+                      <span class="notiUserName font-bold text-lg">
+                        UserName
+                      </span>
+                      님이 팔로우 하셨습니다.
+                    </div>
+                    <div
+                      class="notiItemContentTimePost bg-purple-300 flex items-center"
+                    ></div>
+                  </div>
+                  <div
+                    class="notiItemContentButton flex w-1/4 justify-center items-center"
+                  >
+                    <div
+                      class="notiItemContentButtonYes rounded-full mr-3 bg-[#ffede6] h-10 w-20 flex justify-center items-center"
+                    >
+                      수락
+                    </div>
+                    <div
+                      class="notiItemContentButtonNo rounded-full bg-slate-200 h-10 w-20 flex justify-center items-center"
+                    >
+                      거절
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            <!-- 답글 tab -->
-            <div v-else-if="tab.id === 'notiTabsReply'"></div>
+            <!-- [ST] 답글 tab -->
+            <div v-else-if="tab.id === 'notiTabsReply'">
+              <!-- [ST] 알림 content - comment -->
+              <div
+                class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
+              >
+                <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
+                  <img
+                    class="object-contain rounded-full"
+                    src="..\..\assets\notiProfileImage01.jpg"
+                  />
+                </div>
+                <div class="notiItemContent flex-1 pl-3 justify-start">
+                  <span class="notiItemContentTime text-sm text-slate-400 flex"
+                    >37초전</span
+                  >
+                  <div class="notiItemContentMain w-auto flex items-center">
+                    <span class="notiUserName font-bold text-lg">
+                      UserName
+                    </span>
+                    님의 댓글
+                  </div>
+                  <div
+                    class="notiItemContentTimePost flex items-center text-sm mt-2"
+                  >
+                    정말 예쁜 것 같아요!
+                  </div>
+                </div>
+              </div>
+              <!-- [ED] 알림 content - comment -->
+            </div>
+            <!-- [ED] 답글 tab -->
           </div>
         </div>
+        <!-- [ED] 알림 리스트 -->
       </div>
     </div>
 
@@ -175,6 +329,7 @@
 
 <script>
 import SideBar from "@/components/SideBar";
+import axios from "axios";
 
 export default {
   data() {
@@ -184,13 +339,83 @@ export default {
         { name: "전체", id: "notiTabsAll" },
         { name: "팔로잉", id: "notiTabsFollow" },
         { name: "답글", id: "notiTabsReply" },
+        { name: "좋아요", id: "notiTabsLike" },
       ],
+      notiTabsAllList: null,
+      notiTabsFollowList: null,
+      notiTabsReplyList: null,
+      notiTabsLikeList: null,
+
+      showList: null,
+      userNum: 1, //로그인 기능 붙으면 이건 삭제
     };
+  },
+  mounted() {
+    console.log("mounted");
+    axios
+      .get("http://192.168.0.93:8083/notification/select/all", {
+        params: {
+          n_user: this.userNum,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        this.showList = res.data;
+      });
   },
   methods: {
     changeTab(index, tabId) {
       this.currentTab = index;
       console.log(`현재 탭의 id: ${tabId}`);
+      if (tabId == "notiTabsAll") {
+        console.log("ALL 조회");
+        axios
+          .get("http://192.168.0.93:8083/notification/select/all", {
+            params: {
+              n_user: this.userNum,
+            },
+          })
+          .then((res) => {
+            console.log(res.data);
+            this.showList = res.data;
+          });
+      } else if (tabId == "notiTabsFollow") {
+        console.log("Follow 조회");
+        axios
+          .get("http://192.168.0.93:8083/notification/select/follow", {
+            params: {
+              n_user: this.userNum,
+            },
+          })
+          .then((res) => {
+            console.log(res.data);
+            this.showList = res.data;
+          });
+      } else if (tabId == "notiTabsReply") {
+        console.log("Reply 조회");
+        axios
+          .get("http://192.168.0.93:8083/notification/select/comment", {
+            params: {
+              n_user: this.userNum,
+            },
+          })
+          .then((res) => {
+            console.log(res.data);
+            this.showList = res.data;
+          });
+      } else if (tabId == "notiTabsLike") {
+        console.log("Like 조회");
+        axios
+          .get("http://192.168.0.93:8083/notification/select/like", {
+            params: {
+              n_user: this.userNum,
+            },
+          })
+          .then((res) => {
+            console.log(res.data);
+            this.showList = res.data;
+          });
+      }
     },
   },
   name: "NotiPage",

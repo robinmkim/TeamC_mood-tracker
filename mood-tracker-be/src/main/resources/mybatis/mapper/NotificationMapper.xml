@@ -4,7 +4,25 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamc.moodtracker.dao.NotificationDao">
 
+    <select id="selectMyNotificationAll" parameterType="int" resultType="NotificationDto">
+        SELECT * FROM notice
+        WHERE n_user = #{n_user}
+    </select>
 
+    <select id="selectMyNotificationFollow" parameterType="NotificationDto" resultType="NotificationDto">
+        SELECT * FROM notice
+        WHERE n_user = #{n_user} AND n_type = 'follow'
+    </select>
+
+    <select id="selectMyNotificationComment" parameterType="NotificationDto" resultType="NotificationDto">
+        SELECT * FROM notice
+        WHERE n_user = #{n_user} AND n_type = 'comment'
+    </select>
+
+    <select id="selectMyNotificationLike" parameterType="NotificationDto" resultType="NotificationDto">
+        SELECT * FROM notice
+        WHERE n_user = #{n_user} AND n_type = 'like'
+    </select>
 
 
 
