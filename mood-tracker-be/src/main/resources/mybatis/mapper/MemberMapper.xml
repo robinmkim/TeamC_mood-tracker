@@ -10,4 +10,7 @@
     <select id="getMemberByMEmail" resultType="mvo">
         SELECT * FROM member WHERE m_email = #{m_email}
     </select>
+    <select id="checkEmailExists" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM member WHERE m_email = #{email}
+    </select>
 </mapper>

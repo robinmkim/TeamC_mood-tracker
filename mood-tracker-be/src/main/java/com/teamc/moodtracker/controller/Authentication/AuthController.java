@@ -1,16 +1,21 @@
-package com.teamc.moodtracker.controller;
+package com.teamc.moodtracker.controller.Authentication;
 
+import com.teamc.moodtracker.dto.MemberDto;
+import com.teamc.moodtracker.service.MemberService;
+import com.teamc.moodtracker.util.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.teamc.moodtracker.dto.auth.AuthenticationRequest;
 import com.teamc.moodtracker.dto.auth.AuthenticationResponse;
 import com.teamc.moodtracker.util.JwtTokenProvider;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 //CORS (Cross-Origin Resource Sharing) 요청을 허용함, 다른 도메인/포트에서 이 서비스에 접근할 수 있게 해준다.
@@ -23,6 +28,12 @@ public class AuthController {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    MemberService service;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     //authenticateUser
     //사용자가 제공한 로그인 정보(username, password)를 검증하고, 유효하면 JWT 토큰을 생성하여 반환
@@ -57,5 +68,25 @@ public class AuthController {
     @GetMapping("/test")
     public ResponseEntity<?> test() {
         return ResponseEntity.ok("접근이 됨을 확인합니다.");
+    }
+
+    String imageDirectory = "src/main/resources/static/images/";
+    @PostMapping("/signUp")
+    public int signUpTest(@ModelAttribute MemberDto dto,
+                          @RequestParam(value = "m_profile", required = false) MultipartFile m_profile) {
+
+
+        if(m_profile != null) {
+            dto.setM_img_name(m_profile.getOriginalFilename());
+            dto.setM_img_path("images/");
+            String filePath = imageDirectory + m_profile.getOriginalFilename();
+            System.out.println(filePath);
+            FileUpload.uploadFile(m_profile, filePath);
+        }
+
+        dto.setM_pwd(passwordEncoder.encode(dto.getM_pwd()));
+        System.out.println(dto.toString());
+        service.addMember(dto);
+        return 1; // 예시: 성공 시 1 반환
     }
 }
