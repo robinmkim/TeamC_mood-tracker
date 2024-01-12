@@ -1,7 +1,5 @@
 package com.teamc.moodtracker.controller;
 
-import com.teamc.moodtracker.dto.BoardDto;
-import com.teamc.moodtracker.dto.MediaDto;
 import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.service.MemberService;
 import com.teamc.moodtracker.util.FileUpload;
@@ -16,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @CrossOrigin
 @RestController
-@RequestMapping("api/auth/member")
+@RequestMapping("/member")
 public class MemberController {
     @Autowired
     MemberService service;
