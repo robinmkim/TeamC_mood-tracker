@@ -2,17 +2,17 @@
   <div class="m-4 border-b">
     <!-- 게시글 헤더 영역 -->
     <div class="postHerder flex flex-row mb-3">
-      <div class="h-14 w-14 overflow-hidden relative">
+      <div class="h-[45px] w-[45px] overflow-hidden relative rounded-full">
         <img
-          class="postDetailUserImg object-contain rounded-full"
-          src="../../assets/notiProfileImage01.jpg"
-          alt="user icon"
+          class="postDetailUserImg rounded-full w-full h-full"
+          :src="getPrfileImgUrl()"
+          alt="profile_img"
         />
       </div>
       <div class="flex flex-row items-center mx-3">
-        <div class="notiUserName font-bold text-lg">UserName</div>
+        <div class="notiUserName font-bold text-lg">{{ userInfo.m_name }}</div>
         <div class="text-slate-400 text-sm ml-2">
-          {{ formatTime(board.regdate) }}
+          {{ userInfo.m_handle }} {{ formatTime(board.regdate) }}
         </div>
       </div>
       <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
@@ -69,24 +69,27 @@
       <!-- like, 이모지 -->
       <div class="flex flex-row">
         <div class="flex items-center">
-          <svg
-            id="likeButton"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            class="w-6 h-6"
-            @click="toggleLike"
-          >
-            <path
-              ref="likePath"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-            />
-          </svg>
-          <span class="text-sm ml-1 mr-1">55</span>
+          <div class="overflow-hidden">
+            <svg
+              id="likeButton"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6 cursor-pointer"
+              @click="toggleLike"
+            >
+              <path
+                ref="likePath"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                :fill="isLikeClicked ? '#ff4d4d' : 'none'"
+              />
+            </svg>
+          </div>
+          <span class="text-sm ml-1 mr-1">{{}}</span>
+          <!--comment-->
           <a href="/postDetail">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +114,7 @@
   </div>
 </template>
 <script>
-import apiClient from "@/api/apiClient";
+import apiClient from "@/utils/apiClient";
 
 export default {
   props: {
@@ -123,9 +126,11 @@ export default {
   },
   data() {
     return {
+      userInfo: {},
       currentImageIndex: 1,
       isLikeClicked: false,
       showMoreText: false,
+      mid: 1,
       board: {
         b_id: null,
         m_id: null,
@@ -148,7 +153,7 @@ export default {
   computed: {
     shotText() {
       // 본문의 일부만 보여주되, 본문이 존재하는 경우에만 작업을 수행합니다.
-      return this.board.b_content ? this.board.b_content.slice(0, 10) : "";
+      return this.board.b_content ? this.board.b_content.slice(0, 20) : "";
     },
     sentimentEmoji() {
       // 감정에 해당하는 이모지를 반환합니다.
@@ -164,6 +169,22 @@ export default {
     },
   },
   methods: {
+    // 유저 정보
+    getMemberInfo() {
+      apiClient
+        .get(`/member/userInfo/${this.mid}`)
+        .then((info) => {
+          info.data.m_handle = "@" + info.data.m_handle;
+          this.userInfo = info.data;
+        })
+        .catch((err) => {
+          console.log(err, "유저 정보 못불러옴");
+        });
+    },
+    getPrfileImgUrl() {
+      return `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
+    },
+
     getImageUrl(media) {
       // md_path와 md_name을 결합하여 이미지의 전체 경로를 반환합니다.
       return `http://localhost:8083/${media.md_path}${media.md_name}`;
@@ -182,6 +203,7 @@ export default {
     },
     toggleLike() {
       // 좋아요 버튼 상태를 토글합니다.
+      // apiClient.get(``).then(this.isLikeClicked = true;);
       this.isLikeClicked = !this.isLikeClicked;
     },
     expandText() {
@@ -221,6 +243,7 @@ export default {
     },
   },
   created() {
+    this.getMemberInfo();
     this.loadBoardData();
   },
 };
