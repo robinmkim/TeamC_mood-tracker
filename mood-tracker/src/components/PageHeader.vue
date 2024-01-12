@@ -37,9 +37,7 @@
               >Log In</span
             ></router-link
           >
-          <router-link to="/" @click="toggleDropdown"
-            ><span>Home</span></router-link
-          >
+          <span @click="logout">Logout</span>
         </div>
       </div>
       <router-link to="/chat">
@@ -97,8 +95,11 @@ export default {
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
     },
+    logout() {
+      localStorage.removeItem("jwtToken");
+      this.$router.push({ path: "/login" });
+    },
   },
 };
 </script>
-
 <style scoped></style>

@@ -18,7 +18,7 @@
               >
                 <option value="">Select a month</option>
                 <option v-for="month in months" :key="month" :value="month">
-                  {{ month }} 월
+                  {{ month }}
                 </option>
               </select>
               <span v-if="monthError">{{ monthError }}</span>
@@ -37,7 +37,7 @@
                 <!-- Day options -->
                 <option value="">Select a day</option>
                 <option v-for="day in days" :key="day" :value="day">
-                  {{ day }} 일
+                  {{ day }}
                 </option>
               </select>
               <span v-if="dayError">{{ dayError }}</span>
@@ -56,7 +56,7 @@
                 <!-- Year options -->
                 <option value="">Select a year</option>
                 <option v-for="year in years" :key="year" :value="year">
-                  {{ year }} 년
+                  {{ year }}
                 </option>
               </select>
               <span v-if="yearError">{{ yearError }}</span>
@@ -174,7 +174,6 @@ export default {
     });
 
     const onNextClick = handleSubmit(() => {
-      console.log(formattedBirthday.value);
       goToNextStep();
     });
 
@@ -184,8 +183,8 @@ export default {
         state: {
           userInfo: {
             ...userInfo.value,
-            birthday: formattedBirthday.value,
-            gender: gender.value,
+            m_bdate: formattedBirthday.value,
+            m_gender: gender.value,
           },
         },
       });

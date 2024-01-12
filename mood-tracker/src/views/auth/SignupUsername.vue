@@ -94,9 +94,8 @@ export default {
         name: "SignupBday",
         state: {
           userInfo: {
-            userId: userInfo.value.userId,
-            password: userInfo.value.password,
-            userName: username.value,
+            ...userInfo.value,
+            m_handle: username.value,
           },
         },
       });
