@@ -24,7 +24,7 @@
       <faqInsert></faqInsert>
     </div>
     <ul class="accordion-item">
-      <li v-for="(item, newIndex) in Faqitems" :key="newIndex">
+      <li v-for="(item, newIndex) in FaqList" :key="newIndex">
         <ul>
           <li
             class="accordion-title border-b flex h-8 hover:bg-slate-100"
@@ -34,7 +34,7 @@
             <div
               class="flex w-1/12 items-center justify-center text-sm text-slate-500 border-b-1"
             >
-              {{ newIndex + 1 }}
+              {{ item.qid }}
             </div>
             <div
               class="flex w-5/12 items-center text-sm text-slate-500 border-b-1"
@@ -119,10 +119,76 @@
       </li>
     </ul>
   </div>
-</template>
+  <div
+    class="pagination w3-bar w3-padding-16 w3-small"
+    v-if="paging.total_list_cnt > 0"
+  >
+    <span class="pg">
+      <a
+        href="javascript:;"
+        @click="faqPage(1)"
+        class="first w3-button w3-bar-item w3-border"
+        >&lt;&lt;</a
+      >
+      <a
+        href="javascript:;"
+        v-if="paging.start_page > 10"
+        @click="faqPage(`${paging.start_page}`)"
+        class="prev w3-button w3-bar-item w3-border"
+        >&lt;</a
+      >
+      <template v-for="(n, q_id) in paginavigation()">
+        <template v-if="paging.page == n">
+          <strong
+            class="w3-button w3-bar-item w3-border decoration-[#9bf8ec] text-white mr-2 ml-2"
+            :key="q_id"
+          >
+            {{ n }}
+          </strong>
+        </template>
+        <template v-else>
+          <a
+            class="w3-button w3-bar-item w3-border hover:bg-gray-300 mr-2 ml-2"
+            href="javascript:;"
+            @click="faqPage(`${n}`)"
+            :key="q_id"
+          >
+            {{ n }}
+          </a>
+        </template>
+      </template>
+      <a
+        href="javascript:;"
+        v-if="paging.total_page_cnt > paging.end_page"
+        @click="faqPage(`${paging.end_page + 1}`)"
+        class="next w3-button w3-bar-item w3-border"
+        >&gt;</a
+      >
+      <a
+        href="javascript:;"
+        @click="faqPage(`${paging.total_page_cnt}`)"
+        class="last w3-button w3-bar-item w3-border"
+        >&gt;&gt;</a
+      >
+    </span>
+  </div>
+  <!-- 검색 폼 추가 -->
 
+  <div>
+    <!-- 여기에 나머지 템플릿 내용을 추가하세요 -->
+    <select v-model="search_key">
+      <option value="">- 선택 -</option>
+      <option value="faq_title">제목</option>
+      <option value="faq_contents">내용</option>
+    </select>
+    &nbsp;
+    <input type="text" v-model="search_value" @keyup.enter="faqPage()" />
+    &nbsp;
+    <button @click="faqPage()">검색</button>
+  </div>
+</template>
 <script>
-import faqInsert from "./FaqInsert.vue";
+import faqInsert from "@/components/admin/FaqInsert.vue";
 import apiClient from "@/utils/apiClient";
 
 export default {
@@ -130,61 +196,82 @@ export default {
   data() {
     return {
       editor: null,
-      currentTab: 0,
-      currentSubTab: 0,
       currentAccordionIndex: null,
       currentOpenedAccordionIndex: null,
       updateShow: false,
       answeringShow: false,
       // 아코디언의 열림/닫힘 상태를 저장하는 배열 추가
-
-      Faqitems: [],
       idx: null,
       FaqList: {},
+      requestBody: {}, //리스트 페이지 데이터전송
+      q_id: "", //게시판 숫자처리
+      paging: {
+        block: 0,
+        end_page: 0,
+        next_block: 0,
+        page: 0,
+        page_size: 0,
+        prev_block: 0,
+        start_index: 0,
+        start_page: 0,
+        total_block_cnt: 0,
+        total_list_cnt: 0,
+        total_page_cnt: 0,
+      }, //페이징 데이터
+      page: this.$route.query.page ? this.$route.query.page : 0,
+      size: this.$route.query.size ? this.$route.query.size : 10,
+      // 검색
+      search_key: this.$route.query.sk ? this.$route.query.sk : "",
+      search_value: this.$route.query.sv ? this.$route.query.sv : "",
+      paginavigation: function () {
+        //페이징 처리 for문 커스텀
+        let pageNumber = []; //;
+        let start_page = this.paging.start_page;
+        let end_page = this.paging.end_page;
+        for (let i = start_page; i <= end_page; i++) pageNumber.push(i);
+        return pageNumber;
+      },
       editedTitle: "",
       editedContent: "",
     };
   },
   //추가
   mounted() {
-    this.FaqGetList();
+    this.faqPage();
   },
+
   methods: {
-    faqInsert() {
-      console.log("실행실행");
-      let apiUrl = this.$serverUrl + "/admin/insert";
-      // 서버로 데이터 전송
-      // 서버로 보낼 데이터 객체 생성
-      const requestData = {
-        faq_title: this.faqTitle,
-        faq_content: this.faqContent,
+    // 검색 함수 추가
+    faqPage(n) {
+      if (this.page !== n) {
+        this.page = n - 1;
+      }
+      this.faqGetList();
+    },
+    faqGetList() {
+      this.requestBody = {
+        // 데이터 전송
+        sk: this.search_key,
+        sv: this.search_value,
+        page: this.page,
+        size: this.size,
       };
-
-      //INSERT
-      console.log(apiUrl);
-      this.$axios
-        .post(apiUrl, requestData)
-        .then((res) => {
-          console.log(res.data);
-          this.insertOpenSuccessPopup();
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
-
-    async save() {
-      var content = this.$refs.editor.getContent();
-      console.log(content);
-    },
-    FaqGetList() {
-      console.log("aaaa");
       apiClient
-        .get("cteam/admin/listfaq")
+        .get("cteam/admin/listfaq", {
+          params: this.requestBody,
+          headers: {},
+        })
         .then((res) => {
-          console.log("bbbb");
-          this.FaqList = res.data;
-          console.log("list : ", this.FaqList);
+          if (res.data.result_code === "OK") {
+            this.FaqList = res.data.data;
+            this.paging = res.data.pagination;
+            this.q_id =
+              this.paging.total_list_cnt -
+              (this.paging.page - 1) * this.paging.page_size;
+            console.log("list : ", this.FaqList);
+            console.log("paging : ", this.paging);
+            console.log("q_id : ", this.q_id);
+          }
         })
         .catch((err) => {
           if (err.message.indexOf("Network Error") > -1) {
@@ -193,27 +280,6 @@ export default {
             console.error("데이터를 가져오는 중 오류 발생:", err);
           }
         });
-
-      // this.$axios
-      //   .get(this.$serverUrl + "/admin")
-      //   .then((res) => {
-      //     //this.list = res.data  //서버에서 데이터를 목록으로 보내므로 바로 할당하여 사용할 수 있다.
-      //     this.Faqitems = res.data;
-      //     console.log(`Faqitems ==========`, this.Faqitems);
-      //   })
-      //   .catch((err) => {
-      //     if (err.message.indexOf("Network Error") > -1) {
-      //       alert("네트워크가 원활하지 않습니다.\n잠시 후 다시 시도해주세요.");
-      //     }
-      //   });
-    },
-    FaqView(idx) {
-      this.requestBody.idx = idx;
-      console.log(`requestBody ==========`, this.requestBody.idx);
-      this.$router.push({
-        path: "./detail",
-        query: this.requestBody,
-      });
     },
     async updateFaq(qid) {
       console.log("faqId : " + qid);
@@ -225,13 +291,14 @@ export default {
         };
 
         // 서버로 데이터를 전송하는 HTTP PATCH 요청
-        const response = this.$axios.patch(
-          `${this.$serverUrl}/admin/${qid}`,
+        const response = await apiClient.patch(
+          `/cteam/admin/updateFaq/${qid}`,
           requestData
         );
 
         console.log("FAQ 업데이트 성공", response);
-        this.updateOpenSuccessPopup();
+        alert("FAQ 업데이트 성공");
+        this.successPopup();
 
         //초기화
         this.editedTitle = "";
@@ -242,35 +309,20 @@ export default {
     },
     faqdelete(qid) {
       // 삭제할 데이터
-      this.$axios
-        .delete(`${this.$serverUrl}/admin/${qid}`)
+      apiClient
+        .delete(`/cteam/admin/deleteFaq/${qid}`)
         .then((response) => {
           console.log("데이터 삭제 성공", response);
-          this.deleteOpenSuccessPopup();
+          alert("FAQ 삭제성공");
+          this.successPopup();
         })
         .catch((error) => {
           console.error("데이터 삭제 실패", error);
         });
     },
-
-    deleteOpenSuccessPopup() {
-      // 팝업 창을 띄우기 위한 코드
-      alert("FAQ 삭제성공"); // 브라우저 기본 팝업 사용
-      window.location.href = "http://192.168.0.32:8081/admin";
+    successPopup() {
+      this.$router.go(0);
     },
-
-    updateOpenSuccessPopup() {
-      // 팝업 창을 띄우기 위한 코드
-      alert("FAQ 업데이트 성공"); // 브라우저 기본 팝업 사용
-      window.location.href = "http://192.168.0.32:8081/admin";
-    },
-
-    insertOpenSuccessPopup() {
-      // 팝업 창을 띄우기 위한 코드
-      alert("FAQ 등록 성공"); // 브라우저 기본 팝업 사용
-      window.location.href = "http://192.168.0.32:8081/admin";
-    },
-
     formatRegDate(redate) {
       const date = new Date(redate);
       const year = date.getFullYear();
@@ -322,14 +374,9 @@ export default {
       }
       // this.currentAccordionIndex = index;
     },
-    answeringMethod() {
-      this.answeringShow = true;
-    },
-  },
-  computed: {
-    filteredAdminComplaintTabs() {
-      return this.adminComplaintTabs;
-    },
+    // answeringMethod() {
+    //   this.answeringShow = true;
+    // },
   },
 };
 </script>
