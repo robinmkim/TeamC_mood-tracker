@@ -122,7 +122,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { reactive } from "vue";
 import SockJS from "sockjs-client";
@@ -338,6 +337,7 @@ export default {
         // subscribe 시 생성된 subscriptionId를 사용하여 구독 해제
         this.stompClient.unsubscribe(`${this.subscriptionId}`, {});
         // this.subscribedRooms = this.subscribedRooms.filter(room => room !== this.roomId)
+
 
         //  새로운 방 구독
         // if(!this.subscribedRooms.includes(roomId)) {

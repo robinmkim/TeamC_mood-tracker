@@ -23,11 +23,10 @@ public class MemberController {
     PasswordEncoder passwordEncoder;
 
     String imageDirectory = "src/main/resources/static/images/";
+
     @PostMapping("/signUp")
     public int signUpTest(@ModelAttribute MemberDto dto,
                           @RequestParam(value = "m_profile", required = false) MultipartFile m_profile) {
-
-
         if(m_profile != null) {
             dto.setM_img_name(m_profile.getOriginalFilename());
             dto.setM_img_path("images/");

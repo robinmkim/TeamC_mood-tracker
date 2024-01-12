@@ -8,10 +8,14 @@
           @dragover.prevent
         >
           <div class="flex items-center border-b">
-            <div class="w-10 rounded-full overflow-hidden">
-              <img src="@/assets/logo.png" />
+            <div class="w-10 roickhighunded-full overflow-hidden">
+              <img
+                class="postDetailUserImg object-contain rounded-full"
+                :src="getUserImageUrl()"
+                alt="user icon"
+              />
             </div>
-            <span class="ml-2">ickhigh</span>
+            <span class="ml-2 text-lg">{{ user.m_name }}</span>
             <div class="cursor-pointer ml-2" @click="isExpanded = !isExpanded">
               {{ selectedEmoji }}
             </div>
@@ -35,8 +39,58 @@
             ></textarea>
           </div>
           <div class="flex">
-            <div v-for="(file, index) in files" :key="index" class="py-1">
-              <img :src="file.preview" class="w-24 border" />
+            <div v-if="board.mediaList.length > 0" class="flex mt-2">
+              <div
+                v-for="(media, index) in board.mediaList"
+                :key="index"
+                class="relative flex flex-col mr-3"
+              >
+                <img
+                  :src="getImageUrl(media)"
+                  alt="Post image"
+                  class="w-24 border relative z-10"
+                />
+                <button type="button" @click="deleteOldMedia(index)">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-4 h-4 absolute top-[-12px] right-[-12px] z-10"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div
+              v-for="(file, index) in files"
+              :key="index"
+              class="py-1 relative flex flex-col mt-2 mr-3"
+            >
+              <img :src="file.preview" class="w-24 border relative z-9" />
+              <button type="button" @click="deleteNewMedia(index)">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-4 h-4 absolute top-[-12px] right-[-12px] z-10"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18 18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
@@ -66,8 +120,8 @@
 
           <input
             class="bg-[#ffede6] w-16 h-8 rounded-md p-0.5"
+            value="수정"
             type="submit"
-            value="입력"
           />
         </div>
       </div>
@@ -79,6 +133,8 @@ import apiClient from "@/utils/apiClient";
 export default {
   data() {
     return {
+      b_id: this.$route.query.b_id,
+      currentImageIndex: 1,
       text: "",
       files: [],
       isExpanded: false,
@@ -93,6 +149,14 @@ export default {
         "😨": "surprise",
       },
       emotion: "happy",
+      board: {
+        b_id: null,
+        m_id: null,
+        b_content: "",
+        b_sentiment: "",
+        regdate: "",
+        mediaList: [],
+      },
       user: {
         m_name: null,
         m_hanble: null,
@@ -101,10 +165,63 @@ export default {
       },
     };
   },
-  name: "PostWrite",
+  created() {
+    this.loadBoardData();
+  },
+  computed: {
+    imageCount() {
+      // mediaList 배열의 길이를 반환합니다.
+      return this.board.mediaList.length;
+    },
+  },
+  name: "PostUpdate",
   methods: {
+    deleteOldMedia(index) {
+      this.board.mediaList.splice(index, 1);
+    },
+    deleteNewMedia(index) {
+      this.files.splice(index);
+    },
+    getImageUrl(media) {
+      // md_path와 md_name을 결합하여 이미지의 전체 경로를 반환합니다.
+      return `http://localhost:8083/${media.md_path}${media.md_name}`;
+    },
+    sentimentEmoji() {
+      // 감정에 해당하는 이모지를 반환합니다.
+      return (
+        Object.keys(this.emotionMap).find(
+          (key) => this.emotionMap[key] === this.board.b_sentiment
+        ) || ""
+      );
+    },
+    getUserImageUrl() {
+      return `http://localhost:8083/${this.user.m_img_path}${this.user.m_img_name}`;
+    },
+    getUserInfo() {
+      apiClient
+        .get(`/member/userInfo/${this.board.m_id}`)
+        .then((response) => {
+          this.user = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+    },
+    async loadBoardData() {
+      try {
+        const response = await apiClient.get(`/post/get/${this.b_id}`);
+        this.board = response.data;
+        this.text = this.board.b_content;
+        this.emotion = this.board.b_sentiment;
+        this.selectedEmoji = this.sentimentEmoji();
+        this.getUserInfo();
+        console.log("----board--mediaList--", this.board.mediaList);
+        this.loadMediaList(); // 기존 미디어 파일을 불러옵니다.
+      } catch (error) {
+        console.error("Error fetching the board data:", error);
+      }
+    },
     adjustHeight(e) {
-      // textarea높이 자동 조절
       const element = e.target;
       element.style.height = "auto";
       element.style.height = element.scrollHeight + "px";
@@ -147,18 +264,28 @@ export default {
 
     submitForm() {
       const formData = new FormData();
-      formData.append("m_id", 1);
-      formData.append("b_content", this.text);
 
+      const mb_idList = [];
+      this.board.mediaList.forEach((media) => {
+        mb_idList.push(media.md_id);
+      });
+
+      formData.append("mb_idList", mb_idList);
+
+      formData.append("m_id", 1);
+      formData.append("b_id", this.b_id);
+      formData.append("b_content", this.text);
       this.files.forEach((fileObj) => {
         formData.append("mediaList", fileObj.file); // 실제 파일 객체를 사용
       });
       formData.append("b_sentiment", this.emotion);
+
       for (let [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);
       }
+
       apiClient
-        .post("/post/add", formData, {
+        .post("/jh_post/update", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

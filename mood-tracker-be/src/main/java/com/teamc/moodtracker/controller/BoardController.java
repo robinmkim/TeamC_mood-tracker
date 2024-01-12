@@ -35,6 +35,7 @@ public class BoardController {
     private JwtTokenProvider jwtTokenProvider;
 
     String imageDirectory = "src/main/resources/static/images/";
+
     @PostMapping("/add")
     public int addBoardContent(@AuthenticationPrincipal MemberDto memberDto,
                                @ModelAttribute BoardDto dto,
@@ -60,8 +61,8 @@ public class BoardController {
         return 1; // 예시: 성공 시 1 반환
     }
 
-    public String uploadFile(MultipartFile file, String path){
-        if(!file.isEmpty()){
+    public String uploadFile(MultipartFile file, String path) {
+        if (!file.isEmpty()) {
             try (FileOutputStream writer = new FileOutputStream(path)) {
                 writer.write(file.getBytes());
                 return "File Uploaded Successfully!";
@@ -80,7 +81,7 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public List<Integer> getBoardList(@RequestParam(value="lastRowNum") int lastRowNum) {
+    public List<Integer> getBoardList(@RequestParam(value = "lastRowNum") int lastRowNum) {
         return service.getBoardList(lastRowNum);
     }
 }

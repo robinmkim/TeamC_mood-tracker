@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teamc.moodtracker.dao.JH_CommentDao">
+    <select id="commentCount" parameterType="Integer">
+        select count(cm_id) from comments  where cm_bid=#{cm_bid}
+    </select>
+
+    <select id="getCommentList" parameterType="Integer" resultType="jh_cvo">
+        select cm_id, cm_bid, cm_mid, cm_content, regdate from comments  where cm_bid=#{cm_bid}
+    </select>
+
+<!--    <resultMap id="CommentWithReplyResultMap" type="jh_cvo">-->
+<!--        <id property="cm_id" column="cm_id"/>-->
+<!--        <result property="cm_bid" column="cm_bid"/>-->
+<!--        <result property="cm_mid" column="cm_mid"/>-->
+<!--        <result property="cm_content" column="cm_content"/>-->
+<!--        <result property="regdate" column="regdate"/>-->
+<!--        <collection property="replyList" ofType="jh_rvo">-->
+<!--            <id property="re_id" column="re_id"/>-->
+<!--            <result property="re_cmid" column="re_cmid"/>-->
+<!--            <result property="re_mid" column="re_mid"/>-->
+<!--            <result property="re_content" column="re_content"/>-->
+<!--            <result property="regdate" column="regdate"/>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+
+<!--    <select id="getCommentListDetail" resultMap="CommentWithReplyResultMap">-->
+<!--        select c.*, r.re_id, r.re_cmid, r.re_mid, r.re_content, r.regdate-->
+<!--        from comments c-->
+<!--        left join reply r ON c.cm_id = r.re_cmid-->
+<!--        where c.cm_bid = #{c.cm_bid}-->
+<!--    </select>-->
+
+
+    <resultMap id="CommentWithReplyAndMemberResultMap" type="jh_cvo">
+        <id property="cm_id" column="cm_id"/>
+        <result property="cm_bid" column="cm_bid"/>
+        <result property="cm_mid" column="cm_mid"/>
+        <result property="cm_content" column="cm_content"/>
+        <result property="regdate" column="cm_redgate"/>
+
+
+        <!-- Comment 작성자 정보 매핑 -->
+        <association property="member" javaType="jh_mvo">
+            <id property="m_id" column="m_id"/>
+            <result property="m_name" column="m_name"/>
+            <result property="m_handle" column="m_handle"/>
+            <result property="m_img_name" column="m_img_name"/>
+            <result property="m_img_path" column="m_img_path"/>
+            <!-- 다른 MemberDto 속성들에 대한 매핑 추가 -->
+        </association>
+
+        <!-- Reply 리스트 매핑 -->
+        <collection property="replyList" ofType="jh_rvo">
+            <id property="re_id" column="re_id"/>
+            <result property="re_cmid" column="re_cmid"/>
+            <result property="re_mid" column="re_mid"/>
+            <result property="re_content" column="re_content"/>
+            <result property="regdate" column="regdate"/>
+
+            <!-- Reply 작성자 정보 매핑 -->
+            <association property="member" javaType="jh_mvo">
+                <id property="m_id" column="rm_id"/>
+                <result property="m_name" column="rm_name"/>
+                <result property="m_handle" column="rm_handle"/>
+                <result property="m_img_name" column="rm_img_name"/>
+                <result property="m_img_path" column="rm_img_path"/>
+                <!-- 다른 MemberDto 속성들에 대한 매핑 추가 -->
+            </association>
+        </collection>
+    </resultMap>
+<!--    getCommentWithReplyAndMember-->
+    <select id="getCommentListDetail" resultMap="CommentWithReplyAndMemberResultMap">
+        SELECT
+        c.cm_id cm_id,c.cm_bid cm_bid, c.cm_mid cm_mid, c.cm_content cm_content, c.regdate cm_redgate,
+        m.m_id m_id, m.m_name m_name, m.m_handle m_handle, m.m_img_name m_img_name, m.m_img_path m_img_path,
+        r.re_id, r.re_cmid, r.re_mid, r.re_content, r.regdate,
+        rm.m_id rm_id, rm.m_name rm_name, rm.m_handle rm_handle, rm.m_img_name rm_img_name, rm.m_img_path rm_img_path
+        FROM comments c
+        LEFT JOIN reply r ON c.cm_id = r.re_cmid
+        LEFT JOIN member m ON c.cm_mid = m.m_id
+        LEFT JOIN member rm ON r.re_mid = rm.m_id
+        WHERE c.cm_bid = #{cm_bid}
+    </select>
+
+
+
+
+
+
+
+
+</mapper>
