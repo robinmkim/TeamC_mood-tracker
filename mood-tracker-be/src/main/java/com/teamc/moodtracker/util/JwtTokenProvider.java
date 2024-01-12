@@ -21,6 +21,7 @@ public class JwtTokenProvider {
     Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     // 인증된 사용자에 대한 JWT를 생성을 하고
+
     public String createToken(Authentication authentication) {
         // Spring Security에서 Authentication 객체로부터
         // 사용자의 UserDetails를 얻어 사용자 이름을 주제(subject)로 설정하고,
@@ -35,9 +36,11 @@ public class JwtTokenProvider {
                 .claim("m_id", memberDetails.getM_id())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
+
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
+
 
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
@@ -47,12 +50,14 @@ public class JwtTokenProvider {
         return null;
     }
 
+
     public boolean validateToken(String token) {
         System.out.println("Received token for validation: " + token);
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             System.out.println(
                     "Validated token: " + Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token));
+
             return true;
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token : 토큰의 형식이 올바르지 않음 ");

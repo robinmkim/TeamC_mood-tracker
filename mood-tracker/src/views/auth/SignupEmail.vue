@@ -35,7 +35,6 @@
               type="email"
               placeholder="이메일"
               v-model="email"
-              HEAD
               class="border-2 border-gray-300 p-2 mb-2 w-[240px] rounded-md focus:border-[#64CCC5] focus:outline-none"
             />
             <button

@@ -338,6 +338,7 @@ export default {
         this.stompClient.unsubscribe(`${this.subscriptionId}`, {});
         // this.subscribedRooms = this.subscribedRooms.filter(room => room !== this.roomId)
 
+
         //  새로운 방 구독
         // if(!this.subscribedRooms.includes(roomId)) {
         //     this.subscribedRooms.push(roomId);

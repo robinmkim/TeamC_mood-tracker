@@ -38,11 +38,11 @@ public class BoardController {
 
     @PostMapping("/add")
     public int addBoardContent(@AuthenticationPrincipal MemberDto memberDto,
-            @ModelAttribute BoardDto dto,
-            @RequestParam(value = "mediaList", required = false) List<MultipartFile> mediaList) {
+                               @ModelAttribute BoardDto dto,
+                               @RequestParam(value = "mediaList", required = false) List<MultipartFile> mediaList) {
         List<MediaDto> mediaDtos = new ArrayList<>();
         dto.setM_id(memberDto.getM_id());
-        if (mediaList != null) {
+        if(mediaList != null) {
             for (MultipartFile multipartFile : mediaList) {
                 MediaDto mediaDto = new MediaDto();
                 mediaDto.setMd_name(multipartFile.getOriginalFilename());

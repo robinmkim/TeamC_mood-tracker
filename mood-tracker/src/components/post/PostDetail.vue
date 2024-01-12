@@ -1,5 +1,6 @@
 <template>
   <div class="m-4 border-b" @scroll="handleScroll">
+
     <!-- 게시글 헤더 영역 -->
     <div class="postHerder flex flex-row mb-3">
       <div class="h-[45px] w-[45px] overflow-hidden relative rounded-full">
@@ -54,6 +55,7 @@
             ><span>Home</span></router-link
           >
         </div>
+
       </div>
     </div>
 
@@ -142,6 +144,7 @@
               />
             </svg>
             <span class="text-sm ml-1 mr-1">{{ commentCount }}</span>
+
           </a>
 
           <span class="ml-2">{{ sentimentEmoji }}</span>
@@ -196,6 +199,7 @@ export default {
         m_img_path: "",
       },
       commentCount: 0,
+
     };
   },
   computed: {
@@ -245,6 +249,7 @@ export default {
     getUserImageUrl() {
       return `http://localhost:8083/${this.user.m_img_path}${this.user.m_img_name}`;
     },
+
     getImageUrl(media) {
       // md_path와 md_name을 결합하여 이미지의 전체 경로를 반환합니다.
       return `http://localhost:8083/${media.md_path}${media.md_name}`;
@@ -277,6 +282,7 @@ export default {
         .then((response) => {
           this.board = response.data;
           this.getUserInfo(); // user 데이터 갖고오기
+
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
@@ -310,6 +316,7 @@ export default {
     this.getMemberInfo();
     this.loadBoardData();
     this.getCommentCount();
+
   },
 };
 </script>
