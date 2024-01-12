@@ -7,21 +7,30 @@
     <select id="selectMyNotificationAll" parameterType="int" resultType="NotificationDto">
         SELECT * FROM notice
         WHERE n_user = #{n_user}
+        ORDER BY n_id DESC
     </select>
 
-    <select id="selectMyNotificationFollow" parameterType="NotificationDto" resultType="NotificationDto">
+    <select id="selectMyNotificationFollow" parameterType="int" resultType="NotificationDto">
         SELECT * FROM notice
         WHERE n_user = #{n_user} AND n_type = 'follow'
+        ORDER BY n_id DESC
     </select>
 
-    <select id="selectMyNotificationComment" parameterType="NotificationDto" resultType="NotificationDto">
+    <select id="selectMyNotificationComment" parameterType="int" resultType="NotificationDto">
         SELECT * FROM notice
         WHERE n_user = #{n_user} AND n_type = 'comment'
+        ORDER BY n_id DESC
     </select>
 
-    <select id="selectMyNotificationLike" parameterType="NotificationDto" resultType="NotificationDto">
+    <select id="selectMyNotificationLike" parameterType="int" resultType="NotificationDto">
         SELECT * FROM notice
         WHERE n_user = #{n_user} AND n_type = 'like'
+        ORDER BY n_id DESC
+    </select>
+
+    <select id="selectUnreadNumber" parameterType="int" resultType="int">
+        SELECT count(*) FROM notice
+        WHERE n_state = #{n_user}
     </select>
 
 

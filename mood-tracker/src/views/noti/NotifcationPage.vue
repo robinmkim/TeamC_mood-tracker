@@ -35,13 +35,10 @@
 
         <!-- [ST] 알림 리스트 -->
         <div class="mt-3">
-          {{ showList }}
-          <div>-----------------------</div>
           <div v-for="(bean, index) in showList" :key="index" :id="bean.n_id">
             <div>
-              <!-- {{ bean.n_type }} - {{ bean.n_content }} -->
+              <!-- 알림 follow -->
               <div v-if="bean.n_type == 'follow'">
-                <!-- 알림 content - follow -->
                 <div
                   class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200"
                 >
@@ -49,9 +46,12 @@
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
                     <!-- notiDisplay: 확인하지 않은 알림 표시 -->
+
                     <div
+                      v-if="bean.n_state == 1"
                       class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
                     ></div>
+
                     <!-- 프로필이미지 -->
                     <img
                       class="object-contain rounded-full"
@@ -62,15 +62,19 @@
                     <div
                       class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
                     >
-                      <span class="notiItemContentTime text-sm text-slate-400"
-                        >37초전</span
+                      <span
+                        class="notiItemContentTime text-sm text-slate-400"
+                        >{{ bean.n_date }}</span
                       >
                       <div class="notiItemContentMain w-auto flex items-center">
-                        <span class="notiUserName font-bold text-lg">
-                          남긴사람
-                        </span>
-                        {{ bean.n_content }}
+                        <a :href="bean.n_url">
+                          <span class="notiUserName font-bold text-lg">
+                            {{ bean.n_user_from }}
+                          </span>
+                          님이 팔로우 하셨습니다.
+                        </a>
                       </div>
+
                       <div
                         class="notiItemContentTimePost bg-purple-300 flex items-center"
                       ></div>
@@ -91,115 +95,11 @@
                     </div>
                   </div>
                 </div>
-                <!-- [ED] follow -->
               </div>
+              <!-- [ED] follow -->
 
-              <div v-if="bean.n_type == 'comment'">{{ bean.n_content }}</div>
-              <div v-if="bean.n_type == 'like'">{{ bean.n_content }}</div>
-            </div>
-          </div>
-          -------------------------
-        </div>
-        <!-- [ED] 알림 리스트 -->
-
-        <!-- [ST] 알림 리스트 2 -->
-
-        <div class="mt-3">
-          <div
-            v-for="(tab, index) in tabs"
-            :key="index"
-            :id="tab.id"
-            v-show="currentTab === index"
-            role="tabpanel"
-          >
-            <!-- 전체 tab -->
-            <div v-if="tab.id === 'notiTabsAll'">
-              <div id="bar-with-underline-1">
-                <!-- 알림 content - follow -->
-                <div
-                  class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200"
-                >
-                  <div
-                    class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
-                  >
-                    <!-- notiDisplay: 확인하지 않은 알림 표시 -->
-                    <div
-                      class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
-                    ></div>
-                    <!-- 프로필이미지 -->
-                    <img
-                      class="object-contain rounded-full"
-                      src="..\..\assets\notiProfileImage01.jpg"
-                    />
-                  </div>
-                  <div class="notiItemContent flex-1 flex h-14">
-                    <div
-                      class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
-                    >
-                      <span class="notiItemContentTime text-sm text-slate-400"
-                        >37초전</span
-                      >
-                      <div class="notiItemContentMain w-auto flex items-center">
-                        <span class="notiUserName font-bold text-lg">
-                          UserName
-                        </span>
-                        님이 팔로우 하셨습니다.
-                      </div>
-                      <div
-                        class="notiItemContentTimePost bg-purple-300 flex items-center"
-                      ></div>
-                    </div>
-                    <div
-                      class="notiItemContentButton flex w-1/4 justify-center items-center"
-                    >
-                      <div
-                        class="notiItemContentButtonYes rounded-full mr-3 bg-[#ffede6] h-10 w-20 flex justify-center items-center"
-                      >
-                        수락
-                      </div>
-                      <div
-                        class="notiItemContentButtonNo rounded-full bg-slate-200 h-10 w-20 flex justify-center items-center"
-                      >
-                        거절
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- 알림 content - like -->
-                <div
-                  class="notiItem likeNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
-                >
-                  <div
-                    class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
-                  >
-                    <div
-                      class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
-                    ></div>
-                    <img
-                      class="object-contain rounded-full"
-                      src="..\..\assets\notiProfileImage01.jpg"
-                    />
-                  </div>
-                  <div class="notiItemContent flex-1 pl-3 justify-start">
-                    <span
-                      class="notiItemContentTime text-sm text-slate-400 flex"
-                      >37초전</span
-                    >
-                    <div class="notiItemContentMain w-auto flex items-center">
-                      <span class="notiUserName font-bold text-lg">
-                        UserName
-                      </span>
-                      님이 게시글에 좋아요를 남겼습니다!
-                    </div>
-                    <div
-                      class="notiItemContentTimePost flex items-center text-sm text-slate-400 mt-2"
-                    >
-                      님들아 나 사진 예쁜거 찍었음 봐줭
-                    </div>
-                  </div>
-                </div>
-
+              <!-- [ST] 알림 comment -->
+              <div v-if="bean.n_type == 'comment'">
                 <!-- [ST] 알림 content - comment -->
                 <div
                   class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
@@ -207,6 +107,10 @@
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
+                    <div
+                      v-if="bean.n_state == 1"
+                      class="absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
+                    ></div>
                     <img
                       class="object-contain rounded-full"
                       src="..\..\assets\notiProfileImage01.jpg"
@@ -215,108 +119,66 @@
                   <div class="notiItemContent flex-1 pl-3 justify-start">
                     <span
                       class="notiItemContentTime text-sm text-slate-400 flex"
-                      >37초전</span
+                      >{{ bean.n_date }}</span
                     >
                     <div class="notiItemContentMain w-auto flex items-center">
-                      <span class="notiUserName font-bold text-lg">
-                        UserName
-                      </span>
-                      님의 댓글
+                      <a :href="bean.n_url">
+                        <span class="notiUserName font-bold text-lg">
+                          {{ bean.n_user_from }}
+                        </span>
+                        님의 댓글
+                      </a>
                     </div>
                     <div
                       class="notiItemContentTimePost flex items-center text-sm mt-2"
                     >
-                      정말 예쁜 것 같아요!
+                      {{ bean.n_content }}
                     </div>
                   </div>
                 </div>
-                <!-- [ED] 알림 content - comment -->
               </div>
-            </div>
+              <!-- [ED] 알림  comment -->
 
-            <!-- 팔로잉 tab -->
-            <div v-else-if="tab.id === 'notiTabsFollow'">
-              <!-- 알림 content - follow -->
-              <div
-                class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200"
-              >
-                <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
-                  <!-- notiDisplay: 확인하지 않은 알림 표시 -->
+              <!-- [ST] 알림 like -->
+              <div v-if="bean.n_type == 'like'">
+                <div
+                  class="notiItem likeNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
+                >
                   <div
-                    class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
-                  ></div>
-                  <img
-                    class="object-contain rounded-full"
-                    src="..\..\assets\notiProfileImage01.jpg"
-                  />
-                </div>
-                <div class="notiItemContent flex-1 flex h-14">
-                  <div
-                    class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
+                    class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
-                    <span class="notiItemContentTime text-sm text-slate-400"
-                      >37초전</span
+                    <div
+                      v-if="bean.n_state == 1"
+                      class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
+                    ></div>
+                    <img
+                      class="object-contain rounded-full"
+                      src="..\..\assets\notiProfileImage01.jpg"
+                    />
+                  </div>
+                  <div class="notiItemContent flex-1 pl-3 justify-start">
+                    <span
+                      class="notiItemContentTime text-sm text-slate-400 flex"
+                      >{{ bean.n_date }}</span
                     >
                     <div class="notiItemContentMain w-auto flex items-center">
-                      <span class="notiUserName font-bold text-lg">
-                        UserName
-                      </span>
-                      님이 팔로우 하셨습니다.
+                      <a :href="bean.n_url">
+                        <span class="notiUserName font-bold text-lg">
+                          {{ bean.n_user_from }}
+                        </span>
+                        님이 게시글에 좋아요를 남겼습니다!
+                      </a>
                     </div>
                     <div
-                      class="notiItemContentTimePost bg-purple-300 flex items-center"
-                    ></div>
-                  </div>
-                  <div
-                    class="notiItemContentButton flex w-1/4 justify-center items-center"
-                  >
-                    <div
-                      class="notiItemContentButtonYes rounded-full mr-3 bg-[#ffede6] h-10 w-20 flex justify-center items-center"
+                      class="notiItemContentTimePost flex items-center text-sm text-slate-400 mt-2"
                     >
-                      수락
-                    </div>
-                    <div
-                      class="notiItemContentButtonNo rounded-full bg-slate-200 h-10 w-20 flex justify-center items-center"
-                    >
-                      거절
+                      {{ bean.n_content }}
                     </div>
                   </div>
                 </div>
               </div>
+              <!-- [ED] 알림 like -->
             </div>
-
-            <!-- [ST] 답글 tab -->
-            <div v-else-if="tab.id === 'notiTabsReply'">
-              <!-- [ST] 알림 content - comment -->
-              <div
-                class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
-              >
-                <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
-                  <img
-                    class="object-contain rounded-full"
-                    src="..\..\assets\notiProfileImage01.jpg"
-                  />
-                </div>
-                <div class="notiItemContent flex-1 pl-3 justify-start">
-                  <span class="notiItemContentTime text-sm text-slate-400 flex"
-                    >37초전</span
-                  >
-                  <div class="notiItemContentMain w-auto flex items-center">
-                    <span class="notiUserName font-bold text-lg">
-                      UserName
-                    </span>
-                    님의 댓글
-                  </div>
-                  <div
-                    class="notiItemContentTimePost flex items-center text-sm mt-2"
-                  >
-                    정말 예쁜 것 같아요!
-                  </div>
-                </div>
-              </div>
-              <!-- [ED] 알림 content - comment -->
-            </div>
-            <!-- [ED] 답글 tab -->
           </div>
         </div>
         <!-- [ED] 알림 리스트 -->

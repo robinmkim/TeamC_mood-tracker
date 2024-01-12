@@ -12,4 +12,6 @@ public interface NotificationService {
     public List<NotificationDto> selectMyNotificationFollow(int n_user);
     public List<NotificationDto> selectMyNotificationComment(int n_user);
     public List<NotificationDto> selectMyNotificationLike(int n_user);
+
+    public int selectUnreadNumber(int n_user);
 }

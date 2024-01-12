@@ -16,4 +16,6 @@ public interface NotificationDao {
 
     public List<NotificationDto> selectMyNotificationLike(int n_user);
 
+    public int selectUnreadNumber(int n_user);
+
 }

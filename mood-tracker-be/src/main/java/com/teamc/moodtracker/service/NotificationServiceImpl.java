@@ -37,5 +37,10 @@ public class NotificationServiceImpl implements NotificationService{
         return notificationDao.selectMyNotificationLike(n_user);
     }
 
+    @Override
+    public int selectUnreadNumber(int n_user) {
+        return notificationDao.selectUnreadNumber(n_user);
+    }
+
 
 }

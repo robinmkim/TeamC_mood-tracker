@@ -20,6 +20,12 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
+    public NotificationController(NotificationService notificationService){
+        this.notificationService = notificationService;
+    }
+
+//    @GetMapping(value = "/subscribe/{id}")
+
 
     @GetMapping("/select/all")
     public List<NotificationDto> selectMyNotificationAll(int n_user){
@@ -36,6 +42,11 @@ public class NotificationController {
     @GetMapping("/select/like")
     public List<NotificationDto> selectMyNotificationLike(int n_user){
         return  notificationService.selectMyNotificationLike(n_user);
+    }
+
+    @GetMapping("/select/unread")
+    public int selectUnreadNumber(int n_user){
+        return notificationService.selectUnreadNumber(n_user);
     }
 
 }
