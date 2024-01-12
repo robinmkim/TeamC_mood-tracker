@@ -2,19 +2,20 @@ package com.teamc.moodtracker.config;
 
 
 import com.teamc.moodtracker.filter.JwtTokenFilter;
-import lombok.RequiredArgsConstructor;<<<<<<<HEAD
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;=======
+
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.env.Environment;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -41,7 +42,6 @@ public class SecurityConfig {
     @Autowired
     private JwtTokenFilter jwtAuthenticationFilter;
 
-    <<<<<<<HEAD
     @Autowired
     private UserDetailsService userDetailsService;
     // 이 메소드는 DaoAuthenticationProvider 객체를 생성하고 구성
@@ -72,10 +72,39 @@ public class SecurityConfig {
     private final Environment env;
 
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+    // 이 메소드는 DaoAuthenticationProvider 객체를 생성하고 구성
+    // UserDetailsService와 PasswordEncoder를 설정하여 사용자 인증 정보를 관리한다.
+
+    private final Environment env;
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }=======
+
+    private final Environment env;>>>>>>>
+
+    b170f72 (✨ 채팅 백엔드 구현)
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-
                 .csrf((csrf) -> csrf.disable())
                 .cors(cors -> cors.configurationSource(myCorsConfigurationSource()))
                 .formLogin((login) -> login.disable())
