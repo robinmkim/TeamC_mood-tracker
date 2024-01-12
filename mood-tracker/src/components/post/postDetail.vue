@@ -1,23 +1,59 @@
 <template>
-  <div class="m-4 border-b">
+  <div class="m-4 border-b" @scroll="handleScroll">
     <!-- 게시글 헤더 영역 -->
     <div class="postHerder flex flex-row mb-3">
       <div class="h-14 w-14 overflow-hidden relative">
         <img
           class="postDetailUserImg object-contain rounded-full"
-          src="../../assets/notiProfileImage01.jpg"
+          :src="getUserImageUrl()"
           alt="user icon"
         />
+        <!-- src="../../assets/notiProfileImage01.jpg" -->
       </div>
       <div class="flex flex-row items-center mx-3">
-        <div class="notiUserName font-bold text-lg">UserName</div>
+        <div class="userName font-bold text-lg">{{ user.m_name }}</div>
+        <div class="userHandle text-sm text-slate-500 ml-1">
+          {{ user.m_handle }}
+        </div>
         <div class="text-slate-400 text-sm ml-2">
           {{ formatTime(board.regdate) }}
         </div>
       </div>
       <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
         <!-- 미트볼 아이콘 -->
-        <!-- ... -->
+        <button @click="BoardToggleDropdown">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+            />
+          </svg>
+        </button>
+        <div
+          v-show="isDoardToggleDropdownOpen"
+          class="absolute flex flex-col bg-white shadow-md mt-2 rounded-md py-2 w-32 right-[1px] z-10"
+        >
+          <router-link
+            :to="{ path: '/jh_post/update', query: { b_id: this.board.b_id } }"
+            ><span class="border-b">수정하기</span></router-link
+          >
+          <router-link to="/login"
+            ><span class="border-b" @click="toggleDropdown"
+              >Log In</span
+            ></router-link
+          >
+          <router-link to="/" @click="toggleDropdown"
+            ><span>Home</span></router-link
+          >
+        </div>
       </div>
     </div>
 
@@ -87,7 +123,10 @@
             />
           </svg>
           <span class="text-sm ml-1 mr-1">55</span>
-          <a href="/postDetail">
+          <a
+            :href="'/postDetail/?b_id=' + this.board.b_id"
+            class="flex items-center"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -102,6 +141,7 @@
                 d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
               />
             </svg>
+            <span class="text-sm ml-1 mr-1">{{ commentCount }}</span>
           </a>
 
           <span class="ml-2">{{ sentimentEmoji }}</span>
@@ -111,7 +151,7 @@
   </div>
 </template>
 <script>
-import apiClient from "@/api/apiClient";
+import apiClient from "@/utils/apiClient";
 
 export default {
   props: {
@@ -120,9 +160,14 @@ export default {
       type: Number,
       required: true,
     },
+    m_id: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
+      isDoardToggleDropdownOpen: false,
       currentImageIndex: 1,
       isLikeClicked: false,
       showMoreText: false,
@@ -143,6 +188,13 @@ export default {
         "😢": "sad",
         "😨": "surprise",
       },
+      user: {
+        m_name: null,
+        m_hanble: null,
+        m_img_name: "",
+        m_img_path: "",
+      },
+      commentCount: 0,
     };
   },
   computed: {
@@ -164,6 +216,34 @@ export default {
     },
   },
   methods: {
+    handleScroll() {
+      this.$emit("post-detail-scroll");
+    },
+    getCommentCount() {
+      apiClient
+        .get(`/jh_comment/allCommentCount?cm_bid=${this.b_id}`)
+        .then((response) => {
+          console.log("--------------" + response);
+          this.commentCount = response.data;
+        })
+        .catch((error) => {
+          console.log("--------------!!");
+          console.error("Error fetching the board data:", error);
+        });
+    },
+    getUserInfo() {
+      apiClient
+        .get(`/member/userInfo/${this.board.m_id}`)
+        .then((response) => {
+          this.user = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+    },
+    getUserImageUrl() {
+      return `http://localhost:8083/${this.user.m_img_path}${this.user.m_img_name}`;
+    },
     getImageUrl(media) {
       // md_path와 md_name을 결합하여 이미지의 전체 경로를 반환합니다.
       return `http://localhost:8083/${media.md_path}${media.md_name}`;
@@ -194,6 +274,7 @@ export default {
         .get(`/post/get/${this.b_id}`)
         .then((response) => {
           this.board = response.data;
+          this.getUserInfo(); // user 데이터 갖고오기
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
@@ -219,9 +300,13 @@ export default {
 
       return postDate.toLocaleDateString("ko-KR");
     },
+    BoardToggleDropdown() {
+      this.isDoardToggleDropdownOpen = !this.isDoardToggleDropdownOpen;
+    },
   },
   created() {
     this.loadBoardData();
+    this.getCommentCount();
   },
 };
 </script>

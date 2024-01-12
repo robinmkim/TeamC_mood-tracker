@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import apiClient from "@/utils/apiClient";
 import SideBar from "@/components/SideBar";
 import PostDetail from "@/components/post/PostDetail.vue";
 export default {
@@ -39,8 +40,8 @@ export default {
       }
       this.isLoading = true; // 로딩 시작
 
-      this.$axios
-        .get(`http://192.168.0.84:8083/post/list?lastRowNum=${this.lastRowNum}`)
+      apiClient
+        .get(`/post/list?lastRowNum=${this.lastRowNum}`)
         .then((res) => {
           this.bIdList = [...this.bIdList, ...res.data];
           this.lastRowNum += res.data.length;
