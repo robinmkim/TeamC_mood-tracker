@@ -3,16 +3,31 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamc.moodtracker.dao.ChatDao">
+        <select id="getChatRooms" parameterType="Long" resultType="ChatRoom">
+                SELECT c.room_id roomId, c.member_id memberId, c.message message
+                FROM chat c
+                INNER JOIN (
+                    SELECT room_id, MAX(send_time) last_send_time
+                    FROM chat
+                    WHERE member_id = #{memberId}
+                    GROUP BY room_id
+                ) latest_message
+                ON
+                    c.room_id = latest_message.room_id
+                    AND c.send_time = latest_message.last_send_time
+                ORDER BY c.send_time DESC
+        </select>
 
 
-<!--    <select id="selectList" resultType="ChatDto">-->
-<!--        select * from chatDto-->
-<!--    </select>-->
+        <select id="getChatMessages" parameterType="Long" resultType="ChatMessage">
+                SELECT member_id memberId, message, send_time sendTime
+                FROM chat
+                WHERE room_id = #{roomId}
+                ORDER BY send_time
+        </select>
 
-<!--    <insert id="sendChat" parameterType="ChatDto">-->
-<!--        insert into post(chatno, sender, receiver, message, regdate)-->
-<!--        values(chatnoseq.nextVal , #{sender} , #{receiver}, #{message}, sysdate)-->
-<!--    </insert>-->
-
-
+        <insert id="saveChatMessage" parameterType="SaveChat">
+                INSERT INTO chat
+                VALUES (chat_seq.nextval, #{memberId}, #{message}, #{roomId}, #{sendTime})
+        </insert>
 </mapper>

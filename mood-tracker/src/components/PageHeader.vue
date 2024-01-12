@@ -37,9 +37,7 @@
               >Log In</span
             ></router-link
           >
-          <router-link to="/" @click="toggleDropdown"
-            ><span>Home</span></router-link
-          >
+          <span @click="logout">Logout</span>
         </div>
       </div>
       <router-link to="/chat">
@@ -59,6 +57,13 @@
         </svg>
       </router-link>
       <router-link to="/noti">
+        <!-- notiDisplay: 확인하지 않은 알림 표시 -->
+        <div
+          class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
+        ></div>
+        <div
+          class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500 opacity-50 animate-ping"
+        ></div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -90,8 +95,11 @@ export default {
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
     },
+    logout() {
+      localStorage.removeItem("jwtToken");
+      this.$router.push({ path: "/login" });
+    },
   },
 };
 </script>
-
 <style scoped></style>
