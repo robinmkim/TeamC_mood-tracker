@@ -60,7 +60,6 @@
 
         <div class="flex justify-center mt-3">
           <span
-            v-show="processingAnalysis"
             id="submit"
             class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center"
             @click="goToResult"
@@ -145,10 +144,10 @@ export default {
                 const formData = new FormData();
                 formData.append("lastResultId", lastResultId);
 
-                // this.$router.push({
-                //   name: "AnalyzeResult",
-                //   params: { lastResultId: lastResultId },
-                // });
+                this.$router.push({
+                  name: "AnalyzeResult",
+                  params: { lastResultId: lastResultId },
+                });
               })
               .catch((error) => {
                 console.log("error", error);

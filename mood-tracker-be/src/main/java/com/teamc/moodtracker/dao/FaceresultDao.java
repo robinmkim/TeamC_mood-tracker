@@ -1,7 +1,6 @@
 package com.teamc.moodtracker.dao;
 
 import com.teamc.moodtracker.dto.FaceresultDto;
-import com.teamc.moodtracker.dto.PostDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
