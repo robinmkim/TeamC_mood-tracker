@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import SideBar from "@/components/SideBar";
 export default {
   name: "FaceAnalyze",
@@ -84,6 +85,7 @@ export default {
   data() {
     return {
       image: null,
+      memberNum: 1, // 로그인 기능 구현 이후 삭제합니다.
     };
   },
   methods: {
@@ -115,7 +117,46 @@ export default {
     },
 
     goToResult() {
-      this.$router.push("/faceanalyze/result");
+      const formData = new FormData();
+      formData.append("file1", this.$refs.fileInput.files[0]);
+      formData.append("memberNum", this.memberNum); // 임시 유저 회원번호 (로그인 되면 수정 필수)
+
+      axios
+        .post("http://192.168.0.13:9000/face/predictFace", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.error != null) {
+            // 이미지를 안 넣었거나, 얼굴이 없거나 하는 경우 error 메세지 alert
+            alert(res.data.error);
+          } else {
+            axios
+              .post("http://192.168.0.93:8083/faceresult/lastResultId", {
+                memberNum: this.memberNum,
+              })
+              .then((res) => {
+                console.log(res.data);
+                const lastResultId = res.data;
+
+                const formData = new FormData();
+                formData.append("lastResultId", lastResultId);
+
+                this.$router.push({
+                  name: "AnalyzeResult",
+                  params: { lastResultId: lastResultId },
+                });
+              })
+              .catch((error) => {
+                console.log("error", error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
     },
   },
 };

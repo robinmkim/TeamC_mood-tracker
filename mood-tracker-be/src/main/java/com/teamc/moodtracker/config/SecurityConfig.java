@@ -69,38 +69,9 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    private final Environment env;
 
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-    // 이 메소드는 DaoAuthenticationProvider 객체를 생성하고 구성
-    // UserDetailsService와 PasswordEncoder를 설정하여 사용자 인증 정보를 관리한다.
 
-    private final Environment env;
-
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }=======
-
-    private final Environment env;>>>>>>>
-
-    b170f72 (✨ 채팅 백엔드 구현)
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
