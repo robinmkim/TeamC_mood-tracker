@@ -201,7 +201,7 @@ export default {
 
         //  장고로부터 사진 base64형태로 반환받음
         axios
-          .get("http://192.168.0.2:9000/face/getGeneratedImage", {
+          .get("http://192.168.0.13:9000/face/getGeneratedImage", {
             params: {
               imageName: this.generatedImageFileName,
             },
@@ -261,7 +261,7 @@ export default {
     },
     imageDownload: function () {
       axios
-        .get("http://192.168.0.2:9000/face/downloadGeneratedImage", {
+        .get("http://192.168.0.13:9000/face/downloadGeneratedImage", {
           params: {
             imageName: this.generatedImageFileName,
           },
