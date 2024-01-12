@@ -13,7 +13,6 @@
         <div class="notiUserName font-bold text-lg">{{ userInfo.m_name }}</div>
         <div class="text-slate-400 text-sm ml-2">
           {{ userInfo.m_handle }} {{ formatTime(board.regdate) }}
-
         </div>
       </div>
       <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
@@ -127,7 +126,6 @@ export default {
   },
   data() {
     return {
-
       userInfo: {},
       currentImageIndex: 1,
       isLikeClicked: false,
@@ -157,7 +155,6 @@ export default {
     shotText() {
       // 본문의 일부만 보여주되, 본문이 존재하는 경우에만 작업을 수행합니다.
       return this.board.b_content ? this.board.b_content.slice(0, 20) : "";
-
     },
     sentimentEmoji() {
       // 감정에 해당하는 이모지를 반환합니다.
@@ -188,7 +185,6 @@ export default {
     getPrfileImgUrl() {
       return `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
     },
-
 
     getImageUrl(media) {
       // md_path와 md_name을 결합하여 이미지의 전체 경로를 반환합니다.
