@@ -13,12 +13,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -27,14 +25,14 @@ public class SecurityConfig {
                 // 인증 설정
                 .cors(cors -> cors.configurationSource(myCorsConfigurationSource()))
                 // 인가 설정
-                .authorizeRequests(authorize -> authorize.anyRequest().permitAll()
-                );
+                .authorizeRequests(authorize -> authorize.anyRequest().permitAll());
         return http.build();
     }
 
     CorsConfigurationSource myCorsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://192.168.0.84:8080/", "http://localhost:8080/"));
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Arrays.asList("http://192.168.0.219:8081/", "http://localhost:8081/"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -42,4 +40,3 @@ public class SecurityConfig {
         return source;
     }
 }
-

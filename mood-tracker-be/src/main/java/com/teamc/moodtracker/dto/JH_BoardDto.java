@@ -7,10 +7,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Alias("bvo")
+@Alias("jh_bvo")
 @Getter
 @Setter
-public class BoardDto {
+public class JH_BoardDto {
     private int b_id;
     private int m_id;
     private String b_content ;

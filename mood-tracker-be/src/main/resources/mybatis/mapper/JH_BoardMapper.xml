@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.teamc.moodtracker.dao.BoardDao">
+<mapper namespace="com.teamc.moodtracker.dao.JH_BoardDao">
     <insert id="addBoard" parameterType="bvo">
         <selectKey keyProperty="b_id" resultType="int" order="BEFORE">
             SELECT board_seq.NEXTVAL FROM DUAL
@@ -43,5 +43,18 @@
         WHERE (SELECT COUNT(*) FROM board WHERE b_id > b.b_id) BETWEEN #{lastRowNum} AND (#{lastRowNum} + 4)
         ORDER BY b.b_id DESC
     </select>
+
+    <update id="updateBoard" parameterType="jh_bvo">
+        update board set
+        b_content = #{b_content}, B_SENTIMENT = #{b_sentiment} where b_id = #{b_id}
+    </update>
+
+    <select id="getMediaList" parameterType="Integer" resultType="mdto">
+        select md_id, md_name, md_path, md_type, b_id from media_table where b_id = #{b_id}
+    </select>
+
+    <delete id="delMedai" parameterType="Integer">
+        delete media_table where md_id = #{md_id}
+    </delete>
 </mapper>
 

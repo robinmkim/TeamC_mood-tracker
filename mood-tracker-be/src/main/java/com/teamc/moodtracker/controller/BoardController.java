@@ -29,12 +29,13 @@ public class BoardController {
     private BoardService service;
 
     String imageDirectory = "src/main/resources/static/images/";
+
     @PostMapping("/add")
     public int addBoardContent(@ModelAttribute BoardDto dto,
-                               @RequestParam(value = "mediaList", required = false) List<MultipartFile> mediaList) {
+            @RequestParam(value = "mediaList", required = false) List<MultipartFile> mediaList) {
         List<MediaDto> mediaDtos = new ArrayList<>();
-
-        if(mediaList != null) {
+        System.out.print(dto);
+        if (mediaList != null) {
             for (MultipartFile multipartFile : mediaList) {
                 MediaDto mediaDto = new MediaDto();
                 mediaDto.setMd_name(multipartFile.getOriginalFilename());
@@ -53,8 +54,8 @@ public class BoardController {
         return 1; // 예시: 성공 시 1 반환
     }
 
-    public String uploadFile(MultipartFile file, String path){
-        if(!file.isEmpty()){
+    public String uploadFile(MultipartFile file, String path) {
+        if (!file.isEmpty()) {
             try (FileOutputStream writer = new FileOutputStream(path)) {
                 writer.write(file.getBytes());
                 return "File Uploaded Successfully!";
@@ -73,7 +74,7 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public List<Integer> getBoardList(@RequestParam(value="lastRowNum") int lastRowNum) {
+    public List<Integer> getBoardList(@RequestParam(value = "lastRowNum") int lastRowNum) {
         return service.getBoardList(lastRowNum);
     }
 }
