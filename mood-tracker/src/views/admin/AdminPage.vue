@@ -224,7 +224,7 @@
                   </div>
                 </div>
               </nav>
-              <!-- FnA tab -->
+              <!-- Faq tab -->
               <div v-if="currentSubTab === 0">
                 <FaqList></FaqList>
               </div>
@@ -343,11 +343,11 @@
                               <input
                                 type="text"
                                 class="rounded-lg h-10 text-sm bg-slate-50 border placeholder-slate-400 border-slate-200 focus:outline-slate-400 mb-2"
-                                :value="'FnA 질문 내용' + (newIndex + 1)"
+                                :value="'Faq 질문 내용' + (newIndex + 1)"
                               />
                               <textarea
                                 class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
-                                :value="'FnA 질문 답변' + (newIndex + 1)"
+                                :value="'Faq 질문 답변' + (newIndex + 1)"
                               ></textarea>
                               <div
                                 class="flex justify-center items-center mt-4"
@@ -375,7 +375,7 @@
 </template>
 
 <script>
-// FnAitems 에서 작성자 테스트를 위해 user삭제
+// Faqitems 에서 작성자 테스트를 위해 user삭제
 import PostDetailPageVue from "../post/PostDetailPage.vue";
 import MypageMain from "../mypage/MypageMain.vue";
 import FaqList from "../../components/admin/FaqList.vue";
@@ -402,7 +402,7 @@ export default {
         { name: "유저", id: "adminComplaintUser" },
       ],
       adminQnATabs: [
-        { name: "FnA", id: "adminQnAPost" },
+        { name: "Faq", id: "adminQnAPost" },
         { name: "QnA", id: "adminQnAUser" },
       ],
       Postitems: [
@@ -445,7 +445,7 @@ export default {
           date: "2023.12.19",
         },
       ],
-      FnAitems: [],
+      Faqitems: [],
       idx: null,
       QnAitems: [
         {
@@ -472,7 +472,6 @@ export default {
       editedContent: "",
     };
   },
-  //추가
   components: { PostDetailPageVue, MypageMain, FaqList },
   methods: {
     formatRegDate(redate) {
