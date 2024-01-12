@@ -48,6 +48,7 @@
                 >
                   <li><button type="button">대화삭제</button></li>
                   <li><button type="button">신고하기</button></li>
+
                 </ul>
                 <div class="text-xs">{{ room.message }}</div>
               </div>
@@ -56,6 +57,7 @@
         </ul>
       </div>
     </div>
+
 
     <div class="flex w-2/5 border-r border-gray-200 flex-col">
       <div
@@ -221,6 +223,7 @@ export default {
     async created() {
       this.connect();
       this.loadChatRooms();
+
     },
     methods: {
       autoExpand(event) {
@@ -535,3 +538,4 @@ export default {
   overflow: auto;
 }
 </style>
+

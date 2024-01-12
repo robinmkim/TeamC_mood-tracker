@@ -1,18 +1,22 @@
 package com.teamc.moodtracker.config;
 
+
 import com.teamc.moodtracker.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,6 +41,36 @@ public class SecurityConfig {
     // JWT 토큰을 검증하는 필터
     @Autowired
     private JwtTokenFilter jwtAuthenticationFilter;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+    // 이 메소드는 DaoAuthenticationProvider 객체를 생성하고 구성
+    // UserDetailsService와 PasswordEncoder를 설정하여 사용자 인증 정보를 관리한다.
+
+
+    private final Environment env;
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    private final Environment env;
+
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -87,6 +121,7 @@ public class SecurityConfig {
                 // 로그아웃 기능 비활성화: 상태를 유지하지 않는 인증 방식에서는 로그아웃이 필요 없다.
                 .logout((logout) -> logout.disable());
         // 인증 설정
+
         // 인가 설정
 
         return http.build();
@@ -94,13 +129,12 @@ public class SecurityConfig {
 
     CorsConfigurationSource myCorsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(true);
-
         String allowedOriginsProperty = env.getProperty("allowed-origins");
         List<String> allowedOrigins = (allowedOriginsProperty != null)
                 ? Arrays.asList(allowedOriginsProperty.split(","))
                 : Collections.emptyList();
         System.out.println("allowedOrigins: " + allowedOrigins);
+        configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
