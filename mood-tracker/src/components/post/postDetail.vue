@@ -2,7 +2,7 @@
   <div class="m-4 border-b" @scroll="handleScroll">
     <!-- 게시글 헤더 영역 -->
     <div class="postHerder flex flex-row mb-3">
-      <div class="h-14 w-14 overflow-hidden relative">
+      <div class="h-[45px] w-[45px] overflow-hidden relative rounded-full">
         <img
           class="postDetailUserImg object-contain rounded-full"
           :src="getUserImageUrl()"
@@ -16,7 +16,7 @@
           {{ user.m_handle }}
         </div>
         <div class="text-slate-400 text-sm ml-2">
-          {{ formatTime(board.regdate) }}
+          {{ userInfo.m_handle }} {{ formatTime(board.regdate) }}
         </div>
       </div>
       <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
@@ -171,6 +171,7 @@ export default {
       currentImageIndex: 1,
       isLikeClicked: false,
       showMoreText: false,
+      mid: 1,
       board: {
         b_id: null,
         m_id: null,
@@ -200,7 +201,7 @@ export default {
   computed: {
     shotText() {
       // 본문의 일부만 보여주되, 본문이 존재하는 경우에만 작업을 수행합니다.
-      return this.board.b_content ? this.board.b_content.slice(0, 10) : "";
+      return this.board.b_content ? this.board.b_content.slice(0, 20) : "";
     },
     sentimentEmoji() {
       // 감정에 해당하는 이모지를 반환합니다.
@@ -262,6 +263,7 @@ export default {
     },
     toggleLike() {
       // 좋아요 버튼 상태를 토글합니다.
+      // apiClient.get(``).then(this.isLikeClicked = true;);
       this.isLikeClicked = !this.isLikeClicked;
     },
     expandText() {
@@ -305,6 +307,7 @@ export default {
     },
   },
   created() {
+    this.getMemberInfo();
     this.loadBoardData();
     this.getCommentCount();
   },
