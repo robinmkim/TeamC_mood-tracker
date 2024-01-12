@@ -60,20 +60,13 @@
 
         <div class="flex justify-center mt-3">
           <span
+            v-show="processingAnalysis"
             id="submit"
             class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center"
             @click="goToResult"
             >분석하기</span
           >
         </div>
-        <!-- <p class="w-auto m-2 text-lg">{{ this.faceAnalyzeResultMaxCate }}</p>
-        <p class="w-auto m-2 text-lg">
-          {{ this.faceAnalyzeResultFullData }}
-        </p>
-        <img
-          v-if="faceAnalyzeResultImage"
-          v-bind:src="faceAnalyzeResultImage"
-        /> -->
       </div>
       <!-- 여까지 -->
     </div>
@@ -94,9 +87,6 @@ export default {
     return {
       image: null,
       memberNum: 1, // 로그인 기능 구현 이후 삭제합니다.
-      // faceAnalyzeResultMaxCate: null,
-      // faceAnalyzeResultFullData: null,
-      // faceAnalyzeResultImage: null,
     };
   },
   methods: {
@@ -133,7 +123,7 @@ export default {
       formData.append("memberNum", this.memberNum); // 임시 유저 회원번호 (로그인 되면 수정 필수)
 
       axios
-        .post("http://192.168.0.2:9000/face/predictFace", formData, {
+        .post("http://192.168.0.13:9000/face/predictFace", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -144,30 +134,6 @@ export default {
             // 이미지를 안 넣었거나, 얼굴이 없거나 하는 경우 error 메세지 alert
             alert(res.data.error);
           } else {
-            // this.faceAnalyzeResultMaxCate = res.data.maxcate;
-            // this.faceAnalyzeResultFullData = res.data.fulldata;
-            // // 이미지 데이터를 base64 데이터 URL로 설정
-            // this.faceAnalyzeResultImage = `data:image/jpeg;base64, ${res.data.generated}`;
-            //스프링 ->
-            // axios
-            //   .get(
-            //     "http://192.168.0.93:8083/faceresult/lastResultId?memberNum=" +
-            //       this.memberNum
-            //   )
-            //   .then((res) => {
-            //     console.log(res.data);
-            //     const lastResultId = res.data;
-            //     this.$router.push({
-            //       name: "AnalyzeResult",
-            //       query: { lastResultId: lastResultId },
-            //     });
-            //   });
-            //
-
-            // this.$router.push({
-            //   name: "AnalyzeResult",
-            // });
-
             axios
               .post("http://192.168.0.93:8083/faceresult/lastResultId", {
                 memberNum: this.memberNum,
@@ -178,18 +144,10 @@ export default {
 
                 const formData = new FormData();
                 formData.append("lastResultId", lastResultId);
-                // this.$router.push({
-                //   name: "AnalyzeResult",
-                //   params: { formData: formData },
-                // });
 
-                this.$router.push({
-                  name: "AnalyzeResult",
-                  params: { lastResultId: lastResultId },
-                });
                 // this.$router.push({
                 //   name: "AnalyzeResult",
-                //   query: { lastResultId: lastResultId },
+                //   params: { lastResultId: lastResultId },
                 // });
               })
               .catch((error) => {
@@ -200,8 +158,6 @@ export default {
         .catch((error) => {
           console.log(error.message);
         });
-
-      // this.$router.push("/faceanalyze/result");
     },
   },
 };
