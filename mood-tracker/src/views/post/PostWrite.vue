@@ -147,7 +147,6 @@ export default {
 
     submitForm() {
       const formData = new FormData();
-      formData.append("m_id", 1);
       formData.append("b_content", this.text);
 
       this.files.forEach((fileObj) => {

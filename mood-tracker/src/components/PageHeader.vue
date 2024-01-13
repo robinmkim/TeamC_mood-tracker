@@ -42,6 +42,7 @@
               >타임라인</span
             ></router-link
           >
+          <span class="border-b" @click="logout">로그아웃</span>
         </div>
       </div>
       <router-link to="/chat">

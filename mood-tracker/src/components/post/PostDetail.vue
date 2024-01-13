@@ -1,6 +1,5 @@
 <template>
   <div class="m-4 border-b" @scroll="handleScroll">
-
     <!-- 게시글 헤더 영역 -->
     <div class="postHerder flex flex-row mb-3">
       <div class="h-[45px] w-[45px] overflow-hidden relative rounded-full">
@@ -15,9 +14,6 @@
         <div class="userName font-bold text-lg">{{ user.m_name }}</div>
         <div class="userHandle text-sm text-slate-500 ml-1">
           {{ user.m_handle }}
-        </div>
-        <div class="text-slate-400 text-sm ml-2">
-          {{ userInfo.m_handle }} {{ formatTime(board.regdate) }}
         </div>
       </div>
       <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
@@ -55,7 +51,6 @@
             ><span>Home</span></router-link
           >
         </div>
-
       </div>
     </div>
 
@@ -144,7 +139,6 @@
               />
             </svg>
             <span class="text-sm ml-1 mr-1">{{ commentCount }}</span>
-
           </a>
 
           <span class="ml-2">{{ sentimentEmoji }}</span>
@@ -199,7 +193,6 @@ export default {
         m_img_path: "",
       },
       commentCount: 0,
-
     };
   },
   computed: {
@@ -282,7 +275,6 @@ export default {
         .then((response) => {
           this.board = response.data;
           this.getUserInfo(); // user 데이터 갖고오기
-
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
@@ -313,10 +305,9 @@ export default {
     },
   },
   created() {
-    this.getMemberInfo();
+    this.getUserInfo();
     this.loadBoardData();
     this.getCommentCount();
-
   },
 };
 </script>
