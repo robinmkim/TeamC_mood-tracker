@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import PostDetail from "./post/PostDetail.vue";
+import PostDetail from "./post/PostDetail";
 export default {
   name: "PostModal",
   components: {

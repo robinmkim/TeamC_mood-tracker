@@ -37,7 +37,11 @@
               >Log In</span
             ></router-link
           >
-          <span @click="logout">Logout</span>
+          <router-link to="/timeline"
+            ><span class="border-b" @click="toggleDropdown"
+              >타임라인</span
+            ></router-link
+          >
         </div>
       </div>
       <router-link to="/chat">
