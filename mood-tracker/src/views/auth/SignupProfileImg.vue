@@ -125,9 +125,16 @@ export default {
       for (const key in userInfo.value) {
         formData.append(key, userInfo.value[key]);
       }
+      console.log(formData.get("m_profile"));
+      console.log(formData.get("m_bio"));
+      console.log(formData.get("m_name"));
+      console.log(formData.get("m_pwd"));
+      console.log(formData.get("m_handle"));
+      console.log(formData.get("m_bdate"));
+      console.log(formData.get("m_gender"));
 
       apiClient
-        .post("/api/auth/member/signUp", formData, {
+        .post("/api/auth/signUp", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
