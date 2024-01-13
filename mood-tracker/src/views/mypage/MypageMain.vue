@@ -9,13 +9,15 @@
         <div class="flex h-28">
           <div class="relative flex">
             <div
-              class="border-4 absolute top-[-40px] left-8 flex border-white bg-slate-600 w-32 h-32 rounded-full"
-            ></div>
+              class="border-4 absolute top-[-40px] left-8 flex border-white bg-gray-300 w-32 h-32 rounded-full overflow-hidden"
+            >
+              <img :src="getPrfileImgUrl()" alt="profile_img" />
+            </div>
           </div>
           <div class="flex ml-48 mt-2 w-full items-center">
             <div class="flex flex-col mr-5">
-              <span class="text-3xl font-bold">주우진</span>
-              <p class="text-xl">@woojin</p>
+              <span class="text-3xl font-bold">{{ userInfo.m_name }}</span>
+              <p class="text-xl">{{ userInfo.m_handle }}</p>
             </div>
             <div class="user-stats">
               <span class="text-lg">팔로워 12</span> |
@@ -24,7 +26,7 @@
           </div>
         </div>
         <PostModal :isOpen="isModalOpen" @close="isModalOpen = false" />
-        <div class="">
+        <div class="h-full">
           <nav class="flex" role="tablist">
             <div
               v-for="(tab, index) in tabs"
@@ -44,7 +46,7 @@
             </div>
           </nav>
 
-          <div class="mt-3">
+          <div class="mt-3" ref="scrollContainer">
             <div
               v-for="(tab, index) in tabs"
               :key="index"
@@ -54,6 +56,7 @@
             >
               <div v-if="tab.id === 'mood'">
                 <div>
+                  <!--그래프-->
                   <BarChart />
                   <div class="flex justify-between mx-6 mt-4">
                     <div
@@ -125,19 +128,32 @@
                   </div>
                 </div>
               </div>
+              <!--내 게시글 목록-->
               <div v-else-if="tab.id === 'post'">
-                <post-detail />
-                <post-detail />
-                <post-detail />
-                <post-detail />
-                <post-detail />
-                <post-detail />
-                <post-detail />
-                <post-detail />
+                <div
+                  class="flex-1 border-x overflow-auto"
+                  ref="postScrollContainer"
+                  @scroll="handlePostScroll"
+                >
+                  <post-detail
+                    v-for="bId in MybIdList"
+                    :key="bId"
+                    :b_id="bId"
+                  />
+                  <div v-if="isLoading" class="loading-spinner">
+                    <!-- 로딩 스피너 -->
+                  </div>
+                </div>
               </div>
+              <!--달력-->
               <div v-else-if="tab.id === 'calander'" class="flex-grow">
                 <div>
-                  <table>
+                  <div>
+                    <button @click="prevMonth" class="p-2">◀</button>
+                    <span class="text-lg">{{ currentMonth }}월</span>
+                    <button @click="nextMonth" class="p-2">▶</button>
+                  </div>
+                  <table class="w-full">
                     <thead class="w-full">
                       <th
                         v-for="day in days"
@@ -168,14 +184,34 @@
                         >
                           <div
                             @click="isModalOpen = true"
-                            class="flex flex-col h-24 mx-auto w-full overflow-hidden"
+                            class="flex flex-col h-24 mx-auto w-full overflow-hidden bg-[#AAD7D9]"
                           >
                             <div class="top h-5 w-full">
                               <span class="text-gray-500">{{ day }}</span>
                             </div>
                             <div
-                              class="bottom flex-grow h-30 py-1 w-full cursor-pointer"
-                            ></div>
+                              class="bottom flex-grow h-30 py-2 w-full cursor-pointer item-center justify-center"
+                            >
+                              <!--상위 두개 감정 보여주기-->
+                              <div
+                                class="mt-2 flex justify-center items-center gap-2"
+                              >
+                                <div class="m-2 w-[20px]">
+                                  <img
+                                    src="https://pbs.twimg.com/media/GDeOnXZakAAbkf2?format=png&name=120x120"
+                                    alt="angry"
+                                  />
+                                  <!-- <span class="px-2 opacity-75">7</span> -->
+                                </div>
+                                <div class="m-2 w-[20px]">
+                                  <img
+                                    src="https://pbs.twimg.com/media/GDeOl2pasAApYny?format=png&name=120x120"
+                                    alt="happy"
+                                  />
+                                  <!-- <span class="px-2 opacity-75">5</span> -->
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </td>
                       </tr>
@@ -183,9 +219,21 @@
                   </table>
                 </div>
               </div>
-              <div v-else-if="tab.id === 'like'">
-                <post-detail />
-                <post-detail />
+              <!--좋아요 목록-->
+              <div v-else-if="tab.id === 'like'" ref="likedScrollContainer">
+                <div
+                  class="flex-1 border-x overflow-auto"
+                  @scroll="handleLikedScroll"
+                >
+                  <post-detail
+                    v-for="bId in LikebIdList"
+                    :key="bId"
+                    :b_id="bId"
+                  />
+                  <div v-if="isLoading" class="loading-spinner">
+                    <!-- 로딩 스피너 -->
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -197,22 +245,219 @@
 
 <script>
 import SideBar from "@/components/SideBar.vue";
-import postDetail from "@/components/post/postDetail.vue";
+import PostDetail from "@/components/post/PostDetail";
 import BarChart from "@/components/BarChart.vue";
 import PostModal from "@/components/PostModal.vue";
+import apiClient from "@/utils/apiClient";
 
 export default {
-  name: "PageHome",
+  name: "MypageMain",
   components: {
     SideBar,
-    postDetail,
+    PostDetail,
     BarChart,
     PostModal,
   },
+  data() {
+    return {
+      userInfo: {},
+      MybIdList: [],
+      MylastRowNum: 0,
+      LikebIdList: [],
+      LikedlastRowNum: 0,
+      isLoading: false,
+      mid: 1, // 회원번호 넘겨주기 가능해지면 삭제할 것
+      apiEndpoint: "",
+
+      days: [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ],
+      dates: [],
+      currentYear: 0,
+      currentMonth: 0,
+      year: 0,
+      month: 0,
+      currentTab: 0,
+      tabs: [
+        { name: "나의 Mood", id: "mood" },
+        { name: "게시물", id: "post" },
+        { name: "Mood 달력", id: "calander" },
+        { name: "좋아요", id: "like" },
+      ],
+      isModalOpen: false,
+    };
+  },
+
   methods: {
+    // 유저 정보
+    getMemberInfo() {
+      apiClient
+        .get(`/member/userInfo/${this.mid}`)
+        .then((info) => {
+          console.log("유저 정보를 불러옵니다");
+          info.data.m_handle = "@" + info.data.m_handle;
+          this.userInfo = info.data;
+        })
+        .catch((err) => {
+          console.log(err, "유저 정보 못불러옴");
+        });
+    },
+    getPrfileImgUrl() {
+      return `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
+    },
+
+    // 내 게시글 불러오기
+    getMyBoardList() {
+      // this.getBIdList();
+      if (this.isLoading) {
+        console.log("post로딩중");
+        return; // 이미 로딩 중이면 요청을 하지 않음
+      }
+      this.isLoading = true;
+      apiClient
+        .get(`/mypage/list?lastRowNum=${this.MylastRowNum}&mid=${this.mid}`)
+        .then((res) => {
+          console.log("my post 넘어옴");
+          this.MylastRowNum += res.data.length;
+          this.MybIdList = [...this.MybIdList, ...res.data];
+          this.handlePostScroll();
+        })
+        .catch((err) => {
+          console.log(err, "post 뭔가 안됨");
+        })
+        .finally(() => {
+          this.isLoading = false; // 로딩 완료
+        });
+    },
+
+    // 내가 좋아요를 누른 게시글 불러오기
+    getLikedBoardList() {
+      if (this.isLoading) {
+        console.log("like로딩중");
+        return; // 이미 로딩 중이면 요청을 하지 않음
+      }
+      this.isLoading = true;
+      apiClient
+        .get(
+          `/mypage/likelist?lastRowNum=${this.LikedlastRowNum}&mid=${this.mid}`
+        )
+        .then((res) => {
+          console.log("liked post 넘어옴");
+          this.LikedlastRowNum += res.data.length;
+          this.LikebIdList = [...this.LikebIdList, ...res.data];
+          this.handleLikedScroll();
+        })
+        .catch((err) => {
+          console.log(err, "like 뭔가 안됨");
+        })
+        .finally(() => {
+          this.isLoading = false; // 로딩 완료
+        });
+    },
+
+    handlePostScroll() {
+      console.log("Post Scroll event triggered");
+      const container = this.$refs.postScrollContainer;
+      if (
+        !this.isLoading &&
+        container.scrollHeight - container.scrollTop <=
+          container.clientHeight + 50
+      ) {
+        console.log("post scroll 후 데이터 로딩");
+        this.getMyBoardList();
+      }
+    },
+    handleLikedScroll() {
+      console.log("Like Scroll event triggered");
+      const container = this.$refs.likedScrollContainer;
+      if (
+        !this.isLoading &&
+        container.scrollHeight - container.scrollTop <=
+          container.clientHeight + 50
+      ) {
+        console.log("like scroll 후 데이터 로딩");
+        this.getLikedBoardList();
+      }
+    },
+    handleScroll() {
+      this.currentTab = 0;
+      if (this.currentTab === 1) {
+        this.changeTab(1, "post");
+        console.log("~~~post scroll triggered");
+        const container = this.$refs.postScrollContainer;
+        if (
+          !this.isLoading &&
+          container.scrollHeight - container.scrollTop <=
+            container.clientHeight + 50
+        ) {
+          this.getMyBoardList();
+        }
+      } else if (this.currentTab === 3) {
+        this.changeTab(3, "like");
+        console.log("~~~liked scroll triggered");
+        const container = this.$refs.likedScrollContainer;
+        if (
+          !this.isLoading &&
+          container.scrollHeight - container.scrollTop <=
+            container.clientHeight + 50
+        ) {
+          this.getLikedBoardList();
+        }
+      }
+    },
+    // addPostScrollEventHandler() {
+    //   this.$el.postScrollContainer.addEventListener(
+    //     "scroll",
+    //     this.handlePostScroll
+    //   );
+    // },
+
+    // addLikedScrollEventHandler() {
+    //   this.$refs.likedScrollContainer.addEventListener(
+    //     "scroll",
+    //     this.handleLikedScroll
+    //   );
+    // },
+
+    // removeHandleScroll() {
+    //   this.$refs.likedScrollContainer.removeEventListener(
+    //     "scroll",
+    //     this.handleLikedScroll
+    //   );
+    //   this.$refs.postScrollContainer.removeEventListener(
+    //     "scroll",
+    //     this.handlePostScroll
+    //   );
+    // },
+
     changeTab(index, tabId) {
       this.currentTab = index;
       console.log(`현재 탭의 id: ${tabId}`);
+      // 탭이 변경되면
+      if (tabId === "post") {
+        console.log("post");
+        if (this.MybIdList.length === 0) {
+          this.getMyBoardList();
+        }
+        this.handlePostScroll();
+        // this.addPostScrollEventHandler();
+      } else if (tabId === "like") {
+        console.log("like");
+        if (this.LikebIdList.length === 0) {
+          this.getLikedBoardList();
+        }
+        this.handleLikedScroll();
+        // this.addLikedScrollEventHandler();
+      } else {
+        console.log("와앙");
+        // this.removeHandleScroll();
+      }
     },
     calendarData() {
       const [monthFirstDay, monthLastDate, lastMonthLastDate] =
@@ -265,39 +510,45 @@ export default {
       if (weekOfDays.length > 0) dates.push(weekOfDays); // 남은 날짜 추가
       return dates;
     },
+    prevMonth() {
+      if (this.month === 1) {
+        this.year -= 1;
+        this.month = 12;
+      } else {
+        this.month -= 1;
+      }
+      this.currentMonth = this.month; // 수정된 부분
+      this.calendarData();
+    },
+    nextMonth() {
+      if (this.month === 12) {
+        this.year += 1;
+        this.month = 1;
+      } else {
+        this.month += 1;
+      }
+      this.currentMonth = this.month; // 수정된 부분
+      this.calendarData();
+    },
   },
-  data() {
-    return {
-      days: [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ],
-      dates: [],
-      currentYear: 0,
-      currentMonth: 0,
-      year: 0,
-      month: 0,
-      currentTab: 0,
-      tabs: [
-        { name: "나의 Mood", id: "mood" },
-        { name: "게시물", id: "post" },
-        { name: "Mood 달력", id: "calander" },
-        { name: "좋아요", id: "like" },
-      ],
-      isModalOpen: false,
-    };
-  },
+
   created() {
     // 데이터에 접근이 가능한 첫 번째 라이프 사이클
     const date = new Date();
     this.year = date.getFullYear();
     this.month = date.getMonth() + 1;
+    this.currentMonth = this.month;
     this.calendarData();
+    this.getMemberInfo();
+    this.getPrfileImgUrl();
+    // this.getLikedBoardList();
+    // this.getMyBoardList();
+  },
+  mounted() {
+    // document.addEventListener("scroll", this.handleScroll, true);
+  },
+  beforeUnmount() {
+    // window.removeEventListener("scroll", this.handleScroll);
   },
 };
 </script>

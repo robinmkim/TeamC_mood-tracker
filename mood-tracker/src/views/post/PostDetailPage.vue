@@ -1,81 +1,33 @@
 <template>
-  <div class="flex min-h-screen">
+  <div class="flex min-h-screen" @scroll="handleScroll">
     <div class="w-1/5">
       <side-bar></side-bar>
     </div>
     <div class="flex-1 border-x flex">
-      <div class="flex-1">
+      <div class="flex-1 border-r">
         <!-- post 내용 -->
-        <postDetail></postDetail>
+        <postDetail
+          :b_id="b_id"
+          ref="postDetail"
+          @post-detail-scroll="handlePostDetailScroll"
+        ></postDetail>
       </div>
-      <div class="flex-1 border-l border-l-slate-300">
-        <!-- 댓글창 -->
-        <div class="p-3 border-b border-b-slate-300">
-          <div class="postHerder flex flex-row m">
-            <div class="h-14 w-14 overflow-hidden relative rounded-full">
-              <img
-                class="postDetailUserImg object-contain rounded-full"
-                src="..\..\assets\notiProfileImage01.jpg"
-                alt="user icon"
-              />
-            </div>
-            <div class="flex flex-row items-center mx-3">
-              <div class="notiUserName font-bold text-lg">UserName</div>
-              <div class="text-slate-400 text-sm ml-2">2분전</div>
-            </div>
-            <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
-              <!-- 미트볼 아이콘-->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6 pt-1"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-                />
-              </svg>
-            </div>
-          </div>
-          <div class="text-left ml-6 mt-2">댓글내용~~~ 01</div>
+      <div class="flex-1 flex flex-col h-screen relative">
+        <!-- comment 내용 -->
+        <div v-if="commentCount > 0" class="flex-none overflow-hidden h-[100%]">
+          <postComment
+            :b_id="b_id"
+            ref="postComment"
+            @post-comment-scroll="handlePostCommentScroll"
+            :childClass="'h-3/4'"
+          ></postComment>
         </div>
-
-        <div class="p-3 border-b border-b-slate-300 pl-10">
-          <div class="postHerder flex flex-row m">
-            <div class="h-14 w-14 overflow-hidden relative rounded-full">
-              <img
-                class="postDetailUserImg object-contain rounded-full"
-                src="..\..\assets\notiProfileImage01.jpg"
-                alt="user icon"
-              />
-            </div>
-            <div class="flex flex-row items-center mx-3">
-              <div class="notiUserName font-bold text-lg">UserName2</div>
-              <div class="text-slate-400 text-sm ml-2">2분전</div>
-            </div>
-            <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
-              <!-- 미트볼 아이콘-->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6 pt-1"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-                />
-              </svg>
-            </div>
-          </div>
-          <div class="text-left ml-6 mt-2">댓글내용~~~ 02</div>
+        <div v-else-if="commentCount === 0">comment가 없습니다!</div>
+        <div
+          id="addComment"
+          class="w-auto h-1/5 bg-slate-100 overflow-y-auto fixed bottom-0"
+        >
+          aa
         </div>
       </div>
     </div>
@@ -84,13 +36,61 @@
 </template>
 
 <script>
+import apiClient from "@/utils/apiClient";
 import SideBar from "@/components/SideBar";
-import postDetail from "@/components/post/postDetail";
+import PostDetail from "@/components/post/PostDetail";
+import postComment from "@/components/post/PostComment";
 export default {
+  data() {
+    return {
+      b_id: this.$route.query.b_id,
+      commentCount: -1,
+    };
+  },
+  methods: {
+    // 부모 컴포넌트의 스크롤 이벤트 핸들러
+    // handleScroll() {
+    //   console.log("Scroll event triggered"); // 스크롤 이벤트가 발생했음을 나타내는 로그
+    //   const container = this.$refs.scrollContainer;
+    //   if (
+    //     !this.isLoading &&
+    //     container.scrollHeight - container.scrollTop <=
+    //       container.clientHeight + 50
+    //   ) {
+    //     this.getBIdList();
+    //   }
+    // },
+
+    // handleScroll() {
+    //   console.log("Parent component scroll");
+    // },
+    // handlePostDetailScroll() {
+    //   console.log("PostDetail component scroll");
+    // },
+    // handlePostCommentScroll() {
+    //   console.log("PostComment component scroll");
+    // },
+    getCommentCount() {
+      apiClient
+        .get(`/jh_comment/allCommentCount?cm_bid=${this.b_id}`)
+        .then((response) => {
+          this.commentCount = response.data;
+          console.log("==>" + this.commentCount);
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+    },
+  },
+  props: {},
   name: "PostDetailPage",
   components: {
     SideBar,
-    postDetail,
+    PostDetail,
+    postComment,
+  },
+  created() {
+    this.getCommentCount();
   },
 };
 </script>

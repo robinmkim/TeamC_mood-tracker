@@ -4,8 +4,45 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamc.moodtracker.dao.FaceresultDao">
 
+<!--    <insert id="insertFaceResult" parameterType="FaceresultDto">-->
+<!--        INSERT INTO analyze_result(ar_id, ar_member_num, ar_origin_img, ar_generated_img, ar_content, ar_analyze_date)-->
+<!--            VALUES(arseq.nextval, 1, 'face10.jpg', 'x_face10.jpg', '{"happy":98.12345}', sysdate)-->
+<!--    </insert>-->
 
+    <select id="selectList" resultType="FaceresultDto">
+        SELECT * FROM analyze_result
+    </select>
 
+    <select id="selectMyList" parameterType="int" resultType="FaceresultDto">
+        SELECT * FROM analyze_result
+            WHERE ar_member_num = #{ar_member_num}
+    </select>
+
+    <select id="selectIdOfMyLastFaceResult" parameterType="int" resultType="int">
+        SELECT max(ar_id) FROM analyze_result
+        WHERE ar_member_num = #{ar_member_num}
+    </select>
+
+    <select id="selectFaceResultDetail" parameterType="int" resultType="FaceresultDto">
+        SELECT * FROM analyze_result
+        WHERE ar_id = #{ar_id}
+    </select>
+
+    <delete id="deleteFaceResult" parameterType="int">
+        DELETE FROM analyze_result
+            WHERE ar_id = #{ar_id}
+    </delete>
+
+    <update id="updateFeedbackBad" parameterType="int" >
+        UPDATE analyze_result
+        SET ar_feedback = 'bad'
+        WHERE ar_id = #{ar_id}
+    </update>
+    <update id="updateFeedbackGood" parameterType="int" >
+        UPDATE analyze_result
+        SET ar_feedback = 'good'
+        WHERE ar_id = #{ar_id}
+    </update>
 
 
 </mapper>

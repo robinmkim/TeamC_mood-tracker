@@ -1,8 +1,8 @@
-import adminPage from "/src/views/admin/adminPage.vue";
+import AdminPage from "/src/views/admin/AdminPage.vue";
 
 export default [
   {
     path: "/admin",
-    component: adminPage,
+    component: AdminPage,
   },
 ];
