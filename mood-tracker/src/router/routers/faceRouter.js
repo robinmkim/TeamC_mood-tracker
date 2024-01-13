@@ -6,8 +6,21 @@ export default [
     path: "/faceanalyze",
     component: FaceAnalyze,
   },
+  // {
+  //   path: "/faceanalyze/result/:formData",
+  //   name: "AnalyzeResult",
+  //   component: AnalyzeResult,
+  //   props: true,
+  // },
   {
-    path: "/faceanalyze/result",
+    path: "/faceanalyze/result/:lastResultId",
+    name: "AnalyzeResult",
     component: AnalyzeResult,
+    props: true,
   },
+  // {
+  //   path: "/faceanalyze/result",
+  //   name: "AnalyzeResult",
+  //   component: AnalyzeResult,
+  // },
 ];

@@ -85,7 +85,6 @@ export default {
       console.log(state.userInfo);
       if (state) {
         userInfo.value = state.userInfo;
-        console.log(userInfo.value.userId);
       }
     });
 
@@ -101,7 +100,7 @@ export default {
       router.push({
         name: "SignupUsername",
         state: {
-          userInfo: { userId: userInfo.value.userId, password: password.value },
+          userInfo: { ...userInfo.value, m_pwd: password.value },
         },
       });
     };

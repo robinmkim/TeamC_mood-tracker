@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center justify-center h-full p-6">
-    <div class="bg-white rounded-lg p-8 h-96 shadow-md w-full max-w-sm">
+    <div class="bg-white rounded-lg p-8 h-100 shadow-md w-full max-w-sm">
       <div class="flex flex-col items-center mb-6">
         <!-- 로고나 아이콘을 넣을 수 있는 공간 -->
         <svg
@@ -36,12 +36,25 @@
                   class="w-full h-full object-cover"
                 />
               </div>
-
               <div class="w-full h-full flex items-center justify-center">
                 <span class="text-gray-500 text-3xl">+</span>
               </div>
             </div>
           </label>
+        </div>
+        <div class="flex flex-col">
+          <div class="flex">
+            <input
+              id="username"
+              type="text"
+              placeholder="간단한 자기 소개를 적어주세요"
+              v-model="bio"
+              class="border-2 border-gray-300 p-2 mb-2 w-full rounded-md focus:border-[#64CCC5] focus:outline-none"
+            />
+          </div>
+          <span v-if="errors.bio" class="text-sm text-left text-red-500">{{
+            errors.bio
+          }}</span>
         </div>
         <button
           type="submit"
@@ -56,34 +69,22 @@
 
 <script>
 import { useForm, useField } from "vee-validate";
-import { useRouter } from "vue-router"; // router를 임포트
+import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
+import * as yup from "yup";
+import apiClient from "@/utils/apiClient";
+
+const validationSchema = yup.object().shape({
+  bio: yup.string(),
+});
 
 export default {
   name: "SignupProfileImg",
-  methods: {
-    handleFileSelect() {
-      const fileInput = this.$refs.fileInput;
-      const file = fileInput.files[0];
-      this.handleImageUpload(file);
-    },
-    handleImageUpload(file) {
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          this.profileImg = reader.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-    openFileInput() {
-      const fileInput = this.$refs.fileInput;
-      fileInput.click();
-    },
-  },
   setup() {
-    const router = useRouter();
+    const fileInput = ref(null);
+    const profileImg = ref(null);
     const userInfo = ref({});
+    const router = useRouter();
 
     onMounted(() => {
       const state = history.state;
@@ -92,30 +93,79 @@ export default {
         userInfo.value = state.userInfo;
       }
     });
-    const { handleSubmit } = useForm();
-    const { value: profileImg } = useField("profileImg");
+
+    const { handleSubmit, errors } = useForm({ validationSchema });
+    const { value: bio } = useField("bio");
+
+    const handleFileSelect = () => {
+      const file = fileInput.value.files[0];
+      handleImageUpload(file);
+    };
+
+    const handleImageUpload = (file) => {
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          profileImg.value = reader.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    const openFileInput = () => {
+      fileInput.value.click();
+    };
+
+    const submitData = () => {
+      let formData = new FormData();
+      formData.append("m_profile", fileInput.value.files[0]);
+      formData.append("m_bio", bio.value); // 'fileInput' ref에서 파일 추가
+
+      // userInfo의 다른 데이터를 FormData에 추가
+      for (const key in userInfo.value) {
+        formData.append(key, userInfo.value[key]);
+      }
+      console.log(formData.get("m_profile"));
+      console.log(formData.get("m_bio"));
+      console.log(formData.get("m_name"));
+      console.log(formData.get("m_pwd"));
+      console.log(formData.get("m_handle"));
+      console.log(formData.get("m_bdate"));
+      console.log(formData.get("m_gender"));
+
+      apiClient
+        .post("/api/auth/signUp", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => {
+          router.push({
+            name: "SignupSuccess",
+            state: {
+              userInfo: { ...userInfo.value, m_profile: profileImg.value },
+            },
+          });
+        })
+        .catch((error) => {
+          console.error("Error during data submission:", error);
+        });
+    };
+
     const onNextClick = () => {
       handleSubmit(() => {
-        goToNextStep();
+        submitData();
       })();
     };
 
-    // 다음단계로 이동
-    const goToNextStep = () => {
-      router.push({
-        name: "SignupSuccess",
-        state: {
-          userInfo: {
-            ...userInfo.value,
-            profileImg: profileImg.value,
-          },
-        },
-      });
-    };
-
     return {
-      onNextClick,
+      fileInput,
       profileImg,
+      bio,
+      errors,
+      onNextClick,
+      handleFileSelect,
+      openFileInput,
     };
   },
 };

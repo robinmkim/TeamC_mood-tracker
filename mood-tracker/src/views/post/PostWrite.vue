@@ -93,11 +93,18 @@ export default {
         "😨": "surprise",
       },
       emotion: "happy",
+      user: {
+        m_name: null,
+        m_hanble: null,
+        m_img_name: "",
+        m_img_path: "",
+      },
     };
   },
   name: "PostWrite",
   methods: {
     adjustHeight(e) {
+      // textarea높이 자동 조절
       const element = e.target;
       element.style.height = "auto";
       element.style.height = element.scrollHeight + "px";
@@ -160,6 +167,8 @@ export default {
           console.log("success");
         })
         .catch((error) => {
+          console.log("formData" + formData);
+
           console.log(error);
         });
     },
