@@ -1,4 +1,10 @@
 <template>
+  <div v-if="isLoading" class="loading-container">
+    <div class="loading">
+      <Fade-loader />
+    </div>
+  </div>
+
   <div class="flex h-screen">
     <div class="w-1/5">
       <side-bar></side-bar>
@@ -60,10 +66,17 @@
 
         <div class="flex justify-center mt-3">
           <span
+            v-if="!isLoading"
             id="submit"
-            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center"
+            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center hover:bg-[#6fe3db] hover:scale-110 duration-300"
             @click="goToResult"
             >분석하기</span
+          >
+          <span
+            v-if="isLoading"
+            id="submit"
+            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center"
+            >분석 중...</span
           >
         </div>
       </div>
@@ -75,15 +88,22 @@
 </template>
 
 <script>
+import FadeLoader from "vue-spinner/src/FadeLoader.vue";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 import SideBar from "@/components/SideBar";
+import apiClient from "./../../utils/apiClient";
 export default {
   name: "FaceAnalyze",
   components: {
     SideBar,
+    FadeLoader,
   },
   data() {
     return {
       image: null,
+      isLoading: false,
+      // memberNum: 1, // 로그인 기능 구현 이후 삭제합니다.
     };
   },
   methods: {
@@ -114,8 +134,65 @@ export default {
       fileInput.click();
     },
 
-    goToResult() {
-      this.$router.push("/faceanalyze/result");
+    async goToResult() {
+      // 분석하기 -> 분석중
+      this.isLoading = true;
+      // [ST] jwtToken decode해서 m_id를 추출한다.
+      const token = localStorage.getItem("jwtToken");
+      console.log(token);
+      const decoded = jwtDecode(token);
+      console.log(decoded);
+      console.log(decoded.m_id);
+      // [ED] jwtToken decode
+
+      const formData = new FormData();
+      formData.append("file1", this.$refs.fileInput.files[0]);
+      formData.append("m_id", decoded.m_id); // 임시 유저 회원번호 (로그인 되면 수정 필수)
+      // formData.append("token", token); // decode는 장고에서.
+
+      //장고로 토큰, file1을 보낸다. 토큰decode는 장고에서 하도록 수정할 것
+      // const {data} = await this.$axios({
+
+      // })
+
+      await axios
+        .post("http://192.168.0.13:9000/face/predictFace", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.error != null) {
+            // 이미지를 안 넣었거나, 얼굴이 없거나 하는 경우 error 메세지 alert
+            this.isLoading = false;
+            alert(res.data.error);
+          } else {
+            apiClient
+              .get("/faceresult/lastResultId")
+              .then((res) => {
+                console.log(res.data);
+                const lastResultId = res.data;
+
+                const formData = new FormData();
+                formData.append("lastResultId", lastResultId);
+
+                this.$router.push({
+                  name: "AnalyzeResult",
+                  params: { lastResultId: lastResultId },
+                });
+              })
+              .catch((error) => {
+                console.log("error", error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log(error.message);
+          this.isLoading = false;
+        });
+      // 분석중 -> 분석하기
+      this.isLoading = false;
     },
   },
 };
@@ -123,4 +200,12 @@ export default {
 
 <style scoped>
 /* 추가적인 스타일링을 위해 필요한 경우 여기에 작성하세요 */
+.loading {
+  z-index: 2;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 0 0 9999px;
+}
 </style>

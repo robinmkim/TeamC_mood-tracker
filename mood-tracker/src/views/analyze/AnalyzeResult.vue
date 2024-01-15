@@ -4,12 +4,10 @@
       <side-bar></side-bar>
     </div>
 
-    <div class="flex-1 w-full h-screen bg-[#E7F1E5]">
+    <div class="flex-1 w-full bg-[#E7F1E5] h-screen overflow-auto">
       <!-- 여기서부터 ~~~ -->
       <div class="flex flex-col justify-center items-center">
-        <div
-          class="flex flex-col w-[700px] h-screen mt-5 items-center justify-center"
-        >
+        <div class="flex flex-col w-[700px] mt-5 items-center justify-center">
           <!-- 감정 이모티콘 -->
           <div class="flex flex-col w-[500px] h-auto" id="imoji">
             <div class="relative m-2">
@@ -24,6 +22,7 @@
             </div>
             <div class="flex flex-col justify-center text-center">
               <p class="w-auto mt-1">오늘의 기분은 ?<br /></p>
+              <p class="w-auto m-2 text-lg">"{{ myExpresion }}"</p>
             </div>
           </div>
 
@@ -37,12 +36,51 @@
 
             <div class="w-72 h-auto">
               <img
-                src="..\..\assets\resSample.png"
+                v-bind:src="generatedImageSrc"
                 alt="Post image"
                 class="w-665 h-65"
               />
             </div>
-            <p class="w-auto m-2 text-lg">Neutral</p>
+            <button
+              class="flex rounded-lg bg-[#DAFFFB] p-2 m-1 hover:bg-[#b6eee8] hover:scale-110 duration-300"
+              v-on:click="imageDownload"
+            >
+              이미지 다운로드
+            </button>
+
+            <button
+              class="flex rounded-lg bg-[#DAFFFB] p-2 m-1 hover:bg-[#b6eee8] hover:scale-110 duration-300"
+              v-on:click="writePost"
+            >
+              게시물 작성하기
+            </button>
+
+            <!-- <p class="w-auto m-2 text-lg">*lastResultId={{ lastResultId }}</p>
+            <p class="w-auto m-2 text-lg">
+              *faceAnalyzeResult={{ faceAnalyzeResult }}
+            </p> -->
+            <!-- <p class="w-auto m-2 text-lg">
+              *generatedImageFileName={{ generatedImageFileName }}
+            </p> -->
+
+            <div><p>분석결과 피드백 하기</p></div>
+            <div class="flex">
+              <button
+                class="flex rounded-lg bg-[#DAFFFB] p-2 m-1 hover:bg-[#b6eee8] hover:scale-110 duration-300"
+                v-on:click="feedbackGood"
+              >
+                마음에 들어요
+              </button>
+              <button
+                class="flex rounded-lg bg-[#ffdcda] p-2 m-1 hover:bg-[#ffccc9] hover:scale-110 duration-300"
+                v-on:click="feedbackBad"
+              >
+                마음에 안 들어요
+              </button>
+            </div>
+            <!-- <p class="w-auto m-2 text-lg">**{{ faceAnalyzeResult }}</p>
+            <p class="w-auto m-2 text-lg">**{{ myExpresion }}</p> -->
+            <!-- <p class="w-auto m-2 text-lg">Neutral</p> -->
 
             <!-- <div class="text-center">와아 즐겁다아</div> -->
           </div>
@@ -120,12 +158,119 @@
 <script>
 // import { Radar } from "vue-chartjs";
 // import ResultChart from "./ResultChart.vue";
+import apiClient from "./../../utils/apiClient";
 import SideBar from "@/components/SideBar";
+import axios from "axios";
 export default {
+  props: ["lastResultId"],
+  // props: ["formData"],
   name: "AnalyzeResult",
   components: {
     // ResultChart,
     SideBar,
+  },
+  data() {
+    return {
+      memberNum: 1,
+      myExpresion: null,
+      faceAnalyzeResult: null,
+      // lastResultId: null,
+      generatedImageFileName: null,
+      generatedImageSrc: null,
+    };
+  },
+  mounted() {
+    apiClient
+      .get("http://192.168.0.93:8083/faceresult/detail", {
+        params: {
+          ar_id: this.lastResultId,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        this.myExpresion = res.data.ar_content_max;
+        this.faceAnalyzeResult = res.data.ar_content;
+        this.generatedImageFileName = res.data.ar_generated_img;
+
+        //  장고로부터 사진 base64형태로 반환받음
+        axios
+          .get("http://192.168.0.13:9000/face/getGeneratedImage", {
+            params: {
+              imageName: this.generatedImageFileName,
+            },
+          })
+          .then((res) => {
+            console.log(res.data);
+            this.generatedImageSrc = `data:image/jpeg;base64, ${res.data.generatedImg}`;
+          });
+      });
+  },
+  methods: {
+    notHappyWithResult: function () {
+      this.showFeedbackMenus = !this.showFeedbackMenus;
+      console.log("피드백 하기 클릭됨");
+      // alert(
+      //   this.lastResultId +
+      //     "\n분석결과가 마음에 들지 않으신가요?\n더 나은 서비스를 위해 피드백을 남겨주세요"
+      // );
+    },
+    feedbackBad: function () {
+      const formData = new FormData();
+      formData.append("ar_id", this.lastResultId);
+
+      apiClient
+        .post("/faceresult/feedback/bad", {
+          ar_id: this.lastResultId,
+        })
+        .then(() => {
+          console.log("feedback Bad Success");
+          alert("feedback Bad Success");
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    },
+    feedbackGood: function () {
+      apiClient
+        .post("/faceresult/feedback/good", {
+          ar_id: this.lastResultId,
+        })
+        .then(() => {
+          console.log("feedback Good Success");
+          alert("feedback Good Success");
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    },
+    imageDownload: function () {
+      //장고
+      axios
+        .get("http://192.168.0.13:9000/face/downloadGeneratedImage", {
+          params: {
+            imageName: this.generatedImageFileName,
+          },
+          responseType: "blob",
+        })
+        .then((response) => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", this.generatedImageFileName);
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    writePost: function () {
+      // confirm("게시물 작성하러 가기");
+      this.$router.push({
+        name: "PostWriteWithAnalyzeResult",
+        params: { resultId: this.$props.lastResultId },
+      });
+    },
   },
 };
 </script>

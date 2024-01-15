@@ -18,14 +18,20 @@
           <div
             v-for="(tab, index) in tabs"
             :key="index"
-            class="text-base h-10 flex-1 flex justify-center items-center border-b-4"
+            class="text-base h-10 flex-1 flex justify-center items-center border-b-4 relative"
             :class="{
-              'border-[#64CCC5]': currentTab === index,
+              // 'border-[#64CCC5]': currentTab === index,
               'hover:border-[#e0e0e0] border-transparent': currentTab !== index,
             }"
             @click="changeTab(index, tab.id)"
             role="tab"
           >
+            <transition name="selTab">
+              <div
+                class="selBar bg-[#64CCC5] w-full h-1 absolute bottom-[-4px]"
+                v-if="currentTab === index"
+              ></div>
+            </transition>
             <span class="notiTabName align-middle">
               {{ tab.name }}
             </span>
@@ -286,4 +292,25 @@ export default {
   },
 };
 </script>
-<style scoped></style>
+<style scoped>
+.selTab-enter-active {
+  animation: bounce-in 0.5s;
+}
+/* .selTab-leave-active {
+  animation: bounce-in 0.5s reverse;
+} */
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+    width: 100%;
+  }
+  50% {
+    transform: scale(1.25);
+    width: 90%;
+  }
+  100% {
+    transform: scale(1);
+    width: 100%;
+  }
+}
+</style>
