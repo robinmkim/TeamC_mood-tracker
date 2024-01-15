@@ -268,7 +268,7 @@ export default {
       // confirm("게시물 작성하러 가기");
       this.$router.push({
         name: "PostWriteWithAnalyzeResult",
-        params: { lastResultId: this.$props.lastResultId },
+        params: { resultId: this.$props.lastResultId },
       });
     },
   },

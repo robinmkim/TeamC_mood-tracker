@@ -75,10 +75,10 @@
   </div>
 </template>
 <script>
-// import axios from "axios";
+import axios from "axios";
 import apiClient from "@/utils/apiClient";
 export default {
-  props: ["lastResultId"],
+  props: ["resultId"],
   data() {
     return {
       memberHandle: "",
@@ -115,7 +115,7 @@ export default {
     apiClient
       .get("/faceresult/detail", {
         params: {
-          ar_id: this.$props.lastResultId,
+          ar_id: this.$props.resultId,
         },
       })
       .then((res) => {
@@ -126,26 +126,49 @@ export default {
           reversedEmotionMap[value] = key;
         }
         this.selectedEmoji = reversedEmotionMap[res.data.ar_content_max];
+        this.emotion = res.data.ar_content_max;
       });
-    //lastResultId로  파일을 가져옵니다.
-    // axios
-    //     .get("http://192.168.0.13:9000/face/downloadGeneratedImage", {
-    //       params: {
-    //         imageName: this.generatedImageFileName,
-    //       },
-    //       responseType: "blob",
-    //     })
-    //     .then((response) => {
-    //       const url = window.URL.createObjectURL(new Blob([response.data]));
-    //       const link = document.createElement("a");
-    //       link.href = url;
-    //       link.setAttribute("download", this.generatedImageFileName);
-    //       document.body.appendChild(link);
-    //       link.click();
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
+    // resultId로  합성이미지의 파일이름(ar_generated_img)를 가져옵니다.
+    //스프링
+    apiClient
+      .get("/faceresult/detail", {
+        params: {
+          ar_id: this.$props.resultId,
+        },
+      })
+      .then((res) => {
+        console.log(res.data.ar_generated_img);
+        //장고로 부터 FileResponse로 이미지파일을 반환받아 blob형태로 읽고
+        axios
+          .get("http://192.168.0.13:9000/face/downloadGeneratedImage", {
+            params: {
+              imageName: res.data.ar_generated_img,
+            },
+            responseType: "blob",
+          })
+          .then((res2) => {
+            const resBlob = res2.data;
+            const fileReader = new FileReader();
+            // axios요청이 비동기적으로 처리되는 탓에 Blob 데이터를 읽어오기 전에
+            // this.processFiles([file])를 호출하는 문제를 해결하기 위해
+            // resBlob데이터를 읽는 readAsArrayBuffer를 명시한다.
+            fileReader.readAsArrayBuffer(resBlob); // Blob 데이터를 읽기 시작
+            fileReader.onload = () => {
+              // blob테이터를 FileReader를 사용해 읽고, 파일 객체를 생성합니다.
+              const file = new File([resBlob], res.data.ar_generated_img, {
+                type: "image/jpeg",
+              });
+              // 이미지 파일 객체를 업로드합니다.
+              this.processFiles([file]);
+            };
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   methods: {
     adjustHeight(e) {
@@ -166,6 +189,7 @@ export default {
     },
 
     processFiles(files) {
+      console.log("this.files = ", this.files);
       Array.from(files).forEach((file) => {
         const reader = new FileReader();
         reader.onload = (e) => {

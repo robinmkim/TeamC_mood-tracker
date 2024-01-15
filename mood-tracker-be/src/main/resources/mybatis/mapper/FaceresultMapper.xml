@@ -6,7 +6,7 @@
 
 <!--    <insert id="insertFaceResult" parameterType="FaceresultDto">-->
 <!--        INSERT INTO analyze_result(ar_id, ar_member_num, ar_origin_img, ar_generated_img, ar_content, ar_analyze_date)-->
-<!--            VALUES(arseq.nextval, 1, 'face10.jpg', 'x_face10.jpg', '{"happy":98.12345}', sysdate)-->
+<!--            VALUES(ar_seq.nextval, 1, 'face10.jpg', 'x_face10.jpg', '{"happy":98.12345}', sysdate)-->
 <!--    </insert>-->
 
     <select id="selectList" resultType="FaceresultDto">
