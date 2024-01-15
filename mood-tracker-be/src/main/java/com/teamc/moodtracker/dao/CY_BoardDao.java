@@ -15,5 +15,7 @@ public interface CY_BoardDao {
     public List<Integer> getMyBoardList(Map<String, Object> params);
 
     public List<Integer> getLikedBoardList(Map<String, Object> params) ;
+
+    public List<Integer> getListByDate(Map<String, Object> params) ;
 }
 

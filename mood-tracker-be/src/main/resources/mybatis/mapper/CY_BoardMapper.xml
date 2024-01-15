@@ -27,6 +27,10 @@
         order by b.regdate desc
     </select>
     <!-- 날짜를 기준으로 게시글 디테일-->
+    <select id="getListByDate" parameterType="map" resultType="java.lang.Integer">
+        select b_id from board where m_id=#{mid} and trunc(regdate) = #{regdate} order by b_id desc
+    </select>
+
     <resultMap id="BoardWithMediaResultMap" type="cbvo">
         <id property="b_id" column="b_id"/>
         <result property="m_id" column="m_id"/>
