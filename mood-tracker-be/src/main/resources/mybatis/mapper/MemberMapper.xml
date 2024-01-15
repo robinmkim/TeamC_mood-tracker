@@ -5,7 +5,7 @@
 <mapper namespace="com.teamc.moodtracker.dao.MemberDao">
     <insert id="addMember" parameterType="mvo">
         INSERT INTO member (m_id, m_name, m_handle, m_email, m_pwd, m_bdate, regdate, m_gender, m_img_name, m_img_path, m_bio, m_role)
-        VALUES (member_seq.nextval, #{m_name}, #{m_handle}, #{m_email},#{m_pwd},#{m_bdate}, sysdate, #{m_gender}, #{m_img_name}, #{m_img_path}, #{m_bio}, #{m_role})
+        VALUES (member_seq.nextval, #{m_name}, #{m_handle}, #{m_email}, #{m_pwd}, to_date(#{m_bdate},'YYYY-MM-DD'), sysdate, #{m_gender}, #{m_img_name}, #{m_img_path}, #{m_bio}, #{m_role})
     </insert>
     <select id="getMemberByMEmail" resultType="mvo">
         SELECT * FROM member WHERE m_email = #{m_email}
