@@ -20,11 +20,9 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    public NotificationController(NotificationService notificationService){
-        this.notificationService = notificationService;
-    }
 
-//    @GetMapping(value = "/subscribe/{id}")
+
+
 
 
     @GetMapping("/select/all")
