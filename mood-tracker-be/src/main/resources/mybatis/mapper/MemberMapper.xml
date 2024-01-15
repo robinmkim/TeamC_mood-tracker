@@ -13,4 +13,10 @@
     <select id="checkEmailExists" parameterType="String" resultType="int">
         SELECT COUNT(*) FROM member WHERE m_email = #{email}
     </select>
+
+
+    <select id="getMemberInfo_board" parameterType="int" resultType="cmvo"><!-- 윤영호  -->
+        select m_id, m_name, m_handle, m_img_name, m_img_path from member where m_id=#{mid}
+    </select>
+
 </mapper>

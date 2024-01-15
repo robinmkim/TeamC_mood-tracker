@@ -15,12 +15,12 @@
 
     <select id="selectMyList" parameterType="int" resultType="FaceresultDto">
         SELECT * FROM analyze_result
-            WHERE ar_member_num = #{ar_member_num}
+            WHERE m_id = #{m_id}
     </select>
 
     <select id="selectIdOfMyLastFaceResult" parameterType="int" resultType="int">
         SELECT max(ar_id) FROM analyze_result
-        WHERE ar_member_num = #{ar_member_num}
+        WHERE m_id = #{m_id}
     </select>
 
     <select id="selectFaceResultDetail" parameterType="int" resultType="FaceresultDto">
