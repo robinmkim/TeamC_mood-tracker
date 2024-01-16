@@ -42,13 +42,14 @@
               />
             </div>
             <button
-              class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
+              class="flex rounded-lg bg-[#DAFFFB] p-2 m-1 hover:bg-[#b6eee8] hover:scale-110 duration-300"
               v-on:click="imageDownload"
             >
               이미지 다운로드
             </button>
+
             <button
-              class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
+              class="flex rounded-lg bg-[#DAFFFB] p-2 m-1 hover:bg-[#b6eee8] hover:scale-110 duration-300"
               v-on:click="writePost"
             >
               게시물 작성하기
@@ -65,13 +66,13 @@
             <div><p>분석결과 피드백 하기</p></div>
             <div class="flex">
               <button
-                class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
+                class="flex rounded-lg bg-[#DAFFFB] p-2 m-1 hover:bg-[#b6eee8] hover:scale-110 duration-300"
                 v-on:click="feedbackGood"
               >
                 마음에 들어요
               </button>
               <button
-                class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
+                class="flex rounded-lg bg-[#ffdcda] p-2 m-1 hover:bg-[#ffccc9] hover:scale-110 duration-300"
                 v-on:click="feedbackBad"
               >
                 마음에 안 들어요
@@ -157,6 +158,7 @@
 <script>
 // import { Radar } from "vue-chartjs";
 // import ResultChart from "./ResultChart.vue";
+import apiClient from "./../../utils/apiClient";
 import SideBar from "@/components/SideBar";
 import axios from "axios";
 export default {
@@ -178,16 +180,7 @@ export default {
     };
   },
   mounted() {
-    // axios
-    //   .post("http://192.168.0.93:8083/faceresult/lastResultId", {
-    //     memberNum: this.memberNum,
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     this.lastResultId = res.data;
-
-    //   });
-    axios
+    apiClient
       .get("http://192.168.0.93:8083/faceresult/detail", {
         params: {
           ar_id: this.lastResultId,
@@ -211,15 +204,6 @@ export default {
             this.generatedImageSrc = `data:image/jpeg;base64, ${res.data.generatedImg}`;
           });
       });
-
-    // console.log(this.formData);
-    // // console.log(this.formData.get("lastResultId"));
-    // console.log(this.formData["lastResultId"]);
-    // // this.lastResultId = this.$route.query.lastResultId;
-    // this.lastResultId = this.formData.lastResultId;
-
-    // 스프링 -> ar_id = lastResultId 조회해서
-    // generated_img, content_max, content 조회해온다.
   },
   methods: {
     notHappyWithResult: function () {
@@ -234,8 +218,8 @@ export default {
       const formData = new FormData();
       formData.append("ar_id", this.lastResultId);
 
-      axios
-        .post("http://192.168.0.93:8083/faceresult/feedback/bad", {
+      apiClient
+        .post("/faceresult/feedback/bad", {
           ar_id: this.lastResultId,
         })
         .then(() => {
@@ -247,8 +231,8 @@ export default {
         });
     },
     feedbackGood: function () {
-      axios
-        .post("http://192.168.0.93:8083/faceresult/feedback/good", {
+      apiClient
+        .post("/faceresult/feedback/good", {
           ar_id: this.lastResultId,
         })
         .then(() => {
@@ -260,6 +244,7 @@ export default {
         });
     },
     imageDownload: function () {
+      //장고
       axios
         .get("http://192.168.0.13:9000/face/downloadGeneratedImage", {
           params: {
@@ -282,7 +267,8 @@ export default {
     writePost: function () {
       // confirm("게시물 작성하러 가기");
       this.$router.push({
-        path: "/postwrite",
+        name: "PostWriteWithAnalyzeResult",
+        params: { resultId: this.$props.lastResultId },
       });
     },
   },

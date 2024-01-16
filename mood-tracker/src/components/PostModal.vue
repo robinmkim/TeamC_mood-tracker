@@ -2,9 +2,11 @@
   <div
     v-if="isOpen"
     class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center"
+    @click="closeModal"
   >
-    <div class="lg:w-10/12 h-2/3 flex flex-col">
+    <div class="lg:w-3/5 h-2/3 flex flex-col">
       <div class="ml-auto cursor-pointer mb-1" @click="closeModal">
+        <!--x버튼-->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -18,17 +20,22 @@
           />
         </svg>
       </div>
-      <div class="h-5/6 bg-white rounded shadow-lg flex overflow-hidden">
+      <div
+        class="h-5/6 bg-white rounded shadow-lg flex overflow-hidden"
+        @click.stop=""
+      >
+        <!--리스트-->
         <div class="flex flex-col min-h-5/6 flex-grow overflow-auto">
           <div class="flex h-14 border-b justify-center items-center">
-            12월 27일
+            {{ this.month }}월 {{ day }}일
           </div>
-          <div class="flex h-16 border-b items-center justify-start pl-4">
-            <span>😀 강아지 너무 좋아</span>
+          <div
+            class="flex flex-col h-16 border-b items-center justify-start pl-4"
+            v-if="ByDateList.length > 0"
+          >
+            <post-detail v-for="bId in ByDateList" :key="bId" :b_id="bId" />
           </div>
-          <div class="flex h-16 border-b items-center justify-start pl-4">
-            <span>😀 강아지 너무 좋아</span>
-          </div>
+          <div v-else>데이터가 없습니다.</div>
         </div>
         <div class="border-x flex flex-grow">
           <div class="h-full">
@@ -112,6 +119,7 @@
 </template>
 
 <script>
+import { number } from "yup";
 import PostDetail from "./post/PostDetail";
 export default {
   name: "PostModal",
@@ -123,11 +131,24 @@ export default {
       type: Boolean,
       default: false,
     },
+    ByDateList: {
+      type: Array,
+      default: () => [],
+    },
+    day: {
+      type: String,
+      default: null,
+    },
+    month: {
+      type: number,
+      required: true,
+    },
   },
   watch: {
     isOpen(newValue) {
       if (newValue) {
         document.body.classList.add("overflow-hidden");
+        console.log(this.selectedDate);
       } else {
         document.body.classList.remove("overflow-hidden");
       }

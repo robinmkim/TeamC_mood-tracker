@@ -10,6 +10,7 @@ import postDetailRouter from "./routers/postRouter";
 import questionRouter from "./routers/questionRouter";
 import adminRouter from "./routers/adminRouter";
 import authRouter from "./routers/authRouter";
+import postRouter_yh from "./routers/postRouter_yh";
 
 const routes = [
   {
@@ -28,6 +29,7 @@ const routes = [
   ...questionRouter,
   ...adminRouter,
   ...authRouter,
+  ...postRouter_yh,
 ];
 
 const router = createRouter({
