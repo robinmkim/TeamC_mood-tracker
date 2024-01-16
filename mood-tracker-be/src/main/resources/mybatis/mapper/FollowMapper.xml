@@ -3,8 +3,20 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamc.moodtracker.dao.FollowDao">
+    <select id="getMyFollow" parameterType="int" resultType="mvo">
+        SELECT m.m_id m_id, m.m_name m_name
+        FROM follow f LEFT JOIN member m
+        ON f.followed_id = m.m_id
+        WHERE f.follower_id = #{id}
+    </select>
 
+    <insert id="newFollow" parameterType="MyFollow">
+        INSERT INTO follow (follow_id, followed_id, follower_id, follow_date)
+        VALUES (follow_seq.nextval, #{followedId}, #{followerId}, sysdate)
+    </insert>
 
-
-
+    <delete id="deleteFollow" parameterType="MyFollow">
+        DELETE FROM follow
+        WHERE followed_id = #{followedId} AND follower_id = #{followerId}
+    </delete>
 </mapper>

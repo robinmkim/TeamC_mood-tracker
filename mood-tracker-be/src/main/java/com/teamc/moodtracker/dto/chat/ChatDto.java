@@ -10,15 +10,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatDto {
-
-    private Long roomId;
-    private Long memberId;
+    private int id;
+    private int memberId;
     private String message;
     private LocalDateTime sendTime;
 
-
-    public ChatDto(Long roomId, Long memberId, String message) {
-        this.roomId = roomId;
+    public ChatDto(int id, int memberId, String message) {
+        this.id = id;
         this.memberId = memberId;
         this.message = message;
         this.sendTime = LocalDateTime.now();

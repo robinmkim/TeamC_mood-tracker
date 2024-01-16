@@ -1,7 +1,6 @@
 package com.teamc.moodtracker.service;
 
 import com.teamc.moodtracker.dao.MemberDao;
-import com.teamc.moodtracker.dto.CY_MemberDto;
 import com.teamc.moodtracker.dto.MemberDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

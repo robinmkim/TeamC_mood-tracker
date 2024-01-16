@@ -1,6 +1,5 @@
 package com.teamc.moodtracker.dao;
 
-import com.teamc.moodtracker.dto.CY_MemberDto;
 import com.teamc.moodtracker.dto.MemberDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,4 +12,6 @@ public interface MemberDao {
     public int checkEmailExists(String email);
 
     public MemberDto getMemberInfo_board(int mid); //윤영호
+
+    public String getMemberName(int m_id);
 }

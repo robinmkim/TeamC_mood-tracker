@@ -1,14 +1,14 @@
 package com.teamc.moodtracker.controller;
 
-import com.teamc.moodtracker.dto.chat.ChatMessage;
-import com.teamc.moodtracker.dto.chat.ChatRoom;
-import com.teamc.moodtracker.dto.chat.SaveChat;
+import com.teamc.moodtracker.dto.MemberDto;
+import com.teamc.moodtracker.dto.chat.*;
 import com.teamc.moodtracker.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,23 +22,32 @@ public class ChatController {
 
     @MessageMapping("/chat/send")
     public void sendMessage(@Payload SaveChat dto) {
-        SaveChat res = chatService.saveChatMessage(dto);
+        ResponseMessage res = chatService.saveChatMessage(dto);
         messagingTemplate.convertAndSend("/topic/" + res.getRoomId(), res);
     }
 
-    @GetMapping("/rooms/{memberId}")
-    public ResponseEntity<List<ChatRoom>> getChatRooms(@PathVariable Long memberId) {
-        // 이후 토큰에서 유저 정보를 얻어와 memberId를 통해 조회하는 방식으로 변경
-        // @RequestHeader("Authorization") String token
-        List<ChatRoom> chatRooms = chatService.getChatRooms(memberId);
+    @GetMapping("/rooms")
+    public ResponseEntity<List<ChatRoom>> getChatRooms(@AuthenticationPrincipal MemberDto memberDto) {
+        List<ChatRoom> chatRooms = chatService.getChatRooms(memberDto.getM_id());
         return ResponseEntity.ok(chatRooms);
     }
 
-    @GetMapping("/rooms/{roomId}/messages")
-    public ResponseEntity<List<ChatMessage>> getChatMessages(@PathVariable Long roomId) {
-        List<ChatMessage> chatMessages = chatService.getChatMessages(roomId);
+    @GetMapping("/rooms/{id}/messages")
+    public ResponseEntity<List<ChatMessage>> getChatMessages(@PathVariable int id) {
+        List<ChatMessage> chatMessages = chatService.getChatMessages(id);
         return ResponseEntity.ok(chatMessages);
     }
 
-    // 새로운 채팅 시작
+    // 새로운 채팅 시작 시 해당 유저와 이미 방이 존재하는지 확인
+    @PostMapping("/rooms/check")
+    public ResponseEntity<List<Integer>> checkChatRoom(@RequestBody CheckChat checkChat) {
+        List<Integer> checkRes = chatService.checkChatRoom(checkChat);
+        return ResponseEntity.ok(checkRes);
+    }
+
+    @PostMapping("/rooms/new")
+    public ResponseEntity<ResponseRoom> newChatRoom(@RequestBody CheckChat checkChat) {
+        ResponseRoom newRoomData = chatService.defaultChatRoom(checkChat);
+        return ResponseEntity.ok(newRoomData);
+    }
 }

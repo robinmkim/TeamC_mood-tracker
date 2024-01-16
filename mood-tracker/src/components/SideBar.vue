@@ -254,7 +254,7 @@
           <button class="ml-2">검색</button>
         </div>
       </div>
-      <router-link to="/musicrecommand" class="text-lg">
+      <router-link to="/admin" class="text-lg">
         <div class="flex px-2 py-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
