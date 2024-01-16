@@ -15,6 +15,9 @@
         <div class="userHandle text-sm text-slate-500 ml-1">
           {{ user.m_handle }}
         </div>
+        <div class="text-slate-400 text-sm ml-2">
+          {{ formatTime(board.regdate) }}
+        </div>
       </div>
       <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
         <!-- 미트볼 아이콘 -->
@@ -157,10 +160,6 @@ export default {
       type: Number,
       required: true,
     },
-    m_id: {
-      type: Number,
-      required: true,
-    },
   },
   data() {
     return {
@@ -219,7 +218,7 @@ export default {
     },
     getCommentCount() {
       apiClient
-        .get(`/jh_comment/allCommentCount?cm_bid=${this.b_id}`)
+        .get(`/jh_comment/allCommentCount?b_id=${this.b_id}`)
         .then((response) => {
           console.log("--------------" + response);
           this.commentCount = response.data;

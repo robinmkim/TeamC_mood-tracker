@@ -20,24 +20,31 @@ public class JH_CommentServiceImpl implements JH_CommentService{
     @Autowired
     private JH_replyDao replyDao;
 
-    @Transactional
+
     @Override
-    public int commentCount(int cm_bid) {
-        return commentDao.commentCount(cm_bid);
+    public int commentCount(int b_id) {
+        return commentDao.commentCount(b_id);
     }
 
     @Override
-    public int replyCount(int re_cmid) {
-        return replyDao.replyCount(re_cmid);
+    public int replyCount(int cm_id) {
+        return replyDao.replyCount(cm_id);
     }
 
     @Override
-    public List<JH_CommentDto> getCommentList(int cm_bid) {
-        return commentDao.getCommentList(cm_bid);
+    public List<JH_CommentDto> getCommentList(int b_id) {
+        return commentDao.getCommentList(b_id);
     }
 
     @Override
-    public List<JH_CommentDto> getCommentListDetail(int cm_bid) {
-        return commentDao.getCommentListDetail(cm_bid);
+    public List<JH_CommentDto> getCommentListDetail(int b_id) {
+        return commentDao.getCommentListDetail(b_id);
     }
+
+    @Override
+    public int addComment(JH_CommentDto dto) {
+        return commentDao.addComment(dto);
+    }
+
+
 }

@@ -111,16 +111,20 @@ export default {
     },
 
     handleFileDrop(e) {
+      // 파일 드롭
       const files = e.dataTransfer.files;
       this.processFiles(files);
     },
 
     handleFileChange(e) {
+      // 파일이 선택되었을 때
       const files = e.target.files;
       this.processFiles(files);
     },
 
     processFiles(files) {
+      // 파일 목록을 받아 각 파일을 처리, files배열에 추가
+      //FileReader 를 생성해서 메타데이터와 실제 파일 객체 저장
       Array.from(files).forEach((file) => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -136,6 +140,7 @@ export default {
     },
 
     triggerFileInput() {
+      // 파일 input 클릭하게 만듦
       this.$refs.fileInput.click();
     },
 
@@ -147,6 +152,7 @@ export default {
 
     submitForm() {
       const formData = new FormData();
+      formData.append("m_id", 1);
       formData.append("b_content", this.text);
 
       this.files.forEach((fileObj) => {

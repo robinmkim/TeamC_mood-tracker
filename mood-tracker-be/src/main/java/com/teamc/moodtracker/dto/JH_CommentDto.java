@@ -1,6 +1,7 @@
 package com.teamc.moodtracker.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.ibatis.type.Alias;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,10 +13,13 @@ import java.util.List;
 @Setter
 public class JH_CommentDto {
     private int cm_id;
-    private int cm_bid;
-    private int cm_mid;
+    private int b_id;
+    private int m_id;
     private  String cm_content;
     private String regdate;
-    private List<JH_ReplyDto> replyList;
+//    private List<JH_ReplyDto> replyList;
     private JH_MemberDto member;
+
+
+    private int reply_count;  // 리플 count
 }
