@@ -23,6 +23,7 @@
       <!-- 새로운 Faq 등록 div-->
       <faqInsert></faqInsert>
     </div>
+    <!-- Faq List div-->
     <ul class="accordion-item">
       <li v-for="(item, newIndex) in FaqList" :key="newIndex">
         <ul>
@@ -44,7 +45,7 @@
             <div
               class="flex w-2/12 items-center justify-center text-sm text-slate-500 border-b-1"
             >
-              {{ formatRegDate(item.faq_regdate) }}
+              {{ formatRegDate(item.regdate) }}
             </div>
             <div
               class="flex w-2/12 items-center justify-center text-sm text-slate-500 pr-1 border-b-1"
@@ -119,6 +120,7 @@
       </li>
     </ul>
   </div>
+  <!-- 페이징 폼 -->
   <div
     class="pagination w3-bar w3-padding-16 w3-small"
     v-if="paging.total_list_cnt > 0"
@@ -140,7 +142,7 @@
       <template v-for="(n, q_id) in paginavigation()">
         <template v-if="paging.page == n">
           <strong
-            class="w3-button w3-bar-item w3-border decoration-[#9bf8ec] text-white mr-2 ml-2"
+            class="w3-button w3-bar-item w3-border bg-[#64CCC5] text-white mr-2 ml-2"
             :key="q_id"
           >
             {{ n }}
@@ -172,14 +174,13 @@
       >
     </span>
   </div>
-  <!-- 검색 폼 추가 -->
-
+  <!-- 검색 폼 -->
   <div>
     <!-- 여기에 나머지 템플릿 내용을 추가하세요 -->
     <select v-model="search_key">
       <option value="">- 선택 -</option>
       <option value="faq_title">제목</option>
-      <option value="faq_contents">내용</option>
+      <option value="faq_content">내용</option>
     </select>
     &nbsp;
     <input type="text" v-model="search_value" @keyup.enter="faqPage()" />
@@ -188,7 +189,7 @@
   </div>
 </template>
 <script>
-import faqInsert from "@/components/admin/FaqInsert.vue";
+import faqInsert from "@/components/admin/FaqInsert";
 import apiClient from "@/utils/apiClient";
 
 export default {

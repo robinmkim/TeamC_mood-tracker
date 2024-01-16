@@ -203,7 +203,7 @@
             </div>
           </div>
 
-          <!-- QnA 게시판 tab -->
+          <!-- QnA 게시판 Tab -->
           <div v-if="currentTab === 1">
             <div class="border m-10">
               <nav class="flex" role="tablist">
@@ -224,147 +224,13 @@
                   </div>
                 </div>
               </nav>
-              <!-- Faq tab -->
+              <!-- FAQ 게시판 subTab -->
               <div v-if="currentSubTab === 0">
                 <FaqList></FaqList>
               </div>
-              <!-- QnA 게시판 상세 tab -->
+              <!-- QNA 게시판 상세 subTab -->
               <div v-else-if="currentSubTab === 1">
-                <div class="border-b-2 flex h-10">
-                  <div class="flex w-1/12 items-center justify-center">no</div>
-                  <div class="flex w-5/12 items-center">질문</div>
-                  <div class="flex w-2/12 items-center justify-center">
-                    작성자
-                  </div>
-                  <div class="flex w-2/12 items-center justify-center">
-                    등록일
-                  </div>
-                  <div class="flex w-2/12 items-center justify-center"></div>
-                </div>
-                <ul class="accordion-item">
-                  <li v-for="(item, newIndex) in QnAitems" :key="newIndex">
-                    <ul>
-                      <li
-                        class="accordion-title border-b flex h-8 hover:bg-slate-100"
-                        :class="{ 'bg-slate-50': isAccordionOpen(newIndex) }"
-                      >
-                        <div
-                          class="flex w-1/12 items-center justify-center text-sm text-slate-500 border-b-1"
-                          @click="toggleAccordion(newIndex)"
-                        >
-                          {{ item.number }}
-                        </div>
-                        <div
-                          class="flex w-5/12 items-center text-sm text-slate-500 border-b-1"
-                          @click="toggleAccordion(newIndex)"
-                        >
-                          {{ item.content }}
-                        </div>
-                        <div
-                          class="flex w-2/12 items-center justify-center text-sm text-slate-500 border-b-1"
-                          @click="toggleAccordion(newIndex)"
-                        >
-                          {{ item.user }}
-                        </div>
-                        <div
-                          class="flex w-2/12 items-center justify-center text-sm text-slate-500 border-b-1"
-                          @click="toggleAccordion(newIndex)"
-                        >
-                          {{ item.date }}
-                        </div>
-                        <div
-                          class="flex w-2/12 items-center justify-center text-sm text-slate-500 pr-1 border-b-1"
-                          @click="toggleAccordion(newIndex)"
-                        ></div>
-                      </li>
-                      <li>
-                        <div
-                          v-show="
-                            isAccordionOpen &&
-                            currentAccordionIndex === newIndex
-                          "
-                          class="accordion-content flex border-b flex-col p-2"
-                        >
-                          <div
-                            v-show="!updateShow"
-                            class="read flex border-b text-sm p-2 pt-0 flex-col w-full text-left font-semibold"
-                          >
-                            QnA 질문 제목 {{ newIndex + 1 }}
-                          </div>
-                          <div
-                            v-show="!updateShow"
-                            class="flex text-sm p-2 text-left"
-                          >
-                            QnA 질문 내용 {{ newIndex + 1 }} QnA 질문 내용
-                            {{ newIndex + 1 }} QnA 질문 내용
-                            {{ newIndex + 1 }} QnA 질문 내용
-                            {{ newIndex + 1 }} QnA 질문 내용
-                            {{ newIndex + 1 }} QnA 질문 내용 {{ newIndex + 1 }}
-                          </div>
-                          <div
-                            class="flex flex-col justify-center items-center my-1"
-                            v-show="!updateShow"
-                          >
-                            <div
-                              class="rounded-full bg-slate-200 h-7 w-20 flex justify-center items-center text-sm"
-                              @click="answeringMethod(newIndex)"
-                              v-show="!answeringShow"
-                            >
-                              답변하기
-                            </div>
-                            <div
-                              v-show="answeringShow"
-                              class="flex flex-col w-full justify-center items-center p-2"
-                            >
-                              <textarea
-                                class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
-                                :value="
-                                  '질문의 답변을 입력해 주세요' + (newIndex + 1)
-                                "
-                              ></textarea>
-                              <div
-                                class="rounded-full bg-slate-200 h-7 w-20 flex justify-center items-center mt-2 text-sm"
-                                @click="answeringMethod(newIndex)"
-                              >
-                                답변하기
-                              </div>
-                            </div>
-                            <!-- <div
-                                class="rounded-full bg-red-600 h-7 w-20 flex justify-center items-center text-white"
-                              >
-                                삭제
-                              </div> -->
-                          </div>
-                          <div v-show="updateShow === true" class="update">
-                            <div
-                              v-show="updateShow === true"
-                              class="accordion-content flex flex-col mt-4 m-2"
-                            >
-                              <input
-                                type="text"
-                                class="rounded-lg h-10 text-sm bg-slate-50 border placeholder-slate-400 border-slate-200 focus:outline-slate-400 mb-2"
-                                :value="'Faq 질문 내용' + (newIndex + 1)"
-                              />
-                              <textarea
-                                class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
-                                :value="'Faq 질문 답변' + (newIndex + 1)"
-                              ></textarea>
-                              <div
-                                class="flex justify-center items-center mt-4"
-                              >
-                                <div
-                                  class="rounded-full bg-[#ffede6] h-10 w-28 flex justify-center items-center mb-4 text-sm"
-                                >
-                                  수정하기
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
+                <QnaList></QnaList>
               </div>
             </div>
           </div>
@@ -375,10 +241,10 @@
 </template>
 
 <script>
-// Faqitems 에서 작성자 테스트를 위해 user삭제
 import PostDetailPageVue from "../post/PostDetailPage.vue";
 import MypageMain from "../mypage/MypageMain.vue";
 import FaqList from "../../components/admin/FaqList.vue";
+import QnaList from "../../components/admin/QnaList.vue";
 // import Editor from "@toast-ui/editor";
 // import "@toast-ui/editor/dist/toastui-editor.css";
 
@@ -445,34 +311,9 @@ export default {
           date: "2023.12.19",
         },
       ],
-      Faqitems: [],
-      idx: null,
-      QnAitems: [
-        {
-          number: 1,
-          content: "QnA 질문 제목 1",
-          user: "user041",
-          date: "2023.12.17",
-        },
-        {
-          number: 2,
-          content: "QnA 질문 제목 2",
-          user: "user071",
-          date: "2023.12.18",
-        },
-        {
-          number: 3,
-          content: "QnA 질문 제목 3",
-          user: "user121",
-          date: "2023.12.19",
-        },
-      ],
-      FaqList: {},
-      editedTitle: "",
-      editedContent: "",
     };
   },
-  components: { PostDetailPageVue, MypageMain, FaqList },
+  components: { PostDetailPageVue, MypageMain, FaqList, QnaList },
   methods: {
     formatRegDate(redate) {
       const date = new Date(redate);
@@ -534,9 +375,6 @@ export default {
         this.updateShow = true;
       }
       // this.currentAccordionIndex = index;
-    },
-    answeringMethod() {
-      this.answeringShow = true;
     },
   },
   computed: {
