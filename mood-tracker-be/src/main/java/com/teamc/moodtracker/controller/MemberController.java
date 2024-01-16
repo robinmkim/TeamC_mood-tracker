@@ -24,14 +24,6 @@ public class MemberController {
 
     String imageDirectory = "src/main/resources/static/images/";
 
-    @GetMapping("/userInfo/{mid}") //윤영호
-    public MemberDto getMemberInfo_board(@AuthenticationPrincipal MemberDto memberDto, @PathVariable int mid) {
-        System.out.println("----member controller userInfo----");
-        mid = memberDto.getM_id();
-        System.out.println("member num mid : " + mid);
-        return service.getMemberInfo_board(mid);
-    }
-
     @GetMapping("/userInfo/memberHandle") //윤영호 postWrite_yh에서 닉네임 가져올 때 사용.
     public  String getMemberHandle(@AuthenticationPrincipal MemberDto memberDto){
         return memberDto.getM_handle();

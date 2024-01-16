@@ -13,7 +13,7 @@ public interface NotificationService {
     public List<NotificationDto> selectMyNotificationComment(int m_id);
     public List<NotificationDto> selectMyNotificationLike(int m_id);
 
-    public int selectUnreadNumber(int m_id);
+    public int selectUnreadNumber(int m_id_to);
 
     public void readNotice(int m_id_to, int n_id);
 
