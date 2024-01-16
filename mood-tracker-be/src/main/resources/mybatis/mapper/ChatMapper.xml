@@ -3,31 +3,55 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamc.moodtracker.dao.ChatDao">
-        <select id="getChatRooms" parameterType="Long" resultType="ChatRoom">
-                SELECT c.room_id roomId, c.member_id memberId, c.message message
-                FROM chat c
-                INNER JOIN (
-                    SELECT room_id, MAX(send_time) last_send_time
-                    FROM chat
-                    WHERE member_id = #{memberId}
-                    GROUP BY room_id
-                ) latest_message
-                ON
-                    c.room_id = latest_message.room_id
-                    AND c.send_time = latest_message.last_send_time
-                ORDER BY c.send_time DESC
-        </select>
+    <select id="getChatRooms" parameterType="int" resultType="ChatRoom">
+            SELECT C1.ROOM_ID roomId, C1.MESSAGE MESSAGE
+            FROM CHAT C1
+                     INNER JOIN
+                 (SELECT ROOM_ID, MAX(SEND_TIME) SEND_TIME
+                  FROM CHAT
+                  WHERE M_ID = #{memberId}
+                  GROUP BY ROOM_ID) C2
+                 ON C1.ROOM_ID = C2.ROOM_ID AND C1.SEND_TIME = C2.SEND_TIME
+            GROUP BY c1.room_id, c1.message
+    </select>
+
+    <select id="getMemberInfo" parameterType="int" resultType="ChatRoom">
+        SELECT M.M_ID otherMemberId, M.M_NAME otherMemberName
+        FROM MEMBER M
+        WHERE M.M_ID IN (
+            SELECT M_ID
+            FROM CHAT
+            WHERE ROOM_ID IN (
+                SELECT ROOM_ID
+                FROM CHAT
+                WHERE M_ID = #{memberId}
+            )
+              AND M_ID != #{memberId}
+            )
+    </select>
 
 
-        <select id="getChatMessages" parameterType="Long" resultType="ChatMessage">
-                SELECT member_id memberId, message, send_time sendTime
-                FROM chat
-                WHERE room_id = #{roomId}
-                ORDER BY send_time
-        </select>
+    <select id="getChatMessages" parameterType="int" resultType="ChatMessage">
+        SELECT m_id memberId, message, send_time sendTime
+        FROM chat
+        WHERE room_id = #{roomId} AND message IS NOT NULL
+        ORDER BY send_time
+    </select>
 
-        <insert id="saveChatMessage" parameterType="SaveChat">
-                INSERT INTO chat
-                VALUES (chat_seq.nextval, #{memberId}, #{message}, #{roomId}, #{sendTime})
-        </insert>
-</mapper>
+    <insert id="saveChatMessage" parameterType="SaveChat">
+        INSERT INTO chat
+        VALUES (chat_seq.nextval, #{roomId}, #{memberId}, #{message}, systimestamp)
+    </insert>
+
+    <select id="checkChatRoom" parameterType="CheckChat" resultType="int">
+        SELECT DISTINCT c1.room_id
+        FROM chat c1
+        INNER JOIN chat c2
+        ON c1.room_id = c2.room_id
+        WHERE c1.m_id = #{userId1} AND c2.m_id = #{userId2}
+    </select>
+
+    <select id="newChatRoom" resultType="int">
+        select chatroom_seq.nextval from dual
+    </select>
+</mapper >
