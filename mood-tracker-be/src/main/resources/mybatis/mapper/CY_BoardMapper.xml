@@ -8,6 +8,20 @@
         select b_sentiment, count(*) as cnt from board where m_id=#{mid} group by b_sentiment
     </select>
 
+    <select id="getMainSentiment" parameterType="map" resultType="java.lang.String">
+        SELECT *
+        FROM (
+        SELECT b_sentiment, COUNT(*) AS cnt
+        FROM board
+        WHERE m_id = #{mid}
+        AND TRUNC(regdate, 'mm') = TRUNC(SYSDATE, 'mm')
+        GROUP BY b_sentiment
+        ORDER BY cnt DESC
+        )
+        WHERE ROWNUM = 1
+
+    </select>
+
     <!--내 게시글 리스트-->
     <select id="getMyBoardList" parameterType="map" resultType="java.lang.Integer">
         SELECT b.b_id
@@ -19,32 +33,39 @@
     <!--내가 좋아요 한 게시글 리스트-->
     <select id="getLikedBoardList" parameterType="map" resultType="java.lang.Integer">
         select b.b_id from board b
-        join board_like l on b.b_id = l.blike_bid
-        where l.blike_user = #{mid} and (
-        select count(*) from board_like l join board bb on l.blike_bid = bb.b_id
-        where l.blike_user=#{mid} and bb.b_id > b.b_id)
+        join board_like l on b.b_id = l.b_id
+        where l.m_id = #{mid} and (
+        select count(*) from board_like l join board bb on l.b_id = bb.b_id
+        where l.m_id=#{mid} and bb.b_id > b.b_id)
         between #{lastRowNum} and (#{lastRowNum} + 4)
         order by b.regdate desc
     </select>
+
     <!-- 날짜를 기준으로 게시글 디테일-->
-    <resultMap id="BoardWithMediaResultMap" type="cbvo">
-        <id property="b_id" column="b_id"/>
-        <result property="m_id" column="m_id"/>
-        <result property="b_content" column="b_content"/>
-        <result property="b_sentiment" column="b_sentiment"/>
-        <result property="regdate" column="regdate"/>
-        <collection property="mediaList" ofType="mdto">
-            <id property="md_id" column="md_id"/>
-            <result property="md_name" column="md_name"/>
-            <result property="md_path" column="md_path"/>
-            <result property="md_type" column="md_type"/>
-        </collection>
-    </resultMap>
-
-    <select id="getMyBoardDetail" resultMap="BoardWithMediaResultMap">
-
+    <select id="getListByDate" parameterType="map" resultType="java.lang.Integer">
+        select b_id from board where m_id=#{mid} and trunc(regdate) = #{regdate} order by b_id desc
     </select>
 
-    <!--해당 게시글에 좋아요를 누른 사람들-->
+<!--    연속 날짜-->
+    <select id="getConsecPostsCnt" parameterType="map" resultType="java.lang.Integer">
+        SELECT MAX(consec_post)
+        FROM (
+        SELECT
+        COUNT(DISTINCT b.regdate) AS consec_post
+        FROM
+        member m LEFT JOIN board b ON m.m_id = b.m_id
+        WHERE m.m_id = #{mid}
+        AND
+        TRUNC(b.regdate) BETWEEN TRUNC(m.regdate) AND TRUNC(SYSDATE)
+        GROUP BY
+        TRUNC(b.regdate) - ROWNUM
+        )
+    </select>
+
+    <select id="getThisMonthPosts" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as postCount from board
+        where m_id=#{mid} and trunc(regdate, 'mm') = trunc(sysdate, 'mm')
+    </select>
+
 
 </mapper>
