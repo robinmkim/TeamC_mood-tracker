@@ -27,22 +27,22 @@
           v-show="isDropdownOpen"
           class="absolute flex flex-col bg-white shadow-md mt-2 rounded-md py-2 w-32 right-[1px]"
         >
-          <router-link to="/"
-            ><span class="border-b" @click="toggleDropdown"
+          <router-link to="/" @click="toggleDropdown"
+            ><span class="border-b" 
               >Home</span
             ></router-link
           >
-          <router-link to="/login"
-            ><span class="border-b" @click="toggleDropdown"
+          <router-link to="/login" @click="toggleDropdown"
+            ><span class="border-b" 
               >Log In</span
             ></router-link
           >
-          <router-link to="/timeline"
-            ><span class="border-b" @click="toggleDropdown"
+          <router-link to="/timeline" @click="toggleDropdown"
+            ><span class="border-b" 
               >타임라인</span
             ></router-link
           >
-          <span class="border-b" @click="logout">로그아웃</span>
+          <span class="border-b" @click="() => { toggleDropdown(); logout(); }">로그아웃</span>
         </div>
       </div>
       <router-link to="/chat">
