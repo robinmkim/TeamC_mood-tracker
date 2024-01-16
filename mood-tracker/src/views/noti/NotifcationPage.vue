@@ -40,7 +40,8 @@
         <!-- [ED] 탭리스트 -->
 
         <!-- [ST] 알림 리스트 -->
-        <div class="mt-3">
+
+        <div class="mt-3 overflow-auto">
           <div v-for="(bean, index) in showList" :key="index" :id="bean.n_id">
             <div>
               <!-- 알림 follow -->
@@ -53,15 +54,24 @@
                   >
                     <!-- notiDisplay: 확인하지 않은 알림 표시 -->
 
-                    <div
-                      v-if="bean.n_state == 1"
-                      class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
-                    ></div>
+                    <div v-if="bean.n_state == 1">
+                      <div
+                        class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
+                      ></div>
+                      <div
+                        class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500 opacity-50 animate-ping"
+                      ></div>
+                    </div>
 
                     <!-- 프로필이미지 -->
+                    <!-- <img
+                      class="object-contain rounded-full"
+                      :src="getProfileImage(bean.m_id_from)"
+                    /> -->
                     <img
                       class="object-contain rounded-full"
-                      src="..\..\assets\notiProfileImage01.jpg"
+                      :src="bean.memberDto.img_byte"
+                      alt="프로필 이미지"
                     />
                   </div>
                   <div class="notiItemContent flex-1 flex h-14">
@@ -70,35 +80,58 @@
                     >
                       <span
                         class="notiItemContentTime text-sm text-slate-400"
-                        >{{ bean.n_date }}</span
+                        >{{ bean.regdate }}</span
                       >
-                      <div class="notiItemContentMain w-auto flex items-center">
-                        <a :href="bean.n_url">
+                      <div
+                        class="notiItemContentMain w-auto flex items-center cursor-pointer"
+                      >
+                        <a :href="bean.n_url" @click="readNotice(bean.n_id)">
                           <span class="notiUserName font-bold text-lg">
-                            {{ bean.n_user_from }}
+                            {{ bean.memberDto.m_handle }}
                           </span>
                           님이 팔로우 하셨습니다.
                         </a>
                       </div>
 
-                      <div
+                      <!-- <div
                         class="notiItemContentTimePost bg-purple-300 flex items-center"
-                      ></div>
+                      >
+                        content
+                      </div> -->
                     </div>
+
                     <div
                       class="notiItemContentButton flex w-1/4 justify-center items-center"
                     >
                       <div
-                        class="notiItemContentButtonYes rounded-full mr-3 bg-[#ffede6] h-10 w-20 flex justify-center items-center"
+                        class="notiItemContentButtonYes rounded-full mr-3 bg-[#ffede6] h-10 w-20 flex justify-center items-center hover:bg-[#fadcd0] duration-300"
                       >
                         수락
                       </div>
                       <div
-                        class="notiItemContentButtonNo rounded-full bg-slate-200 h-10 w-20 flex justify-center items-center"
+                        class="notiItemContentButtonNo rounded-full bg-slate-200 h-10 w-20 flex justify-center items-center hover:bg-slate-300 duration-300"
                       >
                         거절
                       </div>
                     </div>
+                  </div>
+
+                  <div
+                    class="flex self-start deleteButton"
+                    @click="deleteNotice(bean.n_id)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      x="0px"
+                      y="0px"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 50 50"
+                    >
+                      <path
+                        d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z"
+                      ></path>
+                    </svg>
                   </div>
                 </div>
               </div>
@@ -113,24 +146,33 @@
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
-                    <div
+                    <!-- <div
                       v-if="bean.n_state == 1"
-                      class="absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
-                    ></div>
+                      class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
+                    ></div> -->
+                    <div v-if="bean.n_state == 1">
+                      <div
+                        class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
+                      ></div>
+                      <div
+                        class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500 opacity-50 animate-ping"
+                      ></div>
+                    </div>
                     <img
                       class="object-contain rounded-full"
-                      src="..\..\assets\notiProfileImage01.jpg"
+                      :src="bean.memberDto.img_byte"
+                      alt="프로필 이미지"
                     />
                   </div>
                   <div class="notiItemContent flex-1 pl-3 justify-start">
                     <span
                       class="notiItemContentTime text-sm text-slate-400 flex"
-                      >{{ bean.n_date }}</span
+                      >{{ bean.regdate }}</span
                     >
                     <div class="notiItemContentMain w-auto flex items-center">
-                      <a :href="bean.n_url">
+                      <a :href="bean.n_url" @click="readNotice(bean.n_id)">
                         <span class="notiUserName font-bold text-lg">
-                          {{ bean.n_user_from }}
+                          {{ bean.memberDto.m_handle }}
                         </span>
                         님의 댓글
                       </a>
@@ -140,6 +182,23 @@
                     >
                       {{ bean.n_content }}
                     </div>
+                  </div>
+                  <div
+                    class="flex self-start deleteButton"
+                    @click="deleteNotice(bean.n_id)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      x="0px"
+                      y="0px"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 50 50"
+                    >
+                      <path
+                        d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z"
+                      ></path>
+                    </svg>
                   </div>
                 </div>
               </div>
@@ -153,24 +212,36 @@
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
-                    <div
+                    <!-- <div
                       v-if="bean.n_state == 1"
                       class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
-                    ></div>
+                    ></div> -->
+                    <div v-if="bean.n_state == 1">
+                      <div
+                        class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
+                      ></div>
+                      <div
+                        class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500 opacity-50 animate-ping"
+                      ></div>
+                    </div>
                     <img
                       class="object-contain rounded-full"
-                      src="..\..\assets\notiProfileImage01.jpg"
+                      :src="bean.memberDto.img_byte"
+                      alt="프로필 이미지"
                     />
                   </div>
                   <div class="notiItemContent flex-1 pl-3 justify-start">
                     <span
                       class="notiItemContentTime text-sm text-slate-400 flex"
-                      >{{ bean.n_date }}</span
+                      >{{ bean.regdate }}</span
                     >
-                    <div class="notiItemContentMain w-auto flex items-center">
-                      <a :href="bean.n_url">
+                    <div
+                      class="notiItemContentMain w-auto flex items-center"
+                      @click="readNotice(bean.n_id)"
+                    >
+                      <a :href="bean.n_url" @click="readNotice(bean.n_id)">
                         <span class="notiUserName font-bold text-lg">
-                          {{ bean.n_user_from }}
+                          {{ bean.memberDto.m_handle }}
                         </span>
                         님이 게시글에 좋아요를 남겼습니다!
                       </a>
@@ -180,6 +251,23 @@
                     >
                       {{ bean.n_content }}
                     </div>
+                  </div>
+                  <div
+                    class="flex self-start deleteButton"
+                    @click="deleteNotice(bean.n_id)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      x="0px"
+                      y="0px"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 50 50"
+                    >
+                      <path
+                        d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z"
+                      ></path>
+                    </svg>
                   </div>
                 </div>
               </div>
@@ -196,8 +284,9 @@
 </template>
 
 <script>
+import apiClient from "./../../utils/apiClient";
 import SideBar from "@/components/SideBar";
-import axios from "axios";
+// import axios from "axios";
 
 export default {
   data() {
@@ -209,79 +298,113 @@ export default {
         { name: "답글", id: "notiTabsReply" },
         { name: "좋아요", id: "notiTabsLike" },
       ],
-      notiTabsAllList: null,
-      notiTabsFollowList: null,
-      notiTabsReplyList: null,
-      notiTabsLikeList: null,
-
       showList: null,
-      userNum: 1, //로그인 기능 붙으면 이건 삭제
     };
   },
   mounted() {
     console.log("mounted");
-    axios
-      .get("http://192.168.0.93:8083/notification/select/all", {
-        params: {
-          n_user: this.userNum,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        this.showList = res.data;
-      });
+    apiClient.get("/notification/select/all").then((res) => {
+      console.log(res.data);
+      this.showList = res.data.noticeList;
+    });
   },
   methods: {
+    getProfileImage(m_id_from) {
+      // return ret;
+      apiClient
+        .get("/member/profileImg", {
+          params: {
+            m_id: m_id_from,
+          },
+        })
+        .then((res) => {
+          // ret = res.data;
+          // console.log("res.data = ", res.data);
+          const ret = `data:image/jpeg;base64, ${res.data}`;
+          console.log("ret = ", ret);
+          return ret;
+        })
+        .catch((error) => {
+          console.log("error = ", error);
+        });
+    },
     changeTab(index, tabId) {
       this.currentTab = index;
       console.log(`현재 탭의 id: ${tabId}`);
+      this.loadNoticeList(tabId);
+    },
+    loadNoticeList(tabId) {
       if (tabId == "notiTabsAll") {
         console.log("ALL 조회");
-        axios
-          .get("http://192.168.0.93:8083/notification/select/all", {
-            params: {
-              n_user: this.userNum,
-            },
-          })
-          .then((res) => {
-            console.log(res.data);
-            this.showList = res.data;
-          });
+        apiClient.get("/notification/select/all").then((res) => {
+          console.log(res.data);
+          this.showList = res.data.noticeList;
+        });
       } else if (tabId == "notiTabsFollow") {
         console.log("Follow 조회");
-        axios
-          .get("http://192.168.0.93:8083/notification/select/follow", {
-            params: {
-              n_user: this.userNum,
-            },
-          })
-          .then((res) => {
-            console.log(res.data);
-            this.showList = res.data;
-          });
+        apiClient.get("/notification/select/follow").then((res) => {
+          console.log(res.data);
+          this.showList = res.data.noticeList;
+        });
       } else if (tabId == "notiTabsReply") {
         console.log("Reply 조회");
-        axios
-          .get("http://192.168.0.93:8083/notification/select/comment", {
-            params: {
-              n_user: this.userNum,
-            },
-          })
-          .then((res) => {
-            console.log(res.data);
-            this.showList = res.data;
-          });
+        apiClient.get("/notification/select/comment").then((res) => {
+          console.log(res.data);
+          this.showList = res.data.noticeList;
+        });
       } else if (tabId == "notiTabsLike") {
         console.log("Like 조회");
-        axios
-          .get("http://192.168.0.93:8083/notification/select/like", {
-            params: {
-              n_user: this.userNum,
+        apiClient.get("/notification/select/like").then((res) => {
+          console.log(res.data);
+          this.showList = res.data.noticeList;
+        });
+      }
+    },
+    readNotice(n_id) {
+      apiClient
+        .patch("/notification/read", {
+          n_id: n_id,
+        })
+        .then((res) => {
+          console.log(n_id, "를 읽었습니다. >>>>", res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      console.log(n_id, "를 읽었습니다.##################################");
+    },
+    deleteNotice(n_id) {
+      // alert(n_id, " 알림 삭제");
+      let userReturn = confirm("알림을 영구적으로 삭제하시겠습니까?");
+      console.log(n_id, userReturn);
+      if (userReturn == true) {
+        // alert("알림 삭제");
+        apiClient
+          .delete("/notification/delete", {
+            data: {
+              n_id: n_id,
             },
           })
           .then((res) => {
-            console.log(res.data);
-            this.showList = res.data;
+            if (res.data == 1) {
+              console.log(n_id, " 삭제 완료");
+
+              if (this.currentTab == 0) {
+                this.loadNoticeList("notiTabsAll");
+              } else if (this.currentTab == 1) {
+                this.loadNoticeList("notiTabsFollow");
+              } else if (this.currentTab == 2) {
+                this.loadNoticeList("notiTabsReply");
+              } else if (this.currentTab == 3) {
+                this.loadNoticeList("notiTabsLike");
+              }
+              // this.loadNoticeList(tabId); // 리스트 리로드
+            } else {
+              console.log(n_id, " 삭제 실패");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
           });
       }
     },
@@ -312,5 +435,13 @@ export default {
     transform: scale(1);
     width: 100%;
   }
+}
+.deleteButton {
+  position: relative;
+  left: 16px;
+  opacity: 0;
+}
+.deleteButton:hover {
+  opacity: 1;
 }
 </style>
