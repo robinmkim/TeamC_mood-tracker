@@ -13,4 +13,6 @@ public interface MemberDao {
     public int checkEmailExists(String email);
 
     public MemberDto getMemberInfo_board(int mid); //윤영호
+
+    public String getMemberName(int m_id);
 }

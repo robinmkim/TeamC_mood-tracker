@@ -14,9 +14,11 @@
         SELECT COUNT(*) FROM member WHERE m_email = #{email}
     </select>
 
-
     <select id="getMemberInfo_board" parameterType="int" resultType="cmvo"><!-- 윤영호  -->
         select m_id, m_name, m_handle, m_img_name, m_img_path from member where m_id=#{mid}
     </select>
 
+    <select id="getMemberName" parameterType="int" resultType="String">
+        SELECT m_name FROM member WHERE m_id = #{m_id}
+    </select>
 </mapper>
