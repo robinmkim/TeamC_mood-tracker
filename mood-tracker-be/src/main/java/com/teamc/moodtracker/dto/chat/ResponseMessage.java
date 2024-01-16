@@ -9,16 +9,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatDto {
-    private int id;
+public class ResponseMessage {
+    private int roomId;
     private int memberId;
     private String message;
     private LocalDateTime sendTime;
-
-    public ChatDto(int id, int memberId, String message) {
-        this.id = id;
-        this.memberId = memberId;
-        this.message = message;
-        this.sendTime = LocalDateTime.now();
-    }
 }

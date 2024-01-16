@@ -84,6 +84,7 @@ public class SecurityConfig {
                 // .authorizeHttpRequests((auth) -> auth.anyRequest().permitAll())
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated())
                 // JWT 토큰 필터 추가: JwtTokenFilter를 BasicAuthenticationFilter 전에 추가하여 JWT 토큰을 검증
                 .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class)

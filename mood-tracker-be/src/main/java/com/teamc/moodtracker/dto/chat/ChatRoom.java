@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 // 채팅방 목록을 불러오기 위한 DTO
 public class ChatRoom {
-    private Long roomId;
-    private Long memberId;
+    private int roomId;
+    private int otherMemberId;
+    private String otherMemberName;
     private String message;
 }
