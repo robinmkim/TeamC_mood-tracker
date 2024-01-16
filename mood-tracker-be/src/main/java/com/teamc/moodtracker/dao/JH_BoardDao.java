@@ -3,6 +3,7 @@ package com.teamc.moodtracker.dao;
 
 import com.teamc.moodtracker.dto.BoardDto;
 import com.teamc.moodtracker.dto.JH_BoardDto;
+import com.teamc.moodtracker.dto.JH_CommentDto;
 import com.teamc.moodtracker.dto.MediaDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -24,4 +25,9 @@ public interface JH_BoardDao {
     public List<MediaDto> getMediaList(int b_id);
 
     public void delMedai(int md_id);
+
+    public void delBoard(int b_id);
+
+    public List<JH_CommentDto> getCommentList(int b_id);
+
 }

@@ -3,8 +3,10 @@ package com.teamc.moodtracker.service;
 
 import com.teamc.moodtracker.dao.BoardDao;
 import com.teamc.moodtracker.dao.JH_BoardDao;
+import com.teamc.moodtracker.dao.JH_CommentDao;
 import com.teamc.moodtracker.dto.BoardDto;
 import com.teamc.moodtracker.dto.JH_BoardDto;
+import com.teamc.moodtracker.dto.JH_CommentDto;
 import com.teamc.moodtracker.dto.MediaDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,11 @@ import java.util.Map;
 public class JH_BoardService {
     @Autowired
     private JH_BoardDao dao;
+    @Autowired
+    private JH_CommentDao cdao;
+
+    @Autowired
+    private JH_CommentService commentService;
 
 
     @Transactional
@@ -59,6 +66,22 @@ public class JH_BoardService {
         params.put("lastRowNum", lastRowNum);
         return dao.getBoardList(params);
     }
+
+    public void delPost (int b_id) {
+        System.out.println("delPost");
+        if (cdao.commentCount(b_id) == 0) {
+            dao.delBoard(b_id);
+            return;
+        }else {
+            List<JH_CommentDto> commnetList = cdao.getCommentList(b_id);
+            for (JH_CommentDto comment :commnetList) {
+                System.out.println(comment.getCm_id());
+                commentService.delComment(comment.getCm_id());
+            }
+            dao.delBoard(b_id);
+        };
+    }
+
 
 
 

@@ -17,4 +17,11 @@ public class JH_BoardDto {
     private String b_sentiment;
     private String regdate;
     private List<MultipartFile> mediaList;
+    private JH_MemberDto member;
+    private int countLike;
+    private int countComments;
+    private boolean isMyLike;
+    public void setIsMyLike(boolean isMyLike) {
+        this.isMyLike = isMyLike;
+    }
 }
