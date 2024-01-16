@@ -1,16 +1,17 @@
 package com.teamc.moodtracker.dao;
 
 import com.teamc.moodtracker.dto.Board_LikeDto;
+import com.teamc.moodtracker.dto.Reply_LikeDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface JH_BoardLikeDao {
-    public boolean isMyLike(Board_LikeDto dto);
-    public int getBlike_id(Board_LikeDto dto);
+public interface JH_ReplyLikeDao {
+    public boolean isMyLikeReply(Reply_LikeDto dto);
+    public int getRelike_id(Reply_LikeDto dto);
 
-    public int addBoardLike(Board_LikeDto dto);
+    public int addReplyLike(Reply_LikeDto dto);
 
-    public void delBoardLike(int blike_id);
+    public void delReplyLike(int relike_id);
 
 
 }

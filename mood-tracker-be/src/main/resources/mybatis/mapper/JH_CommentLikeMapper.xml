@@ -2,22 +2,22 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.teamc.moodtracker.dao.JH_BoardLikeDao">
+<mapper namespace="com.teamc.moodtracker.dao.JH_CommentLikeDao">
 
-    <select id="isMyLike" parameterType="blvo" resultType="boolean">
-        select count(blike_id) from board_like where b_id=#{b_id} and m_id=#{m_id}
+    <select id="isMyLikeComment" parameterType="cmlvo" resultType="boolean">
+        select count(cmlike_id) from comments_like where cm_id=#{cm_id} and m_id=#{m_id}
     </select>
 
-    <select id="getBlike_id" parameterType="blvo" resultType="Integer">
-        select blike_id from board_like where b_id=#{b_id} and m_id=#{m_id}
+    <select id="getCmlike_id" parameterType="cmlvo" resultType="Integer">
+        select cmlike_id from comments_like where cm_id=#{cm_id} and m_id=#{m_id}
     </select>
 
-    <delete id="delBoardLike" parameterType="Integer">
-        delete from board_like where blike_id = #{blike_id}
+    <delete id="delCommentLike" parameterType="Integer">
+        delete from comments_like where cmlike_id = #{cmlike_id}
     </delete>
 
-    <insert id="addBoardLike" parameterType="blvo">
-        insert into board_like values (board_like_seq.nextval, #{m_id}, #{b_id})
+    <insert id="addCommentLike" parameterType="cmlvo">
+        insert into comments_like values (comment_like_seq.nextval, #{m_id}, #{cm_id})
     </insert>
 
 

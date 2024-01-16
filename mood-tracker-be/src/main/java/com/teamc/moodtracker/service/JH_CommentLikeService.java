@@ -1,17 +1,16 @@
 package com.teamc.moodtracker.service;
 
-import com.teamc.moodtracker.dao.JH_BoardLikeDao;
 import com.teamc.moodtracker.dto.Board_LikeDto;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.teamc.moodtracker.dto.Comment_LikeDto;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface JH_BoardLikeService {
+public interface JH_CommentLikeService {
 
-    public boolean isMyLike(Board_LikeDto dto);
-    public int getBlike_id(Board_LikeDto dto);
+    public boolean isMyLikeComment(Comment_LikeDto dto);
+    public int getCmlike_id(Comment_LikeDto dto);
 
-    public int addBoardLike(Board_LikeDto dto);
+    public int addCommentLike(Comment_LikeDto dto);
 
-    public void delBoardLike(int blike_id);
+    public void delCommentLike(int cmlike_id);
 }

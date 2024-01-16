@@ -39,6 +39,10 @@
         insert into reply values (reply_seq.nextval, #{cm_id}, #{m_id}, #{re_content}, sysdate)
     </insert>
 
+    <delete id="delReply" parameterType="Integer">
+        delete reply where re_id = #{re_id}
+    </delete>
+
 
 
 

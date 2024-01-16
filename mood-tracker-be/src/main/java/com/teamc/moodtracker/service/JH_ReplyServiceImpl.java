@@ -25,4 +25,12 @@ public class JH_ReplyServiceImpl implements JH_ReplyService{
     public int addReply(JH_ReplyDto dto) {
         return replyDao.addReply(dto);
     }
+
+    @Override
+    public void delReply(int re_id) {
+
+        replyDao.delReply(re_id);
+    }
+
+
 }

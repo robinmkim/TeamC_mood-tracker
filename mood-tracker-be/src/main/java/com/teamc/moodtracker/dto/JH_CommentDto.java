@@ -22,4 +22,9 @@ public class JH_CommentDto {
 
 
     private int reply_count;  // 리플 count
+
+    private boolean isMyLike;
+    public void setIsMyLike(boolean isMyLike) {
+        this.isMyLike = isMyLike;
+    }
 }

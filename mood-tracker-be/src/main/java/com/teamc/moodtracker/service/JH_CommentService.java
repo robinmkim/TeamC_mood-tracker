@@ -16,5 +16,7 @@ public interface JH_CommentService {
 
     public int addComment(JH_CommentDto dto);
 
+    public void delComment(int cm_id);
+
 
 }

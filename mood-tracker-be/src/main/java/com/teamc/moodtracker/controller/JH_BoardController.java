@@ -1,13 +1,15 @@
 package com.teamc.moodtracker.controller;
 
-import com.teamc.moodtracker.dto.BoardDto;
-import com.teamc.moodtracker.dto.JH_BoardDto;
-import com.teamc.moodtracker.dto.MediaDto;
+import com.teamc.moodtracker.dao.JH_BoardLikeDao;
+import com.teamc.moodtracker.dao.JH_CommentDao;
+import com.teamc.moodtracker.dto.*;
 import com.teamc.moodtracker.service.BoardService;
+import com.teamc.moodtracker.service.JH_BoardLikeService;
 import com.teamc.moodtracker.service.JH_BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,14 +32,25 @@ public class JH_BoardController {
 
     @Autowired
     private JH_BoardService service;
+    @Autowired
+    private JH_BoardLikeService likeService;
+    @Autowired
+    private JH_CommentController commentController;
     String imageDirectory = "src/main/resources/static/images/";
 
     // 추가
     @Transactional
     @PostMapping(value = "/update", consumes = "multipart/form-data")
-    public int updateBoardContent(@ModelAttribute JH_BoardDto dto,
+    public int updateBoardContent(@AuthenticationPrincipal MemberDto memberDto, @ModelAttribute JH_BoardDto dto,
                                   @RequestParam(value = "mediaList", required = false) List<MultipartFile> newMedias,
                                   @RequestParam(value = "mb_idList", required = false) String mb_idList) {
+        System.out.println("update");
+        dto.setM_id(memberDto.getM_id());
+
+        System.out.println("m_id: "+ dto.getM_id());
+        System.out.println("b_content: "+ dto.getB_content());
+        System.out.println("b_sentiment: "+ dto.getB_sentiment());
+
         String[] split_md_id=mb_idList.split(",");
         int[] md_ids = new int[split_md_id.length];
         for (int i = 0; i < split_md_id.length; i++) {
@@ -118,12 +131,26 @@ public class JH_BoardController {
     }
 
     @GetMapping("/get/{b_id}")
-    public JH_BoardDto getBoardDetail(@PathVariable int b_id) {
-        return service.getBoardDetail(b_id);
+    public JH_BoardDto getBoardDetail(@AuthenticationPrincipal MemberDto memberDto,@PathVariable int b_id) {
+        JH_BoardDto board = service.getBoardDetail(b_id);
+        board.setCountComments(commentController.allCommentCount(b_id));
+        Board_LikeDto dto = new Board_LikeDto();
+        dto.setM_id(memberDto.getM_id());
+        dto.setB_id(b_id);
+        boolean isMyLike = likeService.isMyLike(dto);
+        board.setIsMyLike(isMyLike);
+        return board;
     }
 
     @GetMapping("/list")
     public List<Integer> getBoardList(@RequestParam(value = "lastRowNum") int lastRowNum) {
         return service.getBoardList(lastRowNum);
     }
+
+    @GetMapping("/delPost")
+    public void delPost(@RequestParam(value = "b_id") int b_id) {
+        service.delPost(b_id);
+    }
+
+
 }

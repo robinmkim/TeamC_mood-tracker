@@ -14,6 +14,10 @@ public class JH_ReplyDto { // 대댓글 테이블
     private  String re_content;
     private String regdate;
     private JH_MemberDto member;
+    private boolean isMyLike;
+    public void setIsMyLike(boolean isMyLike) {
+        this.isMyLike = isMyLike;
+    }
 
 
 }

@@ -1,36 +1,37 @@
 package com.teamc.moodtracker.service;
 
-import com.teamc.moodtracker.dao.JH_BoardLikeDao;
 import com.teamc.moodtracker.dao.JH_CommentLikeDao;
-import com.teamc.moodtracker.dto.Board_LikeDto;
+import com.teamc.moodtracker.dao.JH_ReplyLikeDao;
 import com.teamc.moodtracker.dto.Comment_LikeDto;
+import com.teamc.moodtracker.dto.Reply_LikeDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class JH_CommentLikeServiceImpl implements JH_CommentLikeService{
+public class JH_ReplyLikeServiceImpl implements JH_ReplyLikeService{
     @Autowired
-    private JH_CommentLikeDao dao;
+    private JH_ReplyLikeDao dao;
+
 
     @Override
-    public boolean isMyLikeComment(Comment_LikeDto dto) {
-        return false;
+    public boolean isMyLikeReply(Reply_LikeDto dto) {
+        return dao.isMyLikeReply(dto);
     }
 
     @Override
-    public int getCmlike_id(Comment_LikeDto dto) {
-        return 0;
+    public int getRelike_id(Reply_LikeDto dto) {
+        return dao.getRelike_id(dto);
     }
 
     @Override
-    public int addCommentLike(Comment_LikeDto dto) {
-        return 0;
+    public int addReplyLike(Reply_LikeDto dto) {
+        return dao.addReplyLike(dto);
     }
 
     @Override
-    public void delCommentLike(int cmlike_id) {
-
+    public void delReplyLike(int relike_id) {
+        dao.delReplyLike(relike_id);
     }
 }

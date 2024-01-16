@@ -11,9 +11,11 @@
         <!-- src="../../assets/notiProfileImage01.jpg" -->
       </div>
       <div class="flex flex-row items-center mx-3">
-        <div class="userName font-bold text-lg">{{ user.m_name }}</div>
+        <div class="userName font-bold text-lg">
+          {{ this.board.member ? this.board.member.m_name : "No Name" }}
+        </div>
         <div class="userHandle text-sm text-slate-500 ml-1">
-          {{ user.m_handle }}
+          {{ this.board.member ? this.board.member.m_handle : "No Handle" }}
         </div>
         <div class="text-slate-400 text-sm ml-2">
           {{ formatTime(board.regdate) }}
@@ -45,14 +47,7 @@
             :to="{ path: '/jh_post/update', query: { b_id: this.board.b_id } }"
             ><span class="border-b">수정하기</span></router-link
           >
-          <router-link to="/login"
-            ><span class="border-b" @click="toggleDropdown"
-              >Log In</span
-            ></router-link
-          >
-          <router-link to="/" @click="toggleDropdown"
-            ><span>Home</span></router-link
-          >
+          <span class="border-b" @click="delPost()">삭제하기</span>
         </div>
       </div>
     </div>
@@ -105,24 +100,46 @@
       <!-- like, 이모지 -->
       <div class="flex flex-row">
         <div class="flex items-center">
-          <svg
-            id="likeButton"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            class="w-6 h-6"
-            @click="toggleLike"
-          >
-            <path
-              ref="likePath"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-            />
-          </svg>
-          <span class="text-sm ml-1 mr-1">55</span>
+          <div v-if="!board.myLike" @click="likeThis">
+            <svg
+              id="likeButton"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+              @click="toggleLike"
+            >
+              <path
+                ref="likePath"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+              />
+            </svg>
+          </div>
+          <div v-else @click="delLike">
+            <svg
+              id="likeButton"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="red"
+              viewBox="0 0 24 24"
+              stroke-width="0"
+              stroke="currentColor"
+              class="w-6 h-6"
+              @click="toggleLike"
+            >
+              <path
+                ref="likePath"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+              />
+            </svg>
+          </div>
+
+          <span class="text-sm ml-1 mr-1">{{ this.board.countLike }}</span>
           <a
             :href="'/postDetail/?b_id=' + this.board.b_id"
             class="flex items-center"
@@ -141,7 +158,9 @@
                 d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
               />
             </svg>
-            <span class="text-sm ml-1 mr-1">{{ commentCount }}</span>
+            <span class="text-sm ml-1 mr-1">{{
+              this.board.countComments
+            }}</span>
           </a>
 
           <span class="ml-2">{{ sentimentEmoji }}</span>
@@ -171,10 +190,15 @@ export default {
       board: {
         b_id: null,
         m_id: null,
+        isMylike: false,
         b_content: "",
         b_sentiment: "",
         regdate: "",
         mediaList: [],
+        member: null,
+        countLike: 0,
+        countComments: 0,
+        myLike: false,
       },
       emotionMap: {
         "😆": "happy",
@@ -213,33 +237,82 @@ export default {
     },
   },
   methods: {
+    likeThis() {
+      apiClient
+        .get(`/jh_postLike/addBoardLike?b_id=${this.b_id}`)
+        .then((response) => {
+          // this.isMylike = response.data;
+          console.log("likeThis!: " + response.data);
+          this.loadBoardData();
+          // console.log("isMylike: " + this.isMylike);
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+    },
+    delLike() {
+      apiClient
+        .get(`/jh_postLike/delBoardLike?b_id=${this.b_id}`)
+        .then(() => {
+          // this.isMylike = response.data;
+          console.log("delLike! 성공!");
+          this.loadBoardData();
+
+          // console.log("isMylike: " + this.isMylike);
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+    },
+    delPost() {
+      const userConfirmed = confirm("게시물을 삭제하시겠습니까?");
+      if (userConfirmed) {
+        apiClient
+          .get(`/jh_post/delPost?b_id=${this.b_id}`)
+          .then(() => {
+            this.$router.push("/timeline");
+          })
+          .catch((error) => {
+            console.log("--------------!!");
+            console.error("Error fetching the board data:", error);
+          });
+      }
+    },
     handleScroll() {
       this.$emit("post-detail-scroll");
     },
-    getCommentCount() {
-      apiClient
-        .get(`/jh_comment/allCommentCount?b_id=${this.b_id}`)
-        .then((response) => {
-          console.log("--------------" + response);
-          this.commentCount = response.data;
-        })
-        .catch((error) => {
-          console.log("--------------!!");
-          console.error("Error fetching the board data:", error);
-        });
-    },
-    getUserInfo() {
-      apiClient
-        .get(`/member/userInfo/${this.board.m_id}`)
-        .then((response) => {
-          this.user = response.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching the board data:", error);
-        });
-    },
+    // getCommentCount() {
+    //   apiClient
+    //     .get(`/jh_comment/allCommentCount?b_id=${this.b_id}`)
+    //     .then((response) => {
+    //       console.log("--------------" + response);
+    //       this.commentCount = response.data;
+    //     })
+    //     .catch((error) => {
+    //       console.log("--------------!!");
+    //       console.error("Error fetching the board data:", error);
+    //     });
+    // },
+    // getUserInfo() {
+    //   apiClient
+    //     .get(`/member/userInfo/${this.board.m_id}`)
+    //     .then((response) => {
+    //       this.user = response.data;
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error fetching the board data:", error);
+    //     });
+    // },
     getUserImageUrl() {
-      return `http://localhost:8083/${this.user.m_img_path}${this.user.m_img_name}`;
+      if (this.board.member && this.board.member.m_img_path) {
+        console.log(
+          `${this.board.member.m_img_path}${this.board.member.m_img_name}`
+        );
+        return `http://localhost:8083/${this.board.member.m_img_path}${this.board.member.m_img_name}`;
+      } else {
+        // 여기에 기본 이미지 URL 또는 다른 처리를 추가하세요.
+        return "http://images/Logo.png";
+      }
     },
 
     getImageUrl(media) {
@@ -270,15 +343,31 @@ export default {
     loadBoardData() {
       // 게시글 데이터를 로드합니다.
       apiClient
-        .get(`/post/get/${this.b_id}`)
+        .get(`/jh_post/get/${this.b_id}`)
         .then((response) => {
           this.board = response.data;
-          this.getUserInfo(); // user 데이터 갖고오기
+          console.log(this.board);
+          console.log(this.board.myLike);
+          // this.isMylikeMethod();
+
+          // this.getUserInfo(); // user 데이터 갖고오기
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
         });
     },
+    // isMylikeMethod() {
+    //   apiClient
+    //     .get(`/jh_postLike/isMylike?b_id=${this.b_id}`)
+    //     .then((response) => {
+    //       this.isMylike = response.data;
+    //       console.log("isMylike!: " + this.isMylike);
+    //       // console.log("isMylike: " + this.isMylike);
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error fetching the board data:", error);
+    //     });
+    // },
     formatTime(dateString) {
       const now = new Date();
       const postDate = new Date(dateString);
@@ -304,9 +393,9 @@ export default {
     },
   },
   created() {
-    this.getUserInfo();
+    // this.getUserInfo();
     this.loadBoardData();
-    this.getCommentCount();
+    // this.getCommentCount();
   },
 };
 </script>

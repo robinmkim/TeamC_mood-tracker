@@ -13,4 +13,7 @@ public interface JH_replyDao {
 
     public int addReply(JH_ReplyDto dto);
 
+    public void delReply(int re_id);
+
+
 }
