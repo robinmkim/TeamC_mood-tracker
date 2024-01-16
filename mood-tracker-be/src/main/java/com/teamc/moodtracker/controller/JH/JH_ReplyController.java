@@ -1,18 +1,16 @@
-package com.teamc.moodtracker.controller;
+package com.teamc.moodtracker.controller.JH;
 
-import com.teamc.moodtracker.dto.BoardDto;
-import com.teamc.moodtracker.dto.JH_ReplyDto;
+import com.teamc.moodtracker.dto.JH.JH_ReplyDto;
 import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.dto.Reply_LikeDto;
-import com.teamc.moodtracker.service.JH_ReplyLikeService;
-import com.teamc.moodtracker.service.JH_ReplyService;
+import com.teamc.moodtracker.service.JH.JH_ReplyLikeService;
+import com.teamc.moodtracker.service.JH.JH_ReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.teamc.moodtracker.controller;
+package com.teamc.moodtracker.controller.CY;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

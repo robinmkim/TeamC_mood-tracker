@@ -1,12 +1,8 @@
-package com.teamc.moodtracker.dto;
+package com.teamc.moodtracker.dto.JH;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.ibatis.type.Alias;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Alias("jh_cvo")
 @Getter

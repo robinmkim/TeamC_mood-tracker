@@ -1,4 +1,4 @@
-package com.teamc.moodtracker.dao;
+package com.teamc.moodtracker.dao.JH;
 
 import com.teamc.moodtracker.dto.Board_LikeDto;
 import com.teamc.moodtracker.dto.Comment_LikeDto;

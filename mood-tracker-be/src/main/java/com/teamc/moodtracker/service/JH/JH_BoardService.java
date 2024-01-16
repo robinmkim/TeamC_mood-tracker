@@ -1,12 +1,10 @@
-package com.teamc.moodtracker.service;
+package com.teamc.moodtracker.service.JH;
 
 
-import com.teamc.moodtracker.dao.BoardDao;
-import com.teamc.moodtracker.dao.JH_BoardDao;
-import com.teamc.moodtracker.dao.JH_CommentDao;
-import com.teamc.moodtracker.dto.BoardDto;
-import com.teamc.moodtracker.dto.JH_BoardDto;
-import com.teamc.moodtracker.dto.JH_CommentDto;
+import com.teamc.moodtracker.dao.JH.JH_BoardDao;
+import com.teamc.moodtracker.dao.JH.JH_CommentDao;
+import com.teamc.moodtracker.dto.JH.JH_BoardDto;
+import com.teamc.moodtracker.dto.JH.JH_CommentDto;
 import com.teamc.moodtracker.dto.MediaDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

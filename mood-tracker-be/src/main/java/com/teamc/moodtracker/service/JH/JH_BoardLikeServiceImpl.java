@@ -1,7 +1,6 @@
-package com.teamc.moodtracker.service;
+package com.teamc.moodtracker.service.JH;
 
-import com.teamc.moodtracker.dao.JH_BoardLikeDao;
-import com.teamc.moodtracker.dao.LikeDao;
+import com.teamc.moodtracker.dao.JH.JH_BoardLikeDao;
 import com.teamc.moodtracker.dto.Board_LikeDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,6 @@
-package com.teamc.moodtracker.dao;
+package com.teamc.moodtracker.dao.CY;
 
-import com.teamc.moodtracker.dto.CY_BoardDto;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Map;

@@ -1,9 +1,7 @@
-package com.teamc.moodtracker.controller;
+package com.teamc.moodtracker.controller.CY;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.teamc.moodtracker.dto.CY_BoardDto;
 import com.teamc.moodtracker.dto.MemberDto;
-import com.teamc.moodtracker.service.CY_BoardService;
+import com.teamc.moodtracker.service.CY.CY_BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

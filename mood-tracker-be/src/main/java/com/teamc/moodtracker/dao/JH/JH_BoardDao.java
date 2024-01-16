@@ -1,9 +1,8 @@
-package com.teamc.moodtracker.dao;
+package com.teamc.moodtracker.dao.JH;
 
 
-import com.teamc.moodtracker.dto.BoardDto;
-import com.teamc.moodtracker.dto.JH_BoardDto;
-import com.teamc.moodtracker.dto.JH_CommentDto;
+import com.teamc.moodtracker.dto.JH.JH_BoardDto;
+import com.teamc.moodtracker.dto.JH.JH_CommentDto;
 import com.teamc.moodtracker.dto.MediaDto;
 import org.apache.ibatis.annotations.Mapper;
 

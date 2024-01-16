@@ -1,6 +1,6 @@
-package com.teamc.moodtracker.service;
+package com.teamc.moodtracker.service.JH;
 
-import com.teamc.moodtracker.dto.JH_ReplyDto;
+import com.teamc.moodtracker.dto.JH.JH_ReplyDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,11 +1,10 @@
-package com.teamc.moodtracker.controller;
+package com.teamc.moodtracker.controller.JH;
 
-import com.teamc.moodtracker.dto.BoardDto;
 import com.teamc.moodtracker.dto.Comment_LikeDto;
-import com.teamc.moodtracker.dto.JH_CommentDto;
+import com.teamc.moodtracker.dto.JH.JH_CommentDto;
 import com.teamc.moodtracker.dto.MemberDto;
-import com.teamc.moodtracker.service.JH_CommentLikeService;
-import com.teamc.moodtracker.service.JH_CommentService;
+import com.teamc.moodtracker.service.JH.JH_CommentLikeService;
+import com.teamc.moodtracker.service.JH.JH_CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

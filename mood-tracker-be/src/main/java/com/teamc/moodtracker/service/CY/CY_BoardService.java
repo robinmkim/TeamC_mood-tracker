@@ -1,6 +1,6 @@
-package com.teamc.moodtracker.service;
+package com.teamc.moodtracker.service.CY;
 
-import com.teamc.moodtracker.dao.CY_BoardDao;
+import com.teamc.moodtracker.dao.CY.CY_BoardDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;

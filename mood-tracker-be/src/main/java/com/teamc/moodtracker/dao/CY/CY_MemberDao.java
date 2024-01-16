@@ -1,6 +1,6 @@
-package com.teamc.moodtracker.dao;
+package com.teamc.moodtracker.dao.CY;
 
-import com.teamc.moodtracker.dto.CY_MemberDto;
+import com.teamc.moodtracker.dto.CY.CY_MemberDto;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

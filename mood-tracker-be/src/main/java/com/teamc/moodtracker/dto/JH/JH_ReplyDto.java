@@ -1,4 +1,4 @@
-package com.teamc.moodtracker.dto;
+package com.teamc.moodtracker.dto.JH;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,8 +1,6 @@
-package com.teamc.moodtracker.service;
+package com.teamc.moodtracker.service.JH;
 
-import com.teamc.moodtracker.dao.JH_CommentLikeDao;
-import com.teamc.moodtracker.dao.JH_ReplyLikeDao;
-import com.teamc.moodtracker.dto.Comment_LikeDto;
+import com.teamc.moodtracker.dao.JH.JH_ReplyLikeDao;
 import com.teamc.moodtracker.dto.Reply_LikeDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.teamc.moodtracker.service;
+package com.teamc.moodtracker.service.JH;
 
 import com.teamc.moodtracker.dto.Board_LikeDto;
 import com.teamc.moodtracker.dto.Comment_LikeDto;

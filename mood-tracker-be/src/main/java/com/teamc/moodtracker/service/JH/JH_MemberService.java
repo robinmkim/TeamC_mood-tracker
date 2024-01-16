@@ -1,7 +1,6 @@
-package com.teamc.moodtracker.service;
+package com.teamc.moodtracker.service.JH;
 
-import com.teamc.moodtracker.dao.JH_MemberDao;
-import com.teamc.moodtracker.dto.JH_MemberDto;
+import com.teamc.moodtracker.dto.JH.JH_MemberDto;
 import org.springframework.stereotype.Service;
 
 @Service

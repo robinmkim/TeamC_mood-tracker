@@ -1,8 +1,6 @@
-package com.teamc.moodtracker.service;
+package com.teamc.moodtracker.service.JH;
 
-import com.teamc.moodtracker.dao.JH_BoardLikeDao;
 import com.teamc.moodtracker.dto.Board_LikeDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,11 +1,9 @@
-package com.teamc.moodtracker.controller;
+package com.teamc.moodtracker.controller.JH;
 
-import com.teamc.moodtracker.dao.JH_BoardLikeDao;
-import com.teamc.moodtracker.dao.JH_CommentDao;
 import com.teamc.moodtracker.dto.*;
-import com.teamc.moodtracker.service.BoardService;
-import com.teamc.moodtracker.service.JH_BoardLikeService;
-import com.teamc.moodtracker.service.JH_BoardService;
+import com.teamc.moodtracker.dto.JH.JH_BoardDto;
+import com.teamc.moodtracker.service.JH.JH_BoardLikeService;
+import com.teamc.moodtracker.service.JH.JH_BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.*;
 import java.io.FileOutputStream;
 import java.util.stream.Collectors;
