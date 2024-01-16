@@ -23,22 +23,19 @@
       <div class="overflow-auto">
         <ul class="list-none">
           <li
-            v-for="room in rooms"
+            v-for="(room, index) in rooms"
             :key="room.roomId"
             class="flex rounded-lg bg-gray-100 p-2 m-1 items-center hover:bg-gray-300"
           >
-            <div
-              class="flex items-center w-4/5"
-              @click="loadMessages(room.roomId, room.otherMemberName)"
-            >
-              {{ room.roomId }}
-              <img class="rounded-full h-14 mr-2" :src="``" alt="2" />
+            <div class="flex flex-col items-start w-4/5 my-2 " @click="loadMessages(index, room.otherMemberName)">
+              <!-- <img class="rounded-full h-14 mr-2" :src="``" alt="profileImg" /> -->
               <div class="font-bold text-base">{{ room.otherMemberName }}</div>
+              <div class="text-base">{{ room.message }}</div>
             </div>
             <div class="flex w-1/5">
               <div class="flex-col ml-auto">
                 <button class="align-top" @click="toggleMenu(index, $event)">
-                  <img class="" src="" alt="설정" />
+                  <img class="" src="./../../assets/chat/icon_ellipses.png" alt="설정" />
                 </button>
                 <ul
                   v-if="room.isMenuOpen"
@@ -51,7 +48,6 @@
                   <li><button type="button">대화삭제</button></li>
                   <li><button type="button">신고하기</button></li>
                 </ul>
-                <div class="text-xs">{{ room.message }}</div>
               </div>
             </div>
           </li>
@@ -175,26 +171,25 @@ export default {
       event.target.style.height = "auto";
       event.target.style.height = event.target.scrollHeight + "px";
     },
-    toggleMenu(index, event) {
+    toggleMenu(roomId, event) {
       // 모든 채팅방의 메뉴 상태를 닫음
-      this.chatList.forEach((chat, i) => {
-        if (i !== index && chat.isMenuOpen) {
-          this.chatList[i] = reactive({
+      this.rooms.forEach((chat, i) => {
+        if (i !== roomId && chat.isMenuOpen) {
+          this.rooms[i] = reactive({
             ...chat,
             isMenuOpen: false,
           });
         }
       });
-
       // 선택한 채팅방의 메뉴 상태를 토글
       const rect = event.target.getBoundingClientRect();
-      this.chatList[index] = reactive({
-        ...this.chatList[index],
+      this.rooms[roomId] = reactive({
+        ...this.rooms[roomId],
         menuPosition: {
           top: rect.bottom + window.scrollY + 5,
           left: rect.left + window.scrollX - 50,
         },
-        isMenuOpen: !this.chatList[index].isMenuOpen,
+        isMenuOpen: true,
       });
 
       // 메뉴 상태 업데이트 후 컴포넌트의 일반 상태를 업데이트
@@ -271,13 +266,16 @@ export default {
       }
     },
     loadChatRooms() {
-      console.log(this.rooms);
       // 현재 로그인한 사용자의 채팅방 목록 조회
       apiClient
         .get(`/rooms`)
         .then((response) => {
           this.rooms = "";
           this.rooms = response.data;
+          for (let i = 0; i < this.rooms.length; i++) {
+            this.rooms[i].isMenuOpen = false;
+            this.rooms[i].menuPosition = { top: 0, left: 0 };
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -348,6 +346,7 @@ export default {
             otherMemberName: res.newMemberName,
             message: "",
             isMenuOpen: false,
+            menuPosition: { top: 0, left: 0 },
           };
           this.showModal = false;
           this.rooms.splice(0, 0, roomData);
