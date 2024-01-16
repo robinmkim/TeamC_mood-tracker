@@ -1,11 +1,17 @@
 package com.teamc.moodtracker.controller;
 
 import com.teamc.moodtracker.dto.FaceresultDto;
+import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.service.FaceresultService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -20,10 +26,11 @@ public class FaceresultController {
     private final FaceresultService faceresultService;
 
 
-    // 입력 (장고에서 처리함)
-//    @PostMapping("/insert")
-//    public void insertFaceResult(FaceresultDto faceresultDto){
-//        faceresultService.insertFaceResult(faceresultDto);
+//     입력 (장고에서 처리함)
+//    @PostMapping("/predictFace")
+//    public String insertFaceResult(@AuthenticationPrincipal MemberDto memberDto, @RequestParam MultipartFile file1) {
+//
+////        faceresultService.insertFaceResult(faceresultDto);
 //    }
 
     // 조회
@@ -35,17 +42,13 @@ public class FaceresultController {
     public List<FaceresultDto> selectMyList(int memberNum){
         return faceresultService.selectMyList(memberNum);
     }
-//    @GetMapping("/lastResultId") //post되면 삭제 예정
-//    public int selectIdOfMyLastFaceResult(@RequestParam int memberNum){
-//        return faceresultService.selectIdOfMyLastFaceResult(memberNum);
-//    }
-    @PostMapping("/lastResultId")
-    public int selectIdOfMyLastFaceResultp(@RequestBody Map<String, Integer> requestMap){
-        Integer memberNum = requestMap.get("memberNum");
-        return faceresultService.selectIdOfMyLastFaceResult(memberNum);
+
+    @GetMapping("/lastResultId")
+    public int selectIdOfMyLastFaceResultp(@AuthenticationPrincipal MemberDto memberDto){
+        return faceresultService.selectIdOfMyLastFaceResult(memberDto.getM_id());
     }
     @GetMapping("/detail")
-    public FaceresultDto selectFaceResultDetail(@RequestParam int ar_id){
+    public FaceresultDto selectFaceResultDetail(@AuthenticationPrincipal MemberDto memberDto,@RequestParam int ar_id){
         return faceresultService.selectFaceResultDetail(ar_id);
     }
 
@@ -58,15 +61,17 @@ public class FaceresultController {
     // 피드백 업데이트
 //    @PostMapping("/feedback/bad")
     @PostMapping(value = "/feedback/bad")
-    public void updateFeedbackBad(@RequestBody Map<String, Integer> requestMap){
+    public void updateFeedbackBad(@AuthenticationPrincipal MemberDto memberDto, @RequestBody Map<String, Integer> requestMap){
         //Map<String, Integer>는 json 형태
         Integer ar_id = requestMap.get("ar_id");
         faceresultService.updateFeedbackBad(ar_id);
     }
     @PostMapping("/feedback/good")
-    public void updateFeedbackGood(@RequestBody Map<String, Integer> requestMap){
+    public void updateFeedbackGood(@AuthenticationPrincipal MemberDto memberDto, @RequestBody Map<String, Integer> requestMap){
         Integer ar_id = requestMap.get("ar_id");
         faceresultService.updateFeedbackGood(ar_id);
     }
+
+
 
 }

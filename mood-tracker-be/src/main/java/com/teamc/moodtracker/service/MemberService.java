@@ -1,6 +1,7 @@
 package com.teamc.moodtracker.service;
 
 import com.teamc.moodtracker.dao.MemberDao;
+import com.teamc.moodtracker.dto.CY_MemberDto;
 import com.teamc.moodtracker.dto.MemberDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,4 +17,8 @@ public class MemberService {
     public MemberDto getMemberByMEmail(String m_email) {
         return dao.getMemberByMEmail(m_email);
     }
+
+    public MemberDto getMemberInfo_board(int mid){
+        return dao.getMemberInfo_board(mid);
+    } //윤영호
 }
