@@ -1,9 +1,9 @@
 <template>
   <div class="flex">
-    <div class="w-1/5 border-r min-h-screen">
+    <div class="w-1/5 border-r h-full">
       <side-bar />
     </div>
-    <div class="w-5/6">
+    <div class="w-5/6" ref="postScrollContainer">
       <div class="">
         <div class="w-full h-40 bg-slate-200"></div>
         <div class="flex h-28">
@@ -25,7 +25,14 @@
             </div>
           </div>
         </div>
-        <PostModal :isOpen="isModalOpen" @close="isModalOpen = false" />
+        <!-- 모달 부분 -->
+        <PostModal
+          :isOpen="isModalOpen"
+          :day="modalData.mday"
+          :month="modalData.mmonth"
+          :ByDateList="ByDateList"
+          @close="isModalOpen = false"
+        />
         <div class="h-full">
           <nav class="flex" role="tablist">
             <div
@@ -57,7 +64,12 @@
               <div v-if="tab.id === 'mood'">
                 <div>
                   <!--그래프-->
-                  <BarChart />
+                  <div
+                    class="flex flex-col justify-center items-center flex-grow"
+                  >
+                    <BarChart class="w-4/5 flex-grow" />
+                  </div>
+
                   <div class="flex justify-between mx-6 mt-4">
                     <div
                       class="w-52 h-32 items-center justify-center flex flex-col bg-slate-300 rounded-3xl"
@@ -77,7 +89,9 @@
                             />
                           </svg>
                         </div>
-                        <div class="font-extrabold text-4xl">10일</div>
+                        <div class="font-extrabold text-4xl">
+                          {{ consecPosts }}일째
+                        </div>
                       </div>
                       <div class="text-lg font-bold">연속 기록 중!!</div>
                     </div>
@@ -100,41 +114,35 @@
                             />
                           </svg>
                         </div>
-                        <div class="font-extrabold text-4xl">24개</div>
+                        <div class="font-extrabold text-4xl">
+                          {{ cntPosts }}개
+                        </div>
                       </div>
                       <div class="text-lg font-bold">Mood 기록</div>
                     </div>
                     <div
                       class="w-52 h-32 items-center justify-center flex flex-col bg-slate-300 rounded-3xl"
                     >
-                      <div class="flex w-full justify-center items-center">
-                        <div>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            class="w-20 h-20"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 0 0-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634Zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 0 1-.189-.866c0-.298.059-.605.189-.866Zm2.023 6.828a.75.75 0 1 0-1.06-1.06 3.75 3.75 0 0 1-5.304 0 .75.75 0 0 0-1.06 1.06 5.25 5.25 0 0 0 7.424 0Z"
-                              clip-rule="evenodd"
-                            />
-                          </svg>
-                        </div>
+                      <div
+                        class="flex w-full text-6xl m-3 justify-center items-center"
+                      >
+                        <div>{{ mainSenti }}</div>
                       </div>
-                      <div class="text-lg font-bold">이번 달은 Happy :)</div>
+                      <div class="text-lg font-bold">이달의 감정</div>
                     </div>
                   </div>
                 </div>
               </div>
               <!--내 게시글 목록-->
               <div v-else-if="tab.id === 'post'">
+                <!--내 게시글 목록2-->
                 <div
-                  class="flex-1 border-x overflow-auto"
-                  ref="postScrollContainer"
+                  style="overflow: scroll  width: 100%; height: 500px; padding: 10px;"
+                  class="flex-1 border-x overflow-auto h-full"
+                  ref="PostScroll"
                   @scroll="handlePostScroll"
                 >
+                  <!--내 게시글 목록3-->
                   <post-detail
                     v-for="bId in MybIdList"
                     :key="bId"
@@ -156,17 +164,17 @@
                   <table class="w-full">
                     <thead class="w-full">
                       <th
-                        v-for="day in days"
-                        :key="day"
+                        v-for="week in weekend"
+                        :key="week"
                         class="p-2 border-r w-auto h-10 xl:text-sm text-xs"
                       >
                         <span
                           class="xl:block lg:block md:block sm:block hidden"
-                          >{{ day }}</span
+                          >{{ week }}</span
                         >
                         <span
                           class="xl:hidden lg:hidden md:hidden sm:hidden block"
-                          >{{ day.slice(0, 3) }}</span
+                          >{{ week.slice(0, 3) }}</span
                         >
                       </th>
                     </thead>
@@ -176,42 +184,23 @@
                         v-for="(date, idx) in dates"
                         :key="idx"
                         class="text-center h-12"
+                        @click="isModalOpen = true"
                       >
                         <td
                           v-for="(day, secondIdx) in date"
                           :key="secondIdx"
                           class="border p-1 h-24 w-96 transition cursor-pointer duration-500 ease hover:bg-gray-300"
+                          @click="setSelectedDate(day)"
                         >
                           <div
-                            @click="isModalOpen = true"
-                            class="flex flex-col h-24 mx-auto w-full overflow-hidden bg-[#AAD7D9]"
+                            class="flex flex-col h-24 mx-auto w-full overflow-hidden"
                           >
                             <div class="top h-5 w-full">
                               <span class="text-gray-500">{{ day }}</span>
                             </div>
                             <div
                               class="bottom flex-grow h-30 py-2 w-full cursor-pointer item-center justify-center"
-                            >
-                              <!--상위 두개 감정 보여주기-->
-                              <div
-                                class="mt-2 flex justify-center items-center gap-2"
-                              >
-                                <div class="m-2 w-[20px]">
-                                  <img
-                                    src="https://pbs.twimg.com/media/GDeOnXZakAAbkf2?format=png&name=120x120"
-                                    alt="angry"
-                                  />
-                                  <!-- <span class="px-2 opacity-75">7</span> -->
-                                </div>
-                                <div class="m-2 w-[20px]">
-                                  <img
-                                    src="https://pbs.twimg.com/media/GDeOl2pasAApYny?format=png&name=120x120"
-                                    alt="happy"
-                                  />
-                                  <!-- <span class="px-2 opacity-75">5</span> -->
-                                </div>
-                              </div>
-                            </div>
+                            ></div>
                           </div>
                         </td>
                       </tr>
@@ -265,11 +254,30 @@ export default {
       MylastRowNum: 0,
       LikebIdList: [],
       LikedlastRowNum: 0,
+      ByDateList: [],
       isLoading: false,
-      mid: 1, // 회원번호 넘겨주기 가능해지면 삭제할 것
-      apiEndpoint: "",
+      consecPosts: 0, // 연속 기록 수
+      cntPosts: 0, // 이번 달 기록한 감정 수
+      mainSenti: null, // 이번 달 주요 감정
+      board: {
+        b_id: null,
+        m_id: null,
+        b_content: "",
+        b_sentiment: "",
+        regdate: "",
+        mediaList: [],
+      },
+      emotionMap: {
+        happy: "😆",
+        angry: "😡",
+        anxiety: "😬",
+        hurt: "🤕",
+        neutral: "😐",
+        sad: "😢",
+        surprise: "😨",
+      },
 
-      days: [
+      weekend: [
         "Sunday",
         "Monday",
         "Tuesday",
@@ -283,6 +291,12 @@ export default {
       currentMonth: 0,
       year: 0,
       month: 0,
+      lastMonthDates: 0,
+      nextMonthDates: 0,
+      modalData: {
+        mday: 0,
+        mmonth: 0,
+      },
       currentTab: 0,
       tabs: [
         { name: "나의 Mood", id: "mood" },
@@ -290,7 +304,9 @@ export default {
         { name: "Mood 달력", id: "calander" },
         { name: "좋아요", id: "like" },
       ],
+      isBoardToggleDropdownOpen: false,
       isModalOpen: false,
+      selectedDate: null,
     };
   },
 
@@ -298,7 +314,7 @@ export default {
     // 유저 정보
     getMemberInfo() {
       apiClient
-        .get(`/member/userInfo/${this.mid}`)
+        .get(`/member/myInfo`)
         .then((info) => {
           console.log("유저 정보를 불러옵니다");
           info.data.m_handle = "@" + info.data.m_handle;
@@ -319,14 +335,15 @@ export default {
         console.log("post로딩중");
         return; // 이미 로딩 중이면 요청을 하지 않음
       }
+
       this.isLoading = true;
       apiClient
-        .get(`/mypage/list?lastRowNum=${this.MylastRowNum}&mid=${this.mid}`)
+        .get(`/mypage/mylist?lastRowNum=${this.MylastRowNum}`)
         .then((res) => {
           console.log("my post 넘어옴");
           this.MylastRowNum += res.data.length;
           this.MybIdList = [...this.MybIdList, ...res.data];
-          this.handlePostScroll();
+          // this.handlePostScroll();
         })
         .catch((err) => {
           console.log(err, "post 뭔가 안됨");
@@ -344,9 +361,7 @@ export default {
       }
       this.isLoading = true;
       apiClient
-        .get(
-          `/mypage/likelist?lastRowNum=${this.LikedlastRowNum}&mid=${this.mid}`
-        )
+        .get(`/mypage/likelist?lastRowNum=${this.LikedlastRowNum}`)
         .then((res) => {
           console.log("liked post 넘어옴");
           this.LikedlastRowNum += res.data.length;
@@ -363,16 +378,27 @@ export default {
 
     handlePostScroll() {
       console.log("Post Scroll event triggered");
-      const container = this.$refs.postScrollContainer;
-      if (
-        !this.isLoading &&
-        container.scrollHeight - container.scrollTop <=
-          container.clientHeight + 50
-      ) {
-        console.log("post scroll 후 데이터 로딩");
-        this.getMyBoardList();
+      console.log("지금 아이디" + this.currentTab);
+
+      if (this.loadTime) {
+        clearTimeout(this.loadTime);
       }
+
+      this.loadTime = setTimeout(() => {
+        if (this.currentTab === 1) {
+          const container = this.$refs.postScrollContainer;
+          if (
+            !this.isLoading &&
+            container.scrollHeight - container.scrollTop <=
+              container.clientHeight + 50
+          ) {
+            console.log("post scroll 후 데이터 로딩");
+            this.getMyBoardList();
+          }
+        }
+      }, 500);
     },
+
     handleLikedScroll() {
       console.log("Like Scroll event triggered");
       const container = this.$refs.likedScrollContainer;
@@ -411,53 +437,48 @@ export default {
         }
       }
     },
-    // addPostScrollEventHandler() {
-    //   this.$el.postScrollContainer.addEventListener(
-    //     "scroll",
-    //     this.handlePostScroll
-    //   );
-    // },
-
-    // addLikedScrollEventHandler() {
-    //   this.$refs.likedScrollContainer.addEventListener(
-    //     "scroll",
-    //     this.handleLikedScroll
-    //   );
-    // },
-
-    // removeHandleScroll() {
-    //   this.$refs.likedScrollContainer.removeEventListener(
-    //     "scroll",
-    //     this.handleLikedScroll
-    //   );
-    //   this.$refs.postScrollContainer.removeEventListener(
-    //     "scroll",
-    //     this.handlePostScroll
-    //   );
-    // },
 
     changeTab(index, tabId) {
       this.currentTab = index;
-      console.log(`현재 탭의 id: ${tabId}`);
       // 탭이 변경되면
       if (tabId === "post") {
-        console.log("post");
+        console.log(`현재 탭의 id: ${tabId}`);
         if (this.MybIdList.length === 0) {
           this.getMyBoardList();
         }
         this.handlePostScroll();
-        // this.addPostScrollEventHandler();
       } else if (tabId === "like") {
-        console.log("like");
+        console.log(`현재 탭의 id: ${tabId}`);
         if (this.LikebIdList.length === 0) {
           this.getLikedBoardList();
         }
         this.handleLikedScroll();
-        // this.addLikedScrollEventHandler();
+      } else if (tabId === "mood") {
+        this.getConsecPost();
+        this.getThisMonthPosts();
       } else {
-        console.log("와앙");
-        // this.removeHandleScroll();
+        console.log(`현재 탭의 id: ${tabId}`);
       }
+    },
+    //달력에서 불러올 게시글 리스트
+    getListByDate() {
+      if (this.isLoading) {
+        console.log("calander 로딩중");
+        return; // 이미 로딩 중이면 요청을 하지 않음
+      }
+      this.isLoading = true;
+      apiClient
+        .get(`/mypage/reglist?regdate=${this.selectedDate}`)
+        .then((res) => {
+          console.log("캘린더 포스트 넘어옴");
+          this.ByDateList = [...this.ByDateList, ...res.data];
+        })
+        .catch((err) => {
+          console.log(err, "calander 뭔가 안됨");
+        })
+        .finally(() => {
+          this.isLoading = false; // 로딩 완료
+        });
     },
     calendarData() {
       const [monthFirstDay, monthLastDate, lastMonthLastDate] =
@@ -530,6 +551,121 @@ export default {
       this.currentMonth = this.month; // 수정된 부분
       this.calendarData();
     },
+    formatDate(year, month, day) {
+      // 각 자리수가 한 자리 수인 경우 앞에 0을 붙여줍니다.
+      const formattedYear = year.toString().padStart(2, "0");
+      const formattedMonth = (month + 1).toString().padStart(2, "0");
+      const formattedDay = day.toString().padStart(2, "0");
+
+      // 'yy/mm/dd' 형식으로 반환합니다.
+      return `${formattedYear}${formattedMonth}${formattedDay}`;
+    },
+    setSelectedDate(day) {
+      const formattedDate = this.formatDate(this.year, this.month - 1, day);
+      this.ByDateList = [];
+      this.modalData.mday = day;
+      this.modalData.mmonth = this.currentMonth;
+      this.getByRegList(formattedDate);
+    },
+    getByRegList(formattedDate) {
+      console.log("컨트롤러에 전달할 날짜:", formattedDate);
+
+      if (this.isLoading) {
+        console.log("calander 로딩중");
+        return; // 이미 로딩 중이면 요청을 하지 않음
+      }
+      this.isLoading = true;
+      apiClient
+        .get(`/mypage/reglist?regdate=${formattedDate}`)
+        .then((res) => {
+          console.log("캘린더 포스트 넘어옴");
+
+          this.ByDateList = [...this.ByDateList, ...res.data];
+          console.log(formattedDate, "data list: ", this.ByDateList);
+        })
+        .catch((err) => {
+          console.log(err, "calander 뭔가 안됨");
+        })
+        .finally(() => {
+          this.isLoading = false; // 로딩 완료
+        });
+    },
+    // 모달창 리스트에는 b_sentiment이랑 b_content만 필요한디
+    // loadBoardData() {
+    //   // 게시글 데이터를 로드합니다.
+    //   apiClient
+    //     .get(`/post/get/${this.b_id}`)
+    //     .then((response) => {
+    //       this.board = response.data;
+    //       this.getMemberInfo(); // user 데이터 갖고오기
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error fetching the board data:", error);
+    //     });
+    // },
+    // 연속으로 글 쓴 날짜
+    getConsecPost() {
+      apiClient
+        .get(`/mypage/const`)
+        .then((cnt) => {
+          this.consecPosts = cnt.data;
+        })
+        .catch((err) => {
+          console.log("연속 일자 가져오기 안됨", err);
+        });
+    },
+    // 이번달에 쓴 게시글 개수
+    getThisMonthPosts() {
+      apiClient
+        .get(`/mypage/postcnt`)
+        .then((cnt) => {
+          this.cntPosts = cnt.data;
+          console.log("이번달에 쓴 게시글 개수는? ", this.cntPosts);
+        })
+        .catch((err) => {
+          console.log("게시글 수 못가져옴", err);
+        });
+    },
+
+    getMainSentiment() {
+      apiClient
+        .get(`/mypage/mainsenti`)
+        .then((res) => {
+          console.log("이번 달 메인 감정: ", res.data);
+          const senti = res.data;
+          console.log("emotion", this.emotionMap);
+          this.mainSenti = this.emotionMap[senti];
+          console.log(this.mainSenti);
+        })
+        .catch((err) => {
+          console.log("메인 감정 못불러옴", err);
+        });
+    },
+  },
+
+  mounted() {
+    // console.log("안녕 전");
+    // console.log("현재 탭 번호? : " + this.currentTab);
+    //document.addEventListener("scroll", this.handleScroll, true);
+    this.$watch("currentTab", () => {
+      if (this.currentTab === 1) {
+        // 'post' 탭의 인덱스가 1이라 가정합니다. 만약 다르다면 해당 인덱스로 변경하세요.
+        this.$refs.postScrollContainer.addEventListener(
+          "scroll",
+          this.handlePostScroll
+        );
+      }
+    });
+  },
+
+  beforeUnmount() {
+    //window.removeEventListener("scroll", this.handleScroll);
+    if (this.currentTab === 1) {
+      this.$refs.postScrollContainer.removeEventListener(
+        "scroll",
+        this.handlePostScroll()
+      );
+    }
   },
 
   created() {
@@ -541,14 +677,9 @@ export default {
     this.calendarData();
     this.getMemberInfo();
     this.getPrfileImgUrl();
-    // this.getLikedBoardList();
-    // this.getMyBoardList();
-  },
-  mounted() {
-    // document.addEventListener("scroll", this.handleScroll, true);
-  },
-  beforeUnmount() {
-    // window.removeEventListener("scroll", this.handleScroll);
+    this.getConsecPost();
+    this.getThisMonthPosts();
+    this.getMainSentiment();
   },
 };
 </script>

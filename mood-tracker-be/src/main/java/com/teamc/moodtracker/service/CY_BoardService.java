@@ -42,4 +42,16 @@ public class CY_BoardService {
         params.put("mid", mid);
         return cdao.getListByDate(params);
     }
+
+    public Integer getConsecPostsCnt(int mid){
+        return cdao.getConsecPostsCnt(mid);
+    }
+
+    public Integer getThisMonthPosts(int mid){
+        return cdao.getThisMonthPosts(mid);
+    }
+
+    public String getMainSentiment(int mid){
+        return cdao.getMainSentiment(mid);
+    }
 }

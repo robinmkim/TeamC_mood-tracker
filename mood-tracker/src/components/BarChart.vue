@@ -1,5 +1,12 @@
 <template>
-  <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
+  <div class="flex-grow">
+    <Bar
+      id="my-chart-id"
+      v-if="loaded"
+      :options="chartOptions"
+      :data="chartData"
+    />
+  </div>
 </template>
 
 <script>
@@ -14,7 +21,6 @@ import {
   LinearScale,
 } from "chart.js";
 import apiClient from "@/utils/apiClient";
-// import axios from "axios";
 
 ChartJS.register(
   Title,
@@ -29,73 +35,74 @@ export default {
   name: "BarChart",
   components: { Bar },
 
-  data() {
-    return {
-      mid: 1,
-      chartData: {
-        labels: [],
-        datasets: [
-          {
-            backgroundColor: [
-              "#FF6666",
-              "#3F9DDA",
-              "#715DB2",
-              "#FFE886",
-              "#779B5D",
-              "#7071FF",
-              "#33D6FF",
-            ],
-            data: [],
-          },
-        ],
-      },
-      chartOptions: {
-        responsive: true,
-      },
-    };
-  },
+  data: () => ({
+    loaded: false,
+    chartData: {
+      labels: [
+        "Angry",
+        "Anxiety",
+        "Happy",
+        "Hurt",
+        "Neutral",
+        "Sad",
+        "Surprise",
+      ],
+      datasets: [
+        {
+          label: 0,
+          backgroundColor: [
+            "#FF6666",
+            "#3F9DDA",
+            "#715DB2",
+            "#FFE886",
+            "#779B5D",
+            "#7071FF",
+            "#33D6FF",
+          ],
+          data: [],
+        },
+      ],
+    },
+
+    chartOptions: {
+      responsive: true,
+    },
+  }),
+
   methods: {
-    fetchData() {
-      // Replace the URL with your actual backend endpoint
-      // const url = "http://localhost:8081";
+    getSentiData() {
+      this.loaded = false;
 
       apiClient
-        .get(`/mypage/sentiment?mid=${this.mid}`)
-        .then((response) => {
-          console.log("success");
-          const data = response.data;
-          //데이터 변환
-          const tfData = data.reduce(
-            (result, item) => {
-              result.labels.push(item.b_sentiment);
-              result.datasets[0].data.push(item.cnt);
-              return result;
-            },
-            { labels: [], datasets: [{ data: [] }] }
-          );
+        .get(`/mypage/sentiment`)
+        .then((res) => {
+          this.chartData;
+          const datas = res.data;
+          // 데이터 설정
 
-          this.chartData.labels = tfData.labels;
-          this.chartData.datasets[0].data = tfData.datasets[0].data;
+          const dlabels = datas.map((item) => item.B_SENTIMENT);
+          const ddatas = datas.map((item) => item.CNT);
 
-          this.updateChart();
-          console.log("차트 그렸음");
+          for (let j = 0; j < dlabels.length; j++) {
+            const dlabel = dlabels[j];
+            for (let i = 0; i < this.chartData.labels.length; i++) {
+              const label = this.chartData.labels[i].toLowerCase();
+              if (label === dlabel) {
+                this.chartData.datasets[0].data[i] = ddatas[j];
+              }
+            }
+          }
+          console.log("chart 불러옴");
+          this.loaded = true;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((err) => {
+          console.log("chart 먼가 안됨", err);
         });
     },
-    updateChart() {
-      if (this.$data._chart) {
-        this.$data._chart.destroy(); // 기존 차트 파괴
-      }
-      this.renderChart(this.chartData, this.chartOptions); // 새로운 차트 그리기
-    },
   },
-  mounted() {
-    this.fetchData(); // Fetch data when the component is mounted
-    // },
-    // created() {
-    //   this.fetchData();
+  created() {
+    this.loaded = false;
+    this.getSentiData();
   },
 };
 </script>

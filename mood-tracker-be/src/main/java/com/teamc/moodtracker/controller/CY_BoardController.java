@@ -24,7 +24,8 @@ public class CY_BoardController {
 
     @GetMapping("/sentiment")
     @ResponseBody
-    public List<Map<String, Object>> getSentimentData(int mid) {
+    public List<Map<String, Object>> getSentimentData( @AuthenticationPrincipal MemberDto memberDto) {
+        int mid = memberDto.getM_id();
         System.out.println("-----------controller getSenti-----------");
         System.out.println(cboardService.getSentiment(mid));
 
@@ -57,5 +58,24 @@ public class CY_BoardController {
         System.out.println("regdate:" + regdate  + "mid:" + mid);
         return cboardService.getListByDate(regdate, mid);
     }
+
+    @GetMapping("/const")
+    public Integer getConsecPostsCnt(@AuthenticationPrincipal MemberDto memberDto){
+        int mid = memberDto.getM_id();
+        return cboardService.getConsecPostsCnt(mid);
+    }
+
+    @GetMapping("/postcnt")
+    public Integer getThisMonthPosts(@AuthenticationPrincipal MemberDto memberDto){
+        int mid = memberDto.getM_id();
+        return cboardService.getThisMonthPosts(mid);
+    }
+
+    @GetMapping("/mainsenti")
+    public String getMainSentiment(@AuthenticationPrincipal MemberDto memberDto){
+        int mid = memberDto.getM_id();
+        return cboardService.getMainSentiment(mid);
+    }
+
 
 }
