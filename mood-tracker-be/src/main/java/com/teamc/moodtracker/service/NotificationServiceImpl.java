@@ -19,28 +19,28 @@ public class NotificationServiceImpl implements NotificationService{
 
 
     @Override
-    public List<NotificationDto> selectMyNotificationAll(int n_user) {
-        return notificationDao.selectMyNotificationAll(n_user);
+    public List<NotificationDto> selectMyNotificationAll(int m_id_to) {
+        return notificationDao.selectMyNotificationAll(m_id_to);
     }
 
     @Override
-    public List<NotificationDto> selectMyNotificationFollow(int m_id) {
-        return notificationDao.selectMyNotificationFollow(m_id);
+    public List<NotificationDto> selectMyNotificationFollow(int m_id_to) {
+        return notificationDao.selectMyNotificationFollow(m_id_to);
     }
 
     @Override
-    public List<NotificationDto> selectMyNotificationComment(int m_id) {
-        return notificationDao.selectMyNotificationComment(m_id);
+    public List<NotificationDto> selectMyNotificationComment(int m_id_to) {
+        return notificationDao.selectMyNotificationComment(m_id_to);
     }
 
     @Override
-    public List<NotificationDto> selectMyNotificationLike(int m_id) {
-        return notificationDao.selectMyNotificationLike(m_id);
+    public List<NotificationDto> selectMyNotificationLike(int m_id_to) {
+        return notificationDao.selectMyNotificationLike(m_id_to);
     }
 
     @Override
-    public int selectUnreadNumber(int m_id) {
-        return notificationDao.selectUnreadNumber(m_id);
+    public int selectUnreadNumber(int m_id_to) {
+        return notificationDao.selectUnreadNumber(m_id_to);
     }
 
     @Override
@@ -51,7 +51,6 @@ public class NotificationServiceImpl implements NotificationService{
     @Transactional
     @Override
     public void deleteNotice(int m_id_to, int n_id) {
-        System.out.println("ServiceImpl_" + m_id_to + "___" + n_id);
         notificationDao.deleteNotice(m_id_to, n_id);
     }
 

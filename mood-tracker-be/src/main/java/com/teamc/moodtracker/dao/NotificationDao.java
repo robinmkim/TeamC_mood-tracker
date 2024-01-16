@@ -9,14 +9,14 @@ import java.util.List;
 public interface NotificationDao {
 
 
-    public List<NotificationDto> selectMyNotificationAll(int  m_id);
-    public List<NotificationDto> selectMyNotificationFollow(int m_id);
+    public List<NotificationDto> selectMyNotificationAll(int  m_id_to);
+    public List<NotificationDto> selectMyNotificationFollow(int m_id_to);
 
-    public List<NotificationDto> selectMyNotificationComment(int m_id);
+    public List<NotificationDto> selectMyNotificationComment(int m_id_to);
 
-    public List<NotificationDto> selectMyNotificationLike(int m_id);
+    public List<NotificationDto> selectMyNotificationLike(int m_id_to);
 
-    public int selectUnreadNumber(int m_id);
+    public int selectUnreadNumber(int m_id_to);
 
     public void readNotice(int m_id_to, int n_id );
 

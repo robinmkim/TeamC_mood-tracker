@@ -118,8 +118,8 @@ public class NotificationController {
     }
 
     @GetMapping("/select/unread")
-    public int selectUnreadNumber(int n_user){
-        return notificationService.selectUnreadNumber(n_user);
+    public int selectUnreadNumber(@AuthenticationPrincipal MemberDto memberDto){
+        return notificationService.selectUnreadNumber(memberDto.getM_id());
     }
 
     @PatchMapping("/read")
