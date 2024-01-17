@@ -60,21 +60,7 @@
               <!--달력-->
               <MoodCalander v-else-if="tab.id === 'calander'" />
               <!--좋아요 목록-->
-              <div v-else-if="tab.id === 'like'" ref="likedScrollContainer">
-                <div
-                  class="flex-1 border-x overflow-auto"
-                  @scroll="handleLikedScroll"
-                >
-                  <post-detail
-                    v-for="bId in LikebIdList"
-                    :key="bId"
-                    :b_id="bId"
-                  />
-                  <div v-if="isLoading" class="loading-spinner">
-                    <!-- 로딩 스피너 -->
-                  </div>
-                </div>
-              </div>
+              <MyLike v-else-if="tab.id === 'like'"> </MyLike>
             </div>
           </div>
         </div>
@@ -85,26 +71,24 @@
 
 <script>
 import SideBar from "@/components/SideBar.vue";
-import PostDetail from "@/components/post/PostDetail.vue";
 import apiClient from "@/utils/apiClient";
 import MyMood from "./Components/MyMood.vue";
 import MoodCalander from "./Components/MoodCalander.vue";
 import MyPost from "./Components/MyPost.vue";
+import MyLike from "./Components/MyLike.vue";
 
 export default {
   name: "MypageMain",
   components: {
     SideBar,
-    PostDetail,
     MyMood,
     MoodCalander,
     MyPost,
+    MyLike,
   },
   data() {
     return {
       userInfo: {},
-      LikebIdList: [],
-      LikedlastRowNum: 0,
       isLoading: false,
       emotionMap: {
         happy: "😆",
@@ -145,84 +129,18 @@ export default {
     },
 
     // 내가 좋아요를 누른 게시글 불러오기
-    getLikedBoardList() {
-      if (this.isLoading) {
-        console.log("like로딩중");
-        return; // 이미 로딩 중이면 요청을 하지 않음
-      }
-      this.isLoading = true;
-      apiClient
-        .get(`/mypage/likelist?lastRowNum=${this.LikedlastRowNum}`)
-        .then((res) => {
-          console.log("liked post 넘어옴");
-          this.LikedlastRowNum += res.data.length;
-          this.LikebIdList = [...this.LikebIdList, ...res.data];
-          this.handleLikedScroll();
-        })
-        .catch((err) => {
-          console.log(err, "like 뭔가 안됨");
-        })
-        .finally(() => {
-          this.isLoading = false; // 로딩 완료
-        });
-    },
 
-    handleLikedScroll() {
-      console.log("Like Scroll event triggered");
-      const container = this.$refs.likedScrollContainer;
-      if (
-        !this.isLoading &&
-        container.scrollHeight - container.scrollTop <=
-          container.clientHeight + 50
-      ) {
-        console.log("like scroll 후 데이터 로딩");
-        this.getLikedBoardList();
-      }
-    },
     changeTab(index, tabId) {
       this.currentTab = index;
       // 탭이 변경되면
       if (tabId === "post") {
-        // console.log(`현재 탭의 id: ${tabId}`);
-        // if (this.MybIdList.length === 0) {
-        //   // this.getMyBoardList();
-        // }
-        // this.handlePostScroll();
+        console.log(`현재 탭의 id: ${tabId}`);
       } else if (tabId === "like") {
         console.log(`현재 탭의 id: ${tabId}`);
-        if (this.LikebIdList.length === 0) {
-          this.getLikedBoardList();
-        }
-        this.handleLikedScroll();
       } else {
         console.log(`현재 탭의 id: ${tabId}`);
       }
     },
-  },
-
-  mounted() {
-    // console.log("안녕 전");
-    // console.log("현재 탭 번호? : " + this.currentTab);
-    //document.addEventListener("scroll", this.handleScroll, true);
-    this.$watch("currentTab", () => {
-      if (this.currentTab === 1) {
-        // 'post' 탭의 인덱스가 1이라 가정합니다. 만약 다르다면 해당 인덱스로 변경하세요.
-        this.$refs.postScrollContainer.addEventListener(
-          "scroll",
-          this.handlePostScroll
-        );
-      }
-    });
-  },
-
-  beforeUnmount() {
-    //window.removeEventListener("scroll", this.handleScroll);
-    if (this.currentTab === 1) {
-      this.$refs.postScrollContainer.removeEventListener(
-        "scroll",
-        this.handlePostScroll()
-      );
-    }
   },
 
   created() {
