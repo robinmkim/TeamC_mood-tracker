@@ -11,7 +11,7 @@
         <!-- src="../../assets/notiProfileImage01.jpg" -->
       </div>
       <div class="flex flex-row items-center mx-3">
-        <div class="userName font-bold text-lg">
+        <div class="userName font-[600] text-lg">
           {{ this.board.member ? this.board.member.m_name : "No Name" }}
         </div>
         <div class="userHandle text-sm text-slate-500 ml-1">
