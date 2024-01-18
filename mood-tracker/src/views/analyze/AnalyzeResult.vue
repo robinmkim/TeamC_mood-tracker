@@ -173,20 +173,20 @@ export default {
   },
   mounted() {
     apiClient
-      .get("http://192.168.0.93:8083/faceresult/detail", {
+      .get("/faceresult/detail", {
         params: {
           ar_id: this.lastResultId,
         },
       })
       .then((res) => {
-        console.log(res.data);
+        console.log("스프링->결과Detail=> ", res.data);
         this.myExpresion = res.data.ar_content_max;
         this.faceAnalyzeResult = res.data.ar_content;
         this.generatedImageFileName = res.data.ar_generated_img;
 
         //  장고로부터 사진 base64형태로 반환받음
         axios
-          .get("http://192.168.0.13:9000/face/getGeneratedImage", {
+          .get("http://192.168.0.21:9000/face/getGeneratedImage", {
             params: {
               imageName: this.generatedImageFileName,
             },
@@ -238,7 +238,7 @@ export default {
     imageDownload: function () {
       //장고
       axios
-        .get("http://192.168.0.13:9000/face/downloadGeneratedImage", {
+        .get("http://192.168.0.21:9000/face/downloadGeneratedImage", {
           params: {
             imageName: this.generatedImageFileName,
           },

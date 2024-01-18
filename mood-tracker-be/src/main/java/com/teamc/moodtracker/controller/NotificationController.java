@@ -1,11 +1,13 @@
 package com.teamc.moodtracker.controller;
 
+import com.teamc.moodtracker.dto.Alert;
 import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.dto.NotificationDto;
 import com.teamc.moodtracker.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +31,23 @@ public class NotificationController {
     private final String imageDirectory = "src/main/resources/static/images/";
 
 
+    private final SimpMessagingTemplate messagingTemplate; //
+//    @GetMapping("/notiTest")
+//    public void notiTest(){
+//        System.out.println("-------noti TEst------------");
+////        NoticeChat noticeChat = NoticeChat.builder()
+////                .m_id_to(3) // 수정
+////                .m_id_from(21)
+////                .m_content("TEST")
+////                .build();
+////        System.out.println(noticeChat.getM_id_to());
+////        System.out.println(noticeChat.getM_id_from());
+////        System.out.println(noticeChat.getM_content());
+////        messagingTemplate.convertAndSendToUser(Integer.toString(noticeChat.getM_id_to()), "/queue/", noticeChat);
+//    }
+
     @GetMapping("/select/all") // DB에 저장된 알림들을 불러옴
-    public Map  selectMyNotificationAll(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
-        Map<String, Object> ret = new HashMap<String, Object>();
+    public List<NotificationDto>  selectMyNotificationAll(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
         List<NotificationDto> noticeList =notificationService.selectMyNotificationAll(memberDto.getM_id());
         for(NotificationDto bean : noticeList){
             String encodedString = new String();
@@ -47,13 +63,14 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ret.put("noticeList",noticeList ) ;
-        return  ret;
+
+
+
+        return  noticeList;
     }
 
     @GetMapping("/select/follow")
-    public Map  selectMyNotificationFollow(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
-        Map<String, Object> ret = new HashMap<String, Object>();
+    public List<NotificationDto>  selectMyNotificationFollow(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
         List<NotificationDto> noticeList =notificationService.selectMyNotificationFollow(memberDto.getM_id());
         for(NotificationDto bean : noticeList){
             String encodedString = new String();
@@ -69,13 +86,28 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ret.put("noticeList",noticeList ) ;
-        return  ret;
+        ///
+        int m_id_to = 3;
+        Alert alert = Alert.builder()
+                .type("chat")
+                .m_id_to(m_id_to) // 수정
+                .m_id_from(21)
+                .m_content("TEST")
+                .build();
+        System.out.println(alert.getM_id_to());
+        System.out.println(alert.getM_id_from());
+        System.out.println(alert.getM_content());
+        messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+        messagingTemplate.convertAndSend("/topic/notiChat/"+ 22, alert);
+//        messagingTemplate.convertAndSendToUser(String.valueOf(m_id_to), "/queue/notiChat/3", noticeChat);
+        ////
+
+
+        return  noticeList;
     }
 
     @GetMapping("/select/comment")
-    public Map  selectMyNotificationComment(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
-        Map<String, Object> ret = new HashMap<String, Object>();
+    public List<NotificationDto>  selectMyNotificationComment(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
         List<NotificationDto> noticeList =notificationService.selectMyNotificationComment(memberDto.getM_id());
         for(NotificationDto bean : noticeList){
             String encodedString = new String();
@@ -91,13 +123,21 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ret.put("noticeList",noticeList ) ;
-        return  ret;
+
+        int m_id_to = 3;
+        Alert alert2 = Alert.builder()
+                .type("comment")
+                .m_id_to(m_id_to) // 수정
+                .m_id_from(21)
+                .m_content("TEST")
+                .build();
+        messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert2);
+
+        return  noticeList;
     }
 
     @GetMapping("/select/like")
-    public Map  selectMyNotificationLike(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
-        Map<String, Object> ret = new HashMap<String, Object>();
+    public List<NotificationDto>  selectMyNotificationLike(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
         List<NotificationDto> noticeList =notificationService.selectMyNotificationLike(memberDto.getM_id());
         for(NotificationDto bean : noticeList){
             String encodedString = new String();
@@ -113,8 +153,7 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ret.put("noticeList",noticeList ) ;
-        return  ret;
+        return  noticeList;
     }
 
     @GetMapping("/select/unread")
