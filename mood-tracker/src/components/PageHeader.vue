@@ -63,12 +63,17 @@
       </router-link>
       <router-link to="/noti">
         <!-- notiDisplay: 확인하지 않은 알림 표시 -->
-        <div
-          class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
-        ></div>
-        <div
-          class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500 opacity-50 animate-ping"
-        ></div>
+        <div v-if="alertNoticeIcon">
+          <div
+            class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
+          ></div>
+          <div
+            class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500 opacity-50 animate-ping"
+          ></div>
+        </div>
+        <!-- {{ alertIcon }} -->
+        <!-- {{ this.$store.state.alertNewChat }} -->
+        <!-- <div>받은 메시지: {{ receivedMessage }}</div> -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -89,20 +94,163 @@
 </template>
 
 <script>
+import { jwtDecode } from "jwt-decode";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+// import { mapMutations } from "vuex";
+// import EventBus from "@/eventBus/eventBus";
+import { EventBus } from "./../utils/EventBus.js";
+import { watch, ref } from "vue";
 export default {
   name: "PageHeader",
   data() {
     return {
       isDropdownOpen: false,
+      // stompClient: null,
+      // subscriptionId: null,
+      // memberId: null,
     };
   },
+  setup() {
+    //
+    const receivedMessage = ref("");
+    const stompClient = ref(null);
+    const subscriptionId = ref(null);
+    const memberId = ref(null);
+    const alertNoticeIcon = ref(false);
+
+    const sendEventLogout = () => {
+      EventBus.myLoginEvent = { message: "logout" };
+    };
+    const sendEventNewChat = () => {
+      EventBus.myChatEvent = { message: "newChat" };
+    };
+
+    watch(
+      () => EventBus.myLoginEvent,
+      (newValue) => {
+        if (newValue) {
+          receivedMessage.value = newValue.message;
+          //newValue.message읽어서 로그인/로그아웃 구분
+          // 하고 ws구독/구독해제 작업
+          if (newValue.message == "logout") {
+            console.log(">>>>>> HEADER :: WEBSOCKET DIS-CONNECTIED");
+            disconnect();
+          } else if (newValue.message == "login") {
+            console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIng");
+            connect();
+          } else {
+            console.log(
+              ">>>>>> HEADER :: UNIDENTIFIED MESSAGE => ",
+              newValue.message
+            );
+          }
+        }
+      }
+    );
+    watch(
+      () => EventBus.myChatEvent,
+      (newValue) => {
+        console.log("ch.채팅 => ", newValue.message);
+      }
+    );
+    //
+    function disconnect() {
+      console.log("UNSUB => ", subscriptionId.value);
+      if (stompClient.value) {
+        stompClient.value.unsubscribe(subscriptionId.value, {});
+      }
+    }
+    function connect() {
+      console.log("SUB");
+      const token = localStorage.getItem("jwtToken");
+      if (token != null) {
+        const decoded = jwtDecode(token);
+        memberId.value = decoded.m_id;
+      }
+      console.log("token = ", token);
+      console.log("CHECK MEMBERID>VALUE", memberId.value);
+
+      const socket = new SockJS("http://localhost:8083/ws");
+      stompClient.value = Stomp.over(socket);
+
+      stompClient.value.connect(
+        {},
+        (frame) => {
+          console.log(">>> HEADER :: WEBSOCKET CONNECTIED");
+          console.log(frame);
+          if (memberId.value != null) {
+            console.log("memberId === ", memberId.value);
+
+            subscriptionId.value = stompClient.value.subscribe(
+              `/topic/notiChat/` + memberId.value,
+              onMessageReceived
+            ).id;
+            console.log(
+              ">>>>>> CONNECT :: subscriptionId.value ==> ",
+              subscriptionId.value
+            );
+          }
+        },
+        (error) => {
+          console.log("CONNECT ERROR :: ", error);
+          connect();
+        }
+      );
+    }
+    //
+    function onMessageReceived(payload) {
+      console.log(">>> HEADER :: MESSAGE RECEIVED");
+      let parseMessage = JSON.parse(payload.body);
+      console.log(parseMessage);
+      console.log("type ==========> ", parseMessage.type);
+      if (parseMessage.type == "chat") {
+        sendEventNewChat(); //  새 채팅이 왔다고 Sidebar에 전달합니다.
+      } else {
+        showAlertNoticeIcon(); // 알림아이콘 뱃지를 보여줍니다.
+      }
+    }
+    function showAlertNoticeIcon() {
+      console.log("SHOW ALERT ICON!!");
+      alertNoticeIcon.value = true;
+    }
+    function hideAlertNoticeIcon() {
+      console.log("SHOW ALERT ICON!!");
+      alertNoticeIcon.value = false;
+    }
+    //
+    return {
+      sendEventLogout,
+      receivedMessage,
+      stompClient,
+      subscriptionId,
+      memberId,
+      connect,
+      onMessageReceived,
+      alertNoticeIcon,
+      showAlertNoticeIcon,
+      hideAlertNoticeIcon,
+    };
+  },
+  created() {
+    this.connect();
+    // const token = localStorage.getItem("jwtToken");
+    // if (token != null) {
+    //   const decoded = jwtDecode(token);
+    //   this.memberId = decoded.m_id;
+    // }
+  },
   methods: {
+    // ...mapMutations(["showAlertNewChat", "hideAlertNewChat"]),
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
     },
     logout() {
       localStorage.removeItem("jwtToken");
       this.$router.push({ path: "/login" });
+      //
+      this.hideAlertNoticeIcon();
+      this.sendEventLogout();
     },
   },
 };

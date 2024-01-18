@@ -308,33 +308,43 @@ export default {
       showList: null,
     };
   },
-  mounted() {
+  created() {
     console.log("mounted");
     this.loadNoticeListAll(); // 첫 화면은 '전체' 탭 이기 때문
+    this.checkUnreadNotice(); // 안읽은 메세지 개수 체크 -> Header에 전달
   },
   methods: {
+    checkUnreadNotice() {
+      //안읽은 메세지가 1 이상이면 header아이콘 on, 0이면 off
+      apiClient.get("notification/select/unread").then((res) => {
+        console.log(">>>>>> NOTICE :: CHECK UNREAD NOTICE => ", res.data);
+        if (res.data > 0) {
+          console.log(">>>>>> NOTICE :: UNREAD NOTICE > 0");
+        }
+      });
+    },
     loadNoticeListAll() {
       apiClient.get("/notification/select/all").then((res) => {
         console.log(res.data);
-        this.showList = res.data.noticeList;
+        this.showList = res.data;
       });
     },
     loadNoticeListFollow() {
       apiClient.get("/notification/select/follow").then((res) => {
         console.log(res.data);
-        this.showList = res.data.noticeList;
+        this.showList = res.data;
       });
     },
     loadNoticeListReply() {
       apiClient.get("/notification/select/comment").then((res) => {
         console.log(res.data);
-        this.showList = res.data.noticeList;
+        this.showList = res.data;
       });
     },
     loadNoticeListLike() {
       apiClient.get("/notification/select/like").then((res) => {
         console.log(res.data);
-        this.showList = res.data.noticeList;
+        this.showList = res.data;
       });
     },
     changeTab(index, tabId) {
@@ -347,15 +357,19 @@ export default {
       if (tabId == "notiTabsAll") {
         console.log("ALL 조회");
         this.loadNoticeListAll();
+        this.checkUnreadNotice(); // 안읽은 메세지 개수 체크 -> Header에 전달
       } else if (tabId == "notiTabsFollow") {
         console.log("Follow 조회");
         this.loadNoticeListFollow();
+        this.checkUnreadNotice(); // 안읽은 메세지 개수 체크 -> Header에 전달
       } else if (tabId == "notiTabsReply") {
         console.log("Reply 조회");
         this.loadNoticeListReply();
+        this.checkUnreadNotice(); // 안읽은 메세지 개수 체크 -> Header에 전달
       } else if (tabId == "notiTabsLike") {
         console.log("Like 조회");
         this.loadNoticeListLike();
+        this.checkUnreadNotice(); // 안읽은 메세지 개수 체크 -> Header에 전달
       }
     },
     readNotice(n_id) {

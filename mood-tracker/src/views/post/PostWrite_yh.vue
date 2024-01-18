@@ -140,7 +140,7 @@ export default {
         console.log(res.data.ar_generated_img);
         //장고로 부터 FileResponse로 이미지파일을 반환받아 blob형태로 읽고
         axios
-          .get("http://192.168.0.13:9000/face/downloadGeneratedImage", {
+          .get("http://192.168.0.21:9000/face/downloadGeneratedImage", {
             params: {
               imageName: res.data.ar_generated_img,
             },
