@@ -73,5 +73,10 @@
         WHERE m_id_to = #{m_id_to} AND n_id = #{n_id}
     </delete>
 
+    <insert id="insertNotice" parameterType="NotificationDto">
+        INSERT INTO notice(n_id , m_id_to, n_state, regdate, n_type , m_id_from, n_content , n_url)
+        VALUES(notice_seq.nextVal, :m_id_to, 1, sysdate, :n_type, :m_id_from, :n_content, :n_url)
+    </insert>
+
 
 </mapper>
