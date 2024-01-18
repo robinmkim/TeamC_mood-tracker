@@ -54,4 +54,11 @@
     <select id="newChatRoom" resultType="int">
         select chatroom_seq.nextval from dual
     </select>
+
+
+    <select id="getMembersOfThisRoom" parameterType="int" resultType="int">
+        SELECT m_id
+        FROM chat
+        WHERE room_id = #{room_id)
+    </select>
 </mapper >

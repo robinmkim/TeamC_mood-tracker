@@ -45,7 +45,16 @@
           <span class="border-b" @click="logout">로그아웃</span>
         </div>
       </div>
-      <router-link to="/chat">
+      <router-link to="/chat" @click="clickChatIcon">
+        <!--  채팅  -->
+        <div v-if="this.$store.state.alertNewChat">
+          <div
+            class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
+          ></div>
+          <div
+            class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500 opacity-50 animate-ping"
+          ></div>
+        </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -61,9 +70,9 @@
           />
         </svg>
       </router-link>
-      <router-link to="/noti">
-        <!-- notiDisplay: 확인하지 않은 알림 표시 -->
-        <div v-if="alertNoticeIcon">
+      <router-link to="/noti" @click="clickNoticeIcon">
+        <!--  알림  -->
+        <div v-if="this.$store.state.alertNewNotice">
           <div
             class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
           ></div>
@@ -97,10 +106,9 @@
 import { jwtDecode } from "jwt-decode";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-// import { mapMutations } from "vuex";
-// import EventBus from "@/eventBus/eventBus";
 import { EventBus } from "./../utils/EventBus.js";
 import { watch, ref } from "vue";
+import { useStore } from "vuex";
 export default {
   name: "PageHeader",
   data() {
@@ -118,13 +126,15 @@ export default {
     const subscriptionId = ref(null);
     const memberId = ref(null);
     const alertNoticeIcon = ref(false);
+    const alertChatIcon = ref(false);
+    const store = useStore(); // vuex store 가져오기
 
     const sendEventLogout = () => {
       EventBus.myLoginEvent = { message: "logout" };
     };
-    const sendEventNewChat = () => {
-      EventBus.myChatEvent = { message: "newChat" };
-    };
+    // const sendEventNewChat = () => {
+    //   EventBus.myChatEvent = { message: "newChat" };
+    // };
 
     watch(
       () => EventBus.myLoginEvent,
@@ -205,18 +215,34 @@ export default {
       console.log(parseMessage);
       console.log("type ==========> ", parseMessage.type);
       if (parseMessage.type == "chat") {
-        sendEventNewChat(); //  새 채팅이 왔다고 Sidebar에 전달합니다.
+        showAlertChatIcon(); //  채팅 아이콘 뱃지를 보여줍니다.
       } else {
-        showAlertNoticeIcon(); // 알림아이콘 뱃지를 보여줍니다.
+        showAlertNoticeIcon(); // 알림 아이콘 뱃지를 보여줍니다.
       }
     }
     function showAlertNoticeIcon() {
       console.log("SHOW ALERT ICON!!");
       alertNoticeIcon.value = true;
+      // store.state.alertNewNotice = true;
+      store.commit("showAlertNewNotice");
     }
     function hideAlertNoticeIcon() {
       console.log("SHOW ALERT ICON!!");
       alertNoticeIcon.value = false;
+      // store.state.alertNewNotice = false;
+      store.commit("hideAlertNewNotice");
+    }
+    function showAlertChatIcon() {
+      console.log("SHOW ALERT ICON!!");
+      alertChatIcon.value = true;
+      // store.state.alertNewNotice = true;
+      store.commit("showAlertNewChat");
+    }
+    function hideAlertChatIcon() {
+      console.log("SHOW ALERT ICON!!");
+      alertChatIcon.value = false;
+      // store.state.alertNewNotice = false;
+      store.commit("hideAlertNewChat");
     }
     //
     return {
@@ -228,17 +254,16 @@ export default {
       connect,
       onMessageReceived,
       alertNoticeIcon,
+      alertChatIcon,
       showAlertNoticeIcon,
       hideAlertNoticeIcon,
+      showAlertChatIcon,
+      hideAlertChatIcon,
     };
   },
   created() {
     this.connect();
-    // const token = localStorage.getItem("jwtToken");
-    // if (token != null) {
-    //   const decoded = jwtDecode(token);
-    //   this.memberId = decoded.m_id;
-    // }
+    console.log("@@@@@@@@@ store check => ", this.$store.state.alertNewNotice);
   },
   methods: {
     // ...mapMutations(["showAlertNewChat", "hideAlertNewChat"]),
@@ -250,7 +275,14 @@ export default {
       this.$router.push({ path: "/login" });
       //
       this.hideAlertNoticeIcon();
-      this.sendEventLogout();
+      this.hideAlertChatIcon();
+      // this.sendEventLogout();
+    },
+    clickChatIcon() {
+      this.hideAlertChatIcon();
+    },
+    clickNoticeIcon() {
+      this.hideAlertNoticeIcon();
     },
   },
 };

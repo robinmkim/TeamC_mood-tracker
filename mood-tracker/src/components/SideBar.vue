@@ -196,12 +196,6 @@
       </router-link>
       <router-link to="/chat" class="text-lg" @click="onClickChatMenu">
         <div class="flex px-2 py-1">
-          <div v-if="this.$store.state.alertNewChat">
-            <div
-              class="notiDisplay mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
-            ></div>
-          </div>
-
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -290,10 +284,10 @@
 // import Stomp from "webstomp-client";
 // import { parse } from "postcss";
 // import { mapMutations } from "vuex";
-import { useStore } from "vuex";
+// import { useStore } from "vuex";
 
-import { EventBus } from "./../utils/EventBus.js";
-import { watch, ref } from "vue";
+// import { EventBus } from "./../utils/EventBus.js";
+// import { watch, ref } from "vue";
 export default {
   name: "SideBar",
   data() {
@@ -303,23 +297,23 @@ export default {
       subscriptionId: null,
     };
   },
-  setup() {
-    const alertChatIcon = ref(false);
-    const store = useStore(); // vuex store 가져오기
+  // setup() {
+  //   const alertChatIcon = ref(false);
+  //   const store = useStore(); // vuex store 가져오기
 
-    watch(
-      () => EventBus.myChatEvent,
-      (newValue) => {
-        console.log("ch.채팅 => ", newValue.message); // "newChat"
-        showAlertChatIcon();
-      }
-    );
-    function showAlertChatIcon() {
-      alertChatIcon.value = true;
-      store.state.alertNewChat = true;
-    }
-    return { alertChatIcon };
-  },
+  //   watch(
+  //     () => EventBus.myChatEvent,
+  //     (newValue) => {
+  //       console.log("ch.채팅 => ", newValue.message); // "newChat"
+  //       showAlertChatIcon();
+  //     }
+  //   );
+  //   function showAlertChatIcon() {
+  //     alertChatIcon.value = true;
+  //     store.state.alertNewChat = true;
+  //   }
+  //   return { alertChatIcon };
+  // },
   mounted() {
     // Add a global click event listener to close the search bar when clicking outside
     document.addEventListener("click", this.toggleSidebarOutside);

@@ -20,4 +20,6 @@ public interface ChatDao {
     public List<Integer> checkChatRoom(CheckChat memberId);
 
     public int newChatRoom();
+
+    List<Integer> getMembersOfThisRoom(int roomId); //윤영호
 }

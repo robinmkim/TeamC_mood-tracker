@@ -78,4 +78,8 @@ public class ChatService {
                 .build();
         return responseRoom;
     }
+
+    public List<Integer> getMembersOfThisRoom(int roomId){ // 윤영호
+        return chatDao.getMembersOfThisRoom(roomId);
+    }
 }

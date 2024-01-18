@@ -1,6 +1,8 @@
 package com.teamc.moodtracker.controller;
 
+import com.teamc.moodtracker.dto.Alert;
 import com.teamc.moodtracker.dto.MemberDto;
+
 import com.teamc.moodtracker.dto.chat.*;
 import com.teamc.moodtracker.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,27 @@ public class ChatController {
     public void sendMessage(@Payload SaveChat dto) {
         ResponseMessage res = chatService.saveChatMessage(dto);
         messagingTemplate.convertAndSend("/topic/" + res.getRoomId(), res);
+
+        // 알림
+//        int room_id = dto.getRoomId();
+//        // room_id로 조회하면 내아이디, 상대아이디가 나옴
+//        List<Integer> rmlist = chatService.getMembersOfThisRoom(room_id);
+//        // 그 중 내아이디=dto.getMemberId() 를 제외하면
+//        // 알림을 받을 멤버 아이디 획득
+//        int m_id_to = 0;
+//        for (int i : rmlist){
+//            if(i != dto.getMemberId()){
+//                m_id_to = i;
+//            }
+//        }
+//
+//        Alert alert2 = Alert.builder()
+//                .type("comment")
+//                .m_id_to(m_id_to)             // 받는 사람
+//                .m_id_from(dto.getMemberId()) // 보낸 사람
+//                .m_content("TEST")
+//                .build();
+//        messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert2);
     }
 
     @GetMapping("/rooms")
@@ -50,4 +73,6 @@ public class ChatController {
         ResponseRoom newRoomData = chatService.defaultChatRoom(checkChat);
         return ResponseEntity.ok(newRoomData);
     }
+
+
 }
