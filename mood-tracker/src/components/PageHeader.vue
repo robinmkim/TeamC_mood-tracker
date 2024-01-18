@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#64CCC5] w-full py-3 flex justify-end items-center relative">
+  <div class="bg-[#64CCC5] w-full h-16 py-3 flex justify-end items-center">
     <div id="title" class="absolute left-1/2 transform -translate-x-1/2">
       <router-link to="/">
         <span class="text-2xl font-[400]">Songtiment</span>
