@@ -2,7 +2,7 @@
   <div class="bg-[#64CCC5] w-full py-3 flex justify-end items-center relative">
     <div id="title" class="absolute left-1/2 transform -translate-x-1/2">
       <router-link to="/">
-        <span>Inside Out</span>
+        <span class="text-2xl font-[400]">Songtiment</span>
       </router-link>
     </div>
     <div id="menu" class="flex mr-4">
@@ -27,22 +27,25 @@
           v-show="isDropdownOpen"
           class="absolute flex flex-col bg-white shadow-md mt-2 rounded-md py-2 w-32 right-[1px]"
         >
-          <router-link to="/"
-            ><span class="border-b" @click="toggleDropdown"
-              >Home</span
-            ></router-link
+          <router-link to="/" @click="toggleDropdown"
+            ><span class="border-b">Home</span></router-link
           >
-          <router-link to="/login"
-            ><span class="border-b" @click="toggleDropdown"
-              >Log In</span
-            ></router-link
+          <router-link to="/login" @click="toggleDropdown"
+            ><span class="border-b">Log In</span></router-link
           >
-          <router-link to="/timeline"
-            ><span class="border-b" @click="toggleDropdown"
-              >타임라인</span
-            ></router-link
+          <router-link to="/timeline" @click="toggleDropdown"
+            ><span class="border-b">타임라인</span></router-link
           >
-          <span class="border-b" @click="logout">로그아웃</span>
+          <span
+            class="border-b"
+            @click="
+              () => {
+                toggleDropdown();
+                logout();
+              }
+            "
+            >로그아웃</span
+          >
         </div>
       </div>
       <router-link to="/chat" @click="clickChatIcon">
@@ -114,9 +117,6 @@ export default {
   data() {
     return {
       isDropdownOpen: false,
-      // stompClient: null,
-      // subscriptionId: null,
-      // memberId: null,
     };
   },
   setup() {

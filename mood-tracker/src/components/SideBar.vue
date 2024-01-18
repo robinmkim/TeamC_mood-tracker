@@ -194,7 +194,7 @@
           <span class="ml-2">감정 분석</span>
         </div>
       </router-link>
-      <router-link to="/chat" class="text-lg" @click="onClickChatMenu">
+      <router-link to="/chat" class="text-lg">
         <div class="flex px-2 py-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -279,55 +279,14 @@
 </template>
 
 <script>
-// import { jwtDecode } from "jwt-decode";
-// import SockJS from "sockjs-client";
-// import Stomp from "webstomp-client";
-// import { parse } from "postcss";
-// import { mapMutations } from "vuex";
-// import { useStore } from "vuex";
-
-// import { EventBus } from "./../utils/EventBus.js";
-// import { watch, ref } from "vue";
 export default {
   name: "SideBar",
   data() {
     return {
       showSidebar: true,
-      showAlert: true,
-      subscriptionId: null,
     };
   },
-  // setup() {
-  //   const alertChatIcon = ref(false);
-  //   const store = useStore(); // vuex store 가져오기
-
-  //   watch(
-  //     () => EventBus.myChatEvent,
-  //     (newValue) => {
-  //       console.log("ch.채팅 => ", newValue.message); // "newChat"
-  //       showAlertChatIcon();
-  //     }
-  //   );
-  //   function showAlertChatIcon() {
-  //     alertChatIcon.value = true;
-  //     store.state.alertNewChat = true;
-  //   }
-  //   return { alertChatIcon };
-  // },
-  mounted() {
-    // Add a global click event listener to close the search bar when clicking outside
-    document.addEventListener("click", this.toggleSidebarOutside);
-
-    // this.$store.state.alertNewChat = this.alertChatIcon;
-  },
-  // async created() {
-  //   // const token = localStorage.getItem("jwtToken");
-  //   // const decoded = jwtDecode(token);
-  //   // this.memberId = decoded.m_id;
-  //   // this.connect();
-  // },
   methods: {
-    // ...mapMutations(["showAlertNewChat", "hideAlertNewChat"]),
     toggleSidebar() {
       this.showSidebar = !this.showSidebar;
       this.outsideShowSidebar = false;
@@ -342,9 +301,10 @@ export default {
         this.showSidebar = !this.showSidebar;
       }
     },
-    onClickChatMenu() {
-      this.$store.state.alertNewChat = false;
-    },
+  },
+  mounted() {
+    // Add a global click event listener to close the search bar when clicking outside
+    document.addEventListener("click", this.toggleSidebarOutside);
   },
 };
 </script>
