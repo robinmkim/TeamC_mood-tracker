@@ -5,7 +5,7 @@ import axios from "axios";
 import Vuex from "vuex";
 import { store } from "./store/store";
 // import router from "./router";
-
+store.dispatch("initializeStore");
 import router from "./router/index";
 const app = createApp(App);
 

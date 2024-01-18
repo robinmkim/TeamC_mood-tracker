@@ -1,6 +1,8 @@
 package com.teamc.moodtracker.controller;
 
+import com.teamc.moodtracker.dto.Alert;
 import com.teamc.moodtracker.dto.MemberDto;
+
 import com.teamc.moodtracker.dto.chat.*;
 import com.teamc.moodtracker.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -21,27 +23,32 @@ public class ChatController {
     private final ChatService chatService;
     private final SimpMessagingTemplate messagingTemplate;
 
-//    @MessageMapping("/chat/send")
-//    public void sendMessage(@Payload SendChat dto) {
-//        String getLastMsgStatus = chatService.getLastMsgStatus(dto.getRoomId(), dto.getMemberId());
-//        CheckChat checkChat = CheckChat.builder()
-//                .userId1(dto.getMemberId())
-//                .userId2(dto.getOtherMemberId())
-//                .build();
-//
-//        // 상대방이 채팅방을 나갔을 경우 기존 채팅방에 상대방을 다시 추가
-//        if (getLastMsgStatus == "LEFT") {
-//            chatService.createChatRoom(checkChat, dto.getRoomId());
-//        }
-//
-//        SaveChat saveChat = SaveChat.builder()
-//                .roomId(dto.getRoomId())
-//                .memberId(dto.getMemberId())
-//                .message(dto.getMessage())
-//                .build();
-//        ResponseMessage res = chatService.saveChatMessage(saveChat);
-//        messagingTemplate.convertAndSend("/topic/" + res.getRoomId(), res);
-//    }
+    @MessageMapping("/chat/send")
+    public void sendMessage(@Payload SaveChat dto) {
+        ResponseMessage res = chatService.saveChatMessage(dto);
+        messagingTemplate.convertAndSend("/topic/" + res.getRoomId(), res);
+
+        // 알림
+        // int room_id = dto.getRoomId();
+        // // room_id로 조회하면 내아이디, 상대아이디가 나옴
+        // List<Integer> rmlist = chatService.getMembersOfThisRoom(room_id);
+        // // 그 중 내아이디=dto.getMemberId() 를 제외하면
+        // // 알림을 받을 멤버 아이디 획득
+        // int m_id_to = 0;
+        // for (int i : rmlist){
+        // if(i != dto.getMemberId()){
+        // m_id_to = i;
+        // }
+        // }
+        //
+        // Alert alert2 = Alert.builder()
+        // .type("comment")
+        // .m_id_to(m_id_to) // 받는 사람
+        // .m_id_from(dto.getMemberId()) // 보낸 사람
+        // .m_content("TEST")
+        // .build();
+        // messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert2);
+    }
 
     @PostMapping("/send")
     public void sendChat(@RequestBody SendChat sendRequest) {
@@ -70,6 +77,7 @@ public class ChatController {
         messagingTemplate.convertAndSend("/topic/chat/" + sendRequest.getMemberId(), res);
         messagingTemplate.convertAndSend("/topic/chat/" + sendRequest.getOtherMemberId(), res);
     }
+
     @GetMapping("/rooms")
     public ResponseEntity<List<ChatRoom>> getChatRooms(@AuthenticationPrincipal MemberDto memberDto) {
         List<ChatRoom> chatRooms = chatService.getChatRooms(memberDto.getM_id());
@@ -77,7 +85,8 @@ public class ChatController {
     }
 
     @GetMapping("/rooms/{roomId}/messages")
-    public ResponseEntity<List<ChatMessage>> getChatMessages(@AuthenticationPrincipal MemberDto memberDto, @PathVariable int roomId) {
+    public ResponseEntity<List<ChatMessage>> getChatMessages(@AuthenticationPrincipal MemberDto memberDto,
+            @PathVariable int roomId) {
         List<ChatMessage> chatMessages = chatService.getChatMessages(memberDto.getM_id(), roomId);
         System.out.println("roomId: " + roomId);
         System.out.println("memberId: " + memberDto.getM_id());
@@ -102,18 +111,21 @@ public class ChatController {
         }
     }
 
-//    @PostMapping("/rooms/new")
-//    public ResponseEntity<ResponseRoom> newChatRoom(@RequestBody CheckChat checkChat) {
-//        int newRoomId = chatService.newChatRoomId();
-//        ResponseRoom newRoomData = chatService.createChatRoom(checkChat, newRoomId);
-//        return ResponseEntity.ok(newRoomData);
-//    }
+    // @PostMapping("/rooms/new")
+    // public ResponseEntity<ResponseRoom> newChatRoom(@RequestBody CheckChat
+    // checkChat) {
+    // int newRoomId = chatService.newChatRoomId();
+    // ResponseRoom newRoomData = chatService.createChatRoom(checkChat, newRoomId);
+    // return ResponseEntity.ok(newRoomData);
+    // }
 
     @PostMapping("/rooms/exit")
-    public ResponseEntity<Integer> deleteChatRoom(@AuthenticationPrincipal MemberDto memberDto, @RequestBody Map<String, Integer> requestBody) {
+    public ResponseEntity<Integer> deleteChatRoom(@AuthenticationPrincipal MemberDto memberDto,
+            @RequestBody Map<String, Integer> requestBody) {
         int roomId = requestBody.get("roomId");
         int memberId = memberDto.getM_id();
         chatService.exitChatRoom(memberId, roomId);
         return ResponseEntity.ok(roomId);
     }
+
 }

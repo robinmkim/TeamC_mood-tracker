@@ -383,6 +383,7 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+      this.$router.push("postDetail");
     },
     deleteNotice(n_id) {
       let userReturn = confirm("알림을 영구적으로 삭제하시겠습니까?");
