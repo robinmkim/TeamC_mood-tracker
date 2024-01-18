@@ -15,12 +15,14 @@ import postRouter_yh from "./routers/postRouter_yh";
 const routes = [
   {
     path: "/timeline",
-    component: PageHome,
+    components: {
+      default:PageHome,},
   },
   {
     path: "/postwrite",
     component: PostWrite,
   },
+
   ...chatRouter,
   ...myPageRouter,
   ...notiRouter,

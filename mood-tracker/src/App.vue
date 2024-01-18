@@ -1,20 +1,23 @@
 <template>
-  <div class="flex flex-col h-screen">
-    <PageHeader />
-    <div class="flex-grow overflow-auto w-3/4 mx-auto">
-      <router-view />
-    </div>
-    <PageFooter />
+  <page-header class="fixed top-0 z-50" />
+  <div class="flex justify-center mt-16">
+    <side-bar class="" />
+
+    <!-- 기본 뷰 -->
+    <router-view class="md:w-[900px] sm:w-[300px]" />
+
+    <!-- 오른쪽 widget 뷰 -->
+    <router-view name="widget" class="" />
   </div>
 </template>
 
 <script>
 import PageHeader from "./components/PageHeader.vue";
-import PageFooter from "./components/PageFooter.vue";
+import SideBar from "./components/SideBar.vue";
 
 export default {
   name: "App",
-  components: { PageHeader, PageFooter },
+  components: { PageHeader, SideBar },
 };
 </script>
 

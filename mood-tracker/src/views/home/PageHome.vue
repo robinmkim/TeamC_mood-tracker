@@ -1,26 +1,26 @@
 <template>
   <div class="flex h-full">
-    <div class="w-1/5">
+    <!-- <div class="w-1/5">
       <side-bar></side-bar>
-    </div>
+    </div> -->
     <div class="flex-1 border-x overflow-auto" ref="scrollContainer">
       <post-detail v-for="bId in bIdList" :key="bId" :b_id="bId" />
       <div v-if="isLoading" class="loading-spinner">
         <!-- 로딩 스피너 -->
       </div>
     </div>
-    <div class="w-1/5">side menu</div>
+    <!-- <div class="w-1/5">side menu</div> -->
   </div>
 </template>
 
 <script>
 import apiClient from "@/utils/apiClient";
-import SideBar from "@/components/SideBar";
+// import SideBar from "@/components/SideBar";
 import PostDetail from "@/components/post/PostDetail";
 export default {
   name: "PageHome",
   components: {
-    SideBar,
+    // SideBar,
     PostDetail,
   },
   data() {

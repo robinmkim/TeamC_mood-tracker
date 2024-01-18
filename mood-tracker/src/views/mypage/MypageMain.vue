@@ -1,9 +1,10 @@
 <template>
-  <div class="flex">
-    <div class="w-1/5 border-r h-full">
-      <side-bar />
-    </div>
-    <div class="w-5/6" ref="postScrollContainer">
+  <div class="relative flex">
+    <!-- 사이드바-->
+    <!-- <side-bar /> -->
+
+    <!-- 본문 -->
+    <div class="border-x md:w-[900px] sm:w-[300px]" ref="postScrollContainer">
       <div class="">
         <div class="w-full h-40 bg-slate-200"></div>
         <div class="flex h-28">
@@ -66,11 +67,14 @@
         </div>
       </div>
     </div>
+    <!-- <div class="h-full">
+      <side-bar />
+    </div> -->
   </div>
 </template>
 
 <script>
-import SideBar from "@/components/SideBar.vue";
+// import SideBar from "@/components/SideBar.vue";
 import apiClient from "@/utils/apiClient";
 import MyMood from "./Components/MyMood.vue";
 import MoodCalander from "./Components/MoodCalander.vue";
@@ -80,7 +84,7 @@ import MyLike from "./Components/MyLike.vue";
 export default {
   name: "MypageMain",
   components: {
-    SideBar,
+    // SideBar,
     MyMood,
     MoodCalander,
     MyPost,
@@ -153,4 +157,3 @@ export default {
 </script>
 
 <style scoped="scoped"></style>
-
