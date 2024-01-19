@@ -3,8 +3,10 @@ package com.teamc.moodtracker.controller.JH;
 import com.teamc.moodtracker.dto.Comment_LikeDto;
 import com.teamc.moodtracker.dto.JH.JH_CommentDto;
 import com.teamc.moodtracker.dto.MemberDto;
+import com.teamc.moodtracker.service.BoardService;
 import com.teamc.moodtracker.service.JH.JH_CommentLikeService;
 import com.teamc.moodtracker.service.JH.JH_CommentService;
+import com.teamc.moodtracker.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,9 @@ public class JH_CommentController {
     private JH_CommentService commentService;
     @Autowired
     private JH_CommentLikeService likeService;
+
+    @Autowired
+    private NotificationService notificationService; //윤영호
 
     @GetMapping("/allCommentCount")
     public int allCommentCount(@RequestParam(value = "b_id") int b_id) {
@@ -73,6 +78,9 @@ public class JH_CommentController {
         System.out.println(dto);
 
         commentService.addComment(dto);
+
+
+        notificationService.addComment_SaveNotificationAndSendAlert(dto); // 알림 // 윤영호
         return 1;
     };
 
