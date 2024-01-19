@@ -3,24 +3,31 @@
     <div class="w-1/5">
       <side-bar></side-bar>
     </div>
-    <div class="flex-1 border-x flex">
-      <div class="flex-1 flex flex-col border-r h-full relative">
+    <div class="flex-1 border-x flex h-full">
+      <div
+        class="flex-1 flex flex-col border-r h-full relative overflow-y-auto"
+      >
         <!-- post 내용 -->
         <postDetail
           :b_id="b_id"
           ref="postDetail"
           @post-detail-scroll="handlePostDetailScroll"
+          :isDropdownOpen="openCm_id === cm_id"
+          @toggle-dropdown="toggleDropdown"
         ></postDetail>
       </div>
-      <div class="flex-1 flex flex-col h-full relative">
+      <div class="flex-1 flex flex-col h-full relative overflow-y-auto">
         <!-- comment 내용 -->
         <div v-if="commentCount > 0" class="overflow-hidden h-[95%]">
-          <postComment
-            :b_id="b_id"
-            ref="postComment"
-            @post-comment-scroll="handlePostCommentScroll"
-            :childClass="'h-full'"
-          ></postComment>
+          <div class="comment-list max-h-full overflow-y-auto">
+            <CommentList
+              v-for="cm_id in commentList"
+              :key="cm_id"
+              :cm_id="cm_id"
+              :isDropdownOpen="openCm_id === cm_id"
+              @toggle-dropdown="toggleDropdown"
+            />
+          </div>
         </div>
         <div v-else-if="commentCount === 0" class="h-[95%]">
           comment가 없습니다!
@@ -55,8 +62,11 @@
 import apiClient from "@/utils/apiClient";
 import SideBar from "@/components/SideBar";
 import PostDetail from "@/components/post/PostDetail";
-import postComment from "@/components/post/PostComment";
+// import postComment from "@/components/post/PostComment";
 import { jwtDecode } from "jwt-decode";
+
+import CommentList from "@/components/post/commentAndReply/CommentList";
+
 export default {
   data() {
     return {
@@ -64,9 +74,26 @@ export default {
       commentCount: -1,
       loginuserId: null,
       content: "",
+      commentList: [],
+      openCm_id: null,
     };
   },
   methods: {
+    toggleDropdown(cm_id) {
+      // 클릭한 댓글 ID와 현재 열린 드롭다운의 댓글 ID를 비교하여 상태를 토글
+      this.openCm_id = this.openCm_id === cm_id ? null : cm_id;
+    },
+
+    getCm_idList() {
+      apiClient
+        .get(`/jh_comment/getCm_idList?b_id=${this.b_id}`)
+        .then((response) => {
+          this.commentList = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+    },
     addComment() {
       const formData = new FormData();
       formData.append("cm_content", this.content);
@@ -82,7 +109,6 @@ export default {
         .then((res) => {
           console.log("res" + res);
           if (res.data === 1) {
-            // 응답 값이 1이면 페이지를 새로고침
             window.location.reload();
           }
         })
@@ -99,11 +125,6 @@ export default {
       const decoded = jwtDecode(token);
       console.log(decoded);
       this.loginuserId = decoded.m_id;
-      // console.log("this.loginuserId: " + this.loginuserId);
-
-      // const formData = new FormData();
-      // formData.append("file1", this.$refs.fileInput.files[0]);
-      // formData.append("m_id", decoded.m_id); // 유저 회원번호
     },
     adjustHeight(e) {
       // textarea높이 자동 조절
@@ -128,11 +149,16 @@ export default {
   components: {
     SideBar,
     PostDetail,
-    postComment,
+    // postComment,
+    CommentList,
   },
   created() {
     this.getCommentCount();
     this.getLoginUser();
+    this.getCm_idList();
+    console.log("openCm_id ");
+    console.log(this.openCm_id);
+    console.log("openCm_id ");
   },
 };
 </script>
