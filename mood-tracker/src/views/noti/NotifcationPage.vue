@@ -65,7 +65,7 @@
                     >
                       <span
                         class="notiItemContentTime text-sm text-slate-400"
-                        >{{ bean.regdate }}</span
+                        >{{ formatTime(bean.regdate) }}</span
                       >
                       <div
                         class="notiItemContentMain w-auto flex items-center cursor-pointer"
@@ -152,7 +152,7 @@
                   <div class="notiItemContent flex-1 pl-3 justify-start">
                     <span
                       class="notiItemContentTime text-sm text-slate-400 flex"
-                      >{{ bean.regdate }}</span
+                      >{{ formatTime(bean.regdate) }}</span
                     >
                     <div class="notiItemContentMain w-auto flex items-center">
                       <a :href="bean.n_url" @click="readNotice(bean.n_id)">
@@ -210,7 +210,7 @@
                   <div class="notiItemContent flex-1 pl-3 justify-start">
                     <span
                       class="notiItemContentTime text-sm text-slate-400 flex"
-                      >{{ bean.regdate }}</span
+                      >{{ formatTime(bean.regdate) }}</span
                     >
                     <div class="notiItemContentMain w-auto flex items-center">
                       <a :href="bean.n_url" @click="readNotice(bean.n_id)">
@@ -268,7 +268,7 @@
                   <div class="notiItemContent flex-1 pl-3 justify-start">
                     <span
                       class="notiItemContentTime text-sm text-slate-400 flex"
-                      >{{ bean.regdate }}</span
+                      >{{ formatTime(bean.regdate) }}</span
                     >
                     <div
                       class="notiItemContentMain w-auto flex items-center"
@@ -329,7 +329,7 @@
                   <div class="notiItemContent flex-1 pl-3 justify-start">
                     <span
                       class="notiItemContentTime text-sm text-slate-400 flex"
-                      >{{ bean.regdate }}</span
+                      >{{ formatTime(bean.regdate) }}</span
                     >
                     <div
                       class="notiItemContentMain w-auto flex items-center"
@@ -390,7 +390,7 @@
                   <div class="notiItemContent flex-1 pl-3 justify-start">
                     <span
                       class="notiItemContentTime text-sm text-slate-400 flex"
-                      >{{ bean.regdate }}</span
+                      >{{ formatTime(bean.regdate) }}</span
                     >
                     <div
                       class="notiItemContentMain w-auto flex items-center"
@@ -565,6 +565,23 @@ export default {
             console.log(error);
           });
       }
+    },
+    formatTime(dateString) {
+      const now = new Date();
+      const postDate = new Date(dateString);
+      const diffInSeconds = Math.floor((now - postDate) / 1000);
+      if (diffInSeconds < 60) {
+        return `${diffInSeconds}초 전`;
+      }
+      const diffInMinutes = Math.floor(diffInSeconds / 60);
+      if (diffInMinutes < 60) {
+        return `${diffInMinutes}분 전`;
+      }
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      if (diffInHours < 24) {
+        return `${diffInHours}시간 전`;
+      }
+      return postDate.toLocaleDateString("ko-KR");
     },
   },
 };
