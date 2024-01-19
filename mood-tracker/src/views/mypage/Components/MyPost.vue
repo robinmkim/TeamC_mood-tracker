@@ -47,6 +47,7 @@ export default {
           console.log("my post 넘어옴");
           this.MylastRowNum += res.data.length;
           this.MybIdList = [...this.MybIdList, ...res.data];
+          console.los(res.data);
           // this.handlePostScroll();
         })
         .catch((err) => {
@@ -85,4 +86,3 @@ export default {
 };
 </script>
 <style lang=""></style>
-
