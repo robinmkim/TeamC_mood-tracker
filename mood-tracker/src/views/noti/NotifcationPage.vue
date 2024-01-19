@@ -205,7 +205,65 @@
                   </div>
                 </div>
               </div>
-              <!-- [ED] 알림  comment -->
+              <!-- [ED] 알림 댓글 comment -->
+
+              <!-- [ST] 알림 대댓글 Reply -->
+              <div v-if="bean.n_type == 'reply'">
+                <div
+                  class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
+                >
+                  <div
+                    class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
+                  >
+                    <div
+                      v-if="bean.n_state == 1"
+                      class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
+                    ></div>
+                    <img
+                      class="object-contain rounded-full"
+                      :src="bean.memberDto.img_byte"
+                      alt="프로필 이미지"
+                    />
+                  </div>
+                  <div class="notiItemContent flex-1 pl-3 justify-start">
+                    <span
+                      class="notiItemContentTime text-sm text-slate-400 flex"
+                      >{{ bean.regdate }}</span
+                    >
+                    <div class="notiItemContentMain w-auto flex items-center">
+                      <a :href="bean.n_url" @click="readNotice(bean.n_id)">
+                        <span class="notiUserName font-bold text-lg">
+                          {{ bean.memberDto.m_name }}
+                        </span>
+                        님의 대댓글
+                      </a>
+                    </div>
+                    <div
+                      class="notiItemContentTimePost flex items-center text-sm mt-2"
+                    >
+                      {{ bean.n_content }}
+                    </div>
+                  </div>
+                  <div
+                    class="flex self-start deleteButton"
+                    @click="deleteNotice(bean.n_id)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      x="0px"
+                      y="0px"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 50 50"
+                    >
+                      <path
+                        d="M 7.71875 6.28125 L 6.28125 7.71875 L 23.5625 25 L 6.28125 42.28125 L 7.71875 43.71875 L 25 26.4375 L 42.28125 43.71875 L 43.71875 42.28125 L 26.4375 25 L 43.71875 7.71875 L 42.28125 6.28125 L 25 23.5625 Z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <!-- [ED] 알림 대댓글 Reply -->
 
               <!-- [ST] 알림 like -->
               <div v-if="bean.n_type == 'like'">
@@ -383,7 +441,7 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-      this.$router.push("postDetail");
+      // this.$router.push("postDetail");
     },
     deleteNotice(n_id) {
       let userReturn = confirm("알림을 영구적으로 삭제하시겠습니까?");

@@ -31,20 +31,8 @@ public class NotificationController {
     private final String imageDirectory = "src/main/resources/static/images/";
 
 
-    private final SimpMessagingTemplate messagingTemplate; //
-//    @GetMapping("/notiTest")
-//    public void notiTest(){
-//        System.out.println("-------noti TEst------------");
-////        NoticeChat noticeChat = NoticeChat.builder()
-////                .m_id_to(3) // 수정
-////                .m_id_from(21)
-////                .m_content("TEST")
-////                .build();
-////        System.out.println(noticeChat.getM_id_to());
-////        System.out.println(noticeChat.getM_id_from());
-////        System.out.println(noticeChat.getM_content());
-////        messagingTemplate.convertAndSendToUser(Integer.toString(noticeChat.getM_id_to()), "/queue/", noticeChat);
-//    }
+    private final SimpMessagingTemplate messagingTemplate;
+
 
     @GetMapping("/select/all") // DB에 저장된 알림들을 불러옴
     public List<NotificationDto>  selectMyNotificationAll(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
@@ -86,7 +74,7 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ///
+        ///채팅 알림 테스트
         int m_id_to = 3;
         Alert alert = Alert.builder()
                 .type("chat")
@@ -94,13 +82,7 @@ public class NotificationController {
                 .m_id_from(21)
                 .m_content("TEST")
                 .build();
-        System.out.println(alert.getM_id_to());
-        System.out.println(alert.getM_id_from());
-        System.out.println(alert.getM_content());
         messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
-        messagingTemplate.convertAndSend("/topic/notiChat/"+ 22, alert);
-//        messagingTemplate.convertAndSendToUser(String.valueOf(m_id_to), "/queue/notiChat/3", noticeChat);
-        ////
 
 
         return  noticeList;
@@ -124,14 +106,6 @@ public class NotificationController {
             }
         }
 
-        int m_id_to = 3;
-        Alert alert2 = Alert.builder()
-                .type("comment")
-                .m_id_to(m_id_to) // 수정
-                .m_id_from(21)
-                .m_content("TEST")
-                .build();
-        messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert2);
 
         return  noticeList;
     }

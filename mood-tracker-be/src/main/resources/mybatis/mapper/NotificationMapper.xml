@@ -45,7 +45,7 @@
         SELECT n.*, m.*
         FROM notice n LEFT JOIN MEMBER m
         ON n.m_id_from = m.m_id
-        WHERE m_id_to = #{m_id_to} AND n_type = 'comment'
+        WHERE m_id_to = #{m_id_to} AND n_type = 'comment'  OR n_type = 'reply'
         ORDER BY n_id DESC
     </select>
 
@@ -74,9 +74,10 @@
     </delete>
 
     <insert id="insertNotice" parameterType="NotificationDto">
-        INSERT INTO notice(n_id , m_id_to, n_state, regdate, n_type , m_id_from, n_content , n_url)
-        VALUES(notice_seq.nextVal, :m_id_to, 1, sysdate, :n_type, :m_id_from, :n_content, :n_url)
+        INSERT INTO notice(n_id, m_id_to, n_state, regdate, n_type, m_id_from, n_content, n_url)
+        VALUES(notice_seq.nextVal, #{m_id_to}, 1, sysdate, #{n_type}, #{m_id_from}, #{n_content}, #{n_url})
     </insert>
+
 
 
 </mapper>
