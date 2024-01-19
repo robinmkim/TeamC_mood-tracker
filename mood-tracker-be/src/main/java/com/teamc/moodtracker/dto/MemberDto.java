@@ -71,4 +71,9 @@ public class MemberDto implements UserDetails {
         return true; // 계정이 활성화되어 있음을 나타냄
     }
 
+    // 추가 : 검색 기능을 위한 메서드
+    public boolean nameKeyword(String keyword) {
+        return m_name.contains(keyword);
+    }
+
 }

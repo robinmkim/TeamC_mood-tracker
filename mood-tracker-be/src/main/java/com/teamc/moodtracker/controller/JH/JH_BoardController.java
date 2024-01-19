@@ -4,6 +4,8 @@ import com.teamc.moodtracker.dto.*;
 import com.teamc.moodtracker.dto.JH.JH_BoardDto;
 import com.teamc.moodtracker.service.JH.JH_BoardLikeService;
 import com.teamc.moodtracker.service.JH.JH_BoardService;
+import com.teamc.moodtracker.service.JH.JH_CommentService;
+import com.teamc.moodtracker.service.JH.JH_ReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,14 @@ public class JH_BoardController {
     private JH_BoardLikeService likeService;
     @Autowired
     private JH_CommentController commentController;
+
+    @Autowired
+    public JH_CommentService commentService;
+
+    @Autowired
+    public JH_ReplyService replyService;
+
+
     String imageDirectory = "src/main/resources/static/images/";
 
     // 추가
@@ -38,13 +48,15 @@ public class JH_BoardController {
                                   @RequestParam(value = "mediaList", required = false) List<MultipartFile> newMedias,
                                   @RequestParam(value = "mb_idList", required = false) String mb_idList) {
         System.out.println("update");
+        System.out.println("mb_idList: "+ mb_idList);
         dto.setM_id(memberDto.getM_id());
+        System.out.println("b_id: " + dto.getB_id());
+        System.out.println("m_id: " + dto.getM_id());
+        System.out.println("b_content: " + dto.getB_content());
+        System.out.println("b_sentiment: " + dto.getB_sentiment());
+        if (mb_idList.equals("isNull")) {
 
-        System.out.println("m_id: "+ dto.getM_id());
-        System.out.println("b_content: "+ dto.getB_content());
-        System.out.println("b_sentiment: "+ dto.getB_sentiment());
-
-        String[] split_md_id=mb_idList.split(",");
+        String[] split_md_id = mb_idList.split(",");
         int[] md_ids = new int[split_md_id.length];
         for (int i = 0; i < split_md_id.length; i++) {
             md_ids[i] = Integer.parseInt(split_md_id[i]);
@@ -66,6 +78,7 @@ public class JH_BoardController {
             for (int md_id : differentMediaIds){
                 service.delMedai(md_id);
             }
+        }
         }
         List<MediaDto> mediaDtos = new ArrayList<>();
         if (newMedias != null) {
@@ -140,8 +153,18 @@ public class JH_BoardController {
         return service.getBoardList(lastRowNum);
     }
 
+    @Transactional
     @GetMapping("/delPost")
     public void delPost(@RequestParam(value = "b_id") int b_id) {
+        System.out.println("delPost");
+        List<Integer> commentList = commentService.getCm_idList(b_id);
+        for (int comment : commentList){
+            List<Integer> replyList = replyService.getRe_idList(comment);
+            for (int reply : replyList) {
+                replyService.delReply(reply);
+            }
+            commentService.delComment(comment);
+        }
         service.delPost(b_id);
     }
 

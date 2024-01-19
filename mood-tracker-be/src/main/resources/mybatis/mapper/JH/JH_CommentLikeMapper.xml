@@ -8,9 +8,18 @@
         select count(cmlike_id) from comments_like where cm_id=#{cm_id} and m_id=#{m_id}
     </select>
 
+    <select id="commentLikeCount" parameterType="Integer" resultType="Integer">
+        select count(cmlike_id) from comments_like where cm_id = #{cm_id}
+    </select>
+
     <select id="getCmlike_id" parameterType="cmlvo" resultType="Integer">
         select cmlike_id from comments_like where cm_id=#{cm_id} and m_id=#{m_id}
     </select>
+
+    <select id="getCmlike_idAll" parameterType="Integer" resultType="Integer">
+        select cmlike_id from comments_like where cm_id=#{cm_id}
+    </select>
+
 
     <delete id="delCommentLike" parameterType="Integer">
         delete from comments_like where cmlike_id = #{cmlike_id}

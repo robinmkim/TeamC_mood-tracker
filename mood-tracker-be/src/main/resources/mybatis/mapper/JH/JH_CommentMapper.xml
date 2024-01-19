@@ -103,6 +103,11 @@
         delete comments where cm_id = #{cm_id}
     </delete>
 
+
+    <select id="getCm_idList" parameterType="Integer" resultType="Integer">
+        select cm_id from comments where b_id = #{b_id} order by cm_id asc
+    </select>
+
     <resultMap id="commentDetailMap" type="jh_cvo">
         <id property="cm_id" column="cm_id" />
         <result property="b_id" column="b_id" />
@@ -128,4 +133,8 @@
         LEFT JOIN member m ON c.m_id = m.m_id
         WHERE c.cm_id = #{cm_id}
     </select>
+
+
+
+
 </mapper>

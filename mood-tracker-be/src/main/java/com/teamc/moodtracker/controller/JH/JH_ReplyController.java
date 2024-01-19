@@ -13,7 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 
 @Slf4j
@@ -30,11 +29,12 @@ public class JH_ReplyController {
     private JH_ReplyLikeService likeService;
 
     @Autowired
-    private NotificationService notificationService; //윤영호
+    private NotificationService notificationService; // 윤영호
 
     @Transactional
     @GetMapping("/getReplyList")
-    public List<JH_ReplyDto> getReplyLis(@AuthenticationPrincipal MemberDto memberDto,@RequestParam(value = "cm_id") int cm_id) {
+    public List<JH_ReplyDto> getReplyLis(@AuthenticationPrincipal MemberDto memberDto,
+            @RequestParam(value = "cm_id") int cm_id) {
         System.out.println(cm_id);
         List<JH_ReplyDto> replys = replyService.getReplyLis(cm_id);
         Reply_LikeDto dto = new Reply_LikeDto();
@@ -53,7 +53,7 @@ public class JH_ReplyController {
 
     @PostMapping("/addReply")
     public int addReply(@AuthenticationPrincipal MemberDto memberDto,
-                        @ModelAttribute JH_ReplyDto dto) {
+            @ModelAttribute JH_ReplyDto dto) {
         dto.setM_id(memberDto.getM_id());
         System.out.println("!!!");
         System.out.println(dto);
@@ -68,13 +68,34 @@ public class JH_ReplyController {
 
     @Transactional
     @GetMapping("/delReply")
-    public void delReply(@AuthenticationPrincipal MemberDto memberDto,@RequestParam(value = "re_id") int re_id) {
+    public void delReply(@RequestParam(value = "re_id") int re_id) {
+        replyService.delReply(re_id);
+        System.out.println("delReply!!!!!!!!!!!!!!!!!!!!!!!!" + re_id);
+    }
+
+    // commentController사용
+    // @GetMapping("/replyCount")
+    // public int replyCount(@RequestParam("cm_id")int cm_id){
+    //
+    // return replyService.replyCount(cm_id);
+    // }
+
+    @GetMapping("/getRe_idList")
+    public List<Integer> getRe_idList(@RequestParam("cm_id") int cm_id) {
+
+        return replyService.getRe_idList(cm_id);
+    }
+
+    @Transactional
+    @GetMapping("/getReplyDetail")
+    public JH_ReplyDto getReplyDetail(@AuthenticationPrincipal MemberDto memberDto, @RequestParam("re_id") int re_id) {
+        JH_ReplyDto reply = replyService.getReplyDetail(re_id);
         Reply_LikeDto dto = new Reply_LikeDto();
         dto.setM_id(memberDto.getM_id());
         dto.setRe_id(re_id);
-        likeService.delReplyLike(likeService.getRelike_id(dto));
-        replyService.delReply(re_id);
+        reply.setIsMyLike(likeService.isMyLikeReply(dto));
+        reply.setLikeCount(likeService.replyLikeCount(re_id));
+        return reply;
     }
-
 
 }

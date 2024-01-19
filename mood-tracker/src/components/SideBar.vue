@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="h-full w-48">
     <div class="relative flex flex-col">
       <!-- 슬라이드 바 -->
       <div
@@ -111,8 +111,8 @@
     </div>
 
     <!-- relative 추가하여 프로필과 메뉴와 묶어준다 -->
-    <div class="" @click="toggleSidebarOutside">
-      <div class="rounded-lg shadow-lg w-auto mx-2 mt-2 bg-[#FFF5ED] p-4">
+    <div class="  " @click="toggleSidebarOutside">
+      <div class="rounded-lg shadow-lg mx-2 mt-2 bg-[#FFF5ED] p-4">
         <!-- 사용자 정보 및 이미지 시작 -->
         <div class="mb-12">
           <!-- 사용자 정보 좌우에 여백 추가 -->

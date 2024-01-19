@@ -19,4 +19,9 @@ public interface JH_CommentService {
     public void delComment(int cm_id);
 
 
+    public List<Integer> getCm_idList(int b_id);
+
+    public JH_CommentDto getCommentDetail(int cm_id);
+
+
 }

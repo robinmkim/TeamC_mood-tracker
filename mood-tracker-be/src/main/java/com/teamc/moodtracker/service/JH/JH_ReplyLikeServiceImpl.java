@@ -5,6 +5,9 @@ import com.teamc.moodtracker.dto.Reply_LikeDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -24,6 +27,11 @@ public class JH_ReplyLikeServiceImpl implements JH_ReplyLikeService{
     }
 
     @Override
+    public List<Integer> getRelike_idAll(int re_id) {
+        return dao.getRelike_idAll(re_id);
+    }
+
+    @Override
     public int addReplyLike(Reply_LikeDto dto) {
         return dao.addReplyLike(dto);
     }
@@ -31,5 +39,19 @@ public class JH_ReplyLikeServiceImpl implements JH_ReplyLikeService{
     @Override
     public void delReplyLike(int relike_id) {
         dao.delReplyLike(relike_id);
+    }
+
+    @Transactional
+    @Override
+    public void delReplyLikeAll(int re_id) {
+        List<Integer> likeList = dao.getRelike_idAll(re_id);
+        for (int like : likeList){
+            dao.delReplyLike(like);
+        }
+    }
+
+    @Override
+    public int replyLikeCount(int re_id) {
+        return dao.replyLikeCount(re_id);
     }
 }

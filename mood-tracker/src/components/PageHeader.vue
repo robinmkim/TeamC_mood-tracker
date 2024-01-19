@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-[#64CCC5] w-full py-3 flex justify-end items-center relative">
+  <div class="bg-[#64CCC5] w-full h-16 py-3 flex justify-end items-center">
     <div id="title" class="absolute left-1/2 transform -translate-x-1/2">
       <router-link to="/">
         <span class="text-2xl font-[400]">Songtiment</span>
@@ -83,9 +83,6 @@
             class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500 opacity-50 animate-ping"
           ></div>
         </div>
-        <!-- {{ alertIcon }} -->
-        <!-- {{ this.$store.state.alertNewChat }} -->
-        <!-- <div>받은 메시지: {{ receivedMessage }}</div> -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

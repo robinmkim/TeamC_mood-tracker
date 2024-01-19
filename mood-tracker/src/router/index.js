@@ -11,16 +11,19 @@ import questionRouter from "./routers/questionRouter";
 import adminRouter from "./routers/adminRouter";
 import authRouter from "./routers/authRouter";
 import postRouter_yh from "./routers/postRouter_yh";
+import searchPage from "./routers/searchPage";
 
 const routes = [
   {
     path: "/timeline",
-    component: PageHome,
+    components: {
+      default:PageHome,},
   },
   {
     path: "/postwrite",
     component: PostWrite,
   },
+
   ...chatRouter,
   ...myPageRouter,
   ...notiRouter,
@@ -30,6 +33,7 @@ const routes = [
   ...adminRouter,
   ...authRouter,
   ...postRouter_yh,
+  ...searchPage,
 ];
 
 const router = createRouter({

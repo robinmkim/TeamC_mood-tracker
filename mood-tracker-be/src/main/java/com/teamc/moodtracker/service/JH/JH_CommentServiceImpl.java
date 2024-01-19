@@ -19,6 +19,8 @@ public class JH_CommentServiceImpl implements JH_CommentService{
     private JH_CommentDao commentDao;
     @Autowired
     private JH_replyDao replyDao;
+    @Autowired
+    private JH_CommentLikeService likeService;
 
 
     @Override
@@ -33,6 +35,7 @@ public class JH_CommentServiceImpl implements JH_CommentService{
 
     @Override
     public List<JH_CommentDto> getCommentList(int b_id) {
+
         return commentDao.getCommentList(b_id);
     }
 
@@ -50,20 +53,20 @@ public class JH_CommentServiceImpl implements JH_CommentService{
     @Transactional
     public void delComment(int cm_id) {
         System.out.println("delComment : " + cm_id);
-
-        // 리플이 있는지 검색 후 있는만큼 리플지우기.
-        List<JH_ReplyDto> delReplyList = replyDao.getReplyLis(cm_id);
-        if (replyDao.replyCount(cm_id) == 0) {
-
-            commentDao.delComment(cm_id);
-            return;
-        }
-        System.out.println(delReplyList);
-        for (JH_ReplyDto r : delReplyList) {
-            System.out.println("re_id: "+r.getRe_id());
-            replyDao.delReply(r.getRe_id());
+        if(likeService.commentLikeCount(cm_id) > 0) {
+            likeService.delCommentLikeAll(cm_id);
         }
         commentDao.delComment(cm_id);
+    }
+
+    @Override
+    public List<Integer> getCm_idList(int b_id) {
+        return commentDao.getCm_idList(b_id);
+    }
+
+    @Override
+    public JH_CommentDto getCommentDetail(int cm_id) {
+        return commentDao.getCommentDetail(cm_id);
     }
 
 
