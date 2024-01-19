@@ -55,4 +55,10 @@ public class JH_CommentLikeController {
         return service.addCommentLike(dto);
     }
 
+    @GetMapping("/commentLikeCount")
+    public int commentLikeCount(@RequestParam("cm_id") int cm_id){
+
+        return service.commentLikeCount(cm_id);
+    }
+
 }

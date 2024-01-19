@@ -1,11 +1,11 @@
-import questionPage from "/src/views/question/questionPage.vue";
+import searchPage from "/src/views/search/SearchPage.vue";
 import SideWidget from "/src/components/SideWidget.vue";
 
 export default [
   {
-    path: "/question",
+    path: "/search",
     components: {
-      default: questionPage,
+      default: searchPage,
       widget: SideWidget,
     },
   },

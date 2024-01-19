@@ -23,4 +23,5 @@ public class JH_CommentDto {
     public void setIsMyLike(boolean isMyLike) {
         this.isMyLike = isMyLike;
     }
+    public int likeCount;
 }

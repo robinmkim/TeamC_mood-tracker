@@ -5,10 +5,13 @@ import com.teamc.moodtracker.dto.JH.JH_CommentDto;
 import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.service.JH.JH_CommentLikeService;
 import com.teamc.moodtracker.service.JH.JH_CommentService;
+import com.teamc.moodtracker.service.JH.JH_ReplyLikeService;
+import com.teamc.moodtracker.service.JH.JH_ReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +26,9 @@ public class JH_CommentController {
     private JH_CommentService commentService;
     @Autowired
     private JH_CommentLikeService likeService;
+
+    @Autowired
+    private JH_ReplyService replyService;
 
     @GetMapping("/allCommentCount")
     public int allCommentCount(@RequestParam(value = "b_id") int b_id) {
@@ -76,11 +82,38 @@ public class JH_CommentController {
         return 1;
     };
 
+    @Transactional
+    @GetMapping("/delComment")
+    public void delComment(@RequestParam(value = "cm_id") int cm_id) {
+        System.out.println("delComment");
 
-@GetMapping("/delComment")
-public void delComment(@RequestParam(value = "cm_id") int cm_id) {
-    System.out.println("delComment");
-    commentService.delComment(cm_id);
-}
+        List<Integer> replyList = replyService.getRe_idList(cm_id);
+        for (int reply : replyList) {
+            System.out.println("re_id: "+ reply);
+            replyService.delReply(reply);
+        }
+//        if (likeService.commentLikeCount(cm_id) > 0) {
+//             likeService.delCommentLike(cm_id);
+//        }
+        commentService.delComment(cm_id);
+    }
+
+    @GetMapping("/getCm_idList")
+    public List<Integer> getCm_idList(@RequestParam("b_id") int b_id){
+
+        return commentService.getCm_idList(b_id);
+    }
+    @Transactional
+    @GetMapping("/getCommentDetail")
+    public JH_CommentDto getCommentDetail(@AuthenticationPrincipal MemberDto memberDto, @RequestParam("cm_id") int cm_id) {
+        JH_CommentDto comment = commentService.getCommentDetail(cm_id);
+        Comment_LikeDto dto = new Comment_LikeDto();
+        dto.setM_id(memberDto.getM_id());
+        dto.setCm_id(cm_id);
+        comment.setIsMyLike(likeService.isMyLikeComment(dto));
+        comment.setReply_count(replyService.replyCount(cm_id));
+        comment.setLikeCount(likeService.commentLikeCount(cm_id));
+        return comment;
+    }
 
 }
