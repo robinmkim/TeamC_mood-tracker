@@ -1,9 +1,5 @@
 <template>
   <div class="flex h-screen">
-    <div class="w-1/5">
-      <side-bar></side-bar>
-    </div>
-
     <div class="flex-1 border-x-2">
       <div
         class="notiHeader bg-white-500 px-4 flex items-center justify-start"
@@ -346,14 +342,11 @@
 
 <script>
 import apiClient from "./../../utils/apiClient";
-import SideBar from "@/components/SideBar";
 // import axios from "axios";
 
 export default {
   name: "NotiPage",
-  components: {
-    SideBar,
-  },
+  components: {},
   data() {
     return {
       currentTab: 0,

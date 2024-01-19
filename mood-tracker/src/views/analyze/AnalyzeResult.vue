@@ -1,9 +1,5 @@
 <template>
   <div class="flex h-screen">
-    <div class="w-1/5">
-      <side-bar></side-bar>
-    </div>
-
     <div class="flex-1 w-full bg-[#E7F1E5] h-screen overflow-auto">
       <!-- 여기서부터 ~~~ -->
       <div class="flex flex-col justify-center items-center">
@@ -159,7 +155,6 @@
 // import { Radar } from "vue-chartjs";
 // import ResultChart from "./ResultChart.vue";
 import apiClient from "./../../utils/apiClient";
-import SideBar from "@/components/SideBar";
 import axios from "axios";
 export default {
   props: ["lastResultId"],
@@ -167,7 +162,6 @@ export default {
   name: "AnalyzeResult",
   components: {
     // ResultChart,
-    SideBar,
   },
   data() {
     return {
