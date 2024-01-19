@@ -59,7 +59,7 @@ public class JH_ReplyController {
         System.out.println(dto);
         replyService.addReply(dto);
 
-        notificationService.addReply_SaveNotificationAndSendAlert(dto); // 댓글 알림/ 윤영호
+        notificationService.addReply_SaveNotificationAndSendAlert(dto); // 알림/ 윤영호
 
         return 1;
     }
