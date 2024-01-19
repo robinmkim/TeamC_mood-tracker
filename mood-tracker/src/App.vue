@@ -1,23 +1,14 @@
 <template>
   <page-header class="fixed top-0 z-50" />
-  <div class="flex justify-center mt-16">
-    <side-bar class="" />
-
-    <!-- 기본 뷰 -->
-    <router-view class="md:w-[900px] sm:w-[300px]" />
-
-    <!-- 오른쪽 widget 뷰 -->
-    <router-view name="widget" class="" />
-  </div>
+  <router-view />
 </template>
 
 <script>
 import PageHeader from "./components/PageHeader.vue";
-import SideBar from "./components/SideBar.vue";
 
 export default {
   name: "App",
-  components: { PageHeader, SideBar },
+  components: { PageHeader },
 };
 </script>
 

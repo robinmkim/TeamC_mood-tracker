@@ -6,10 +6,6 @@
   </div>
 
   <div class="flex h-screen">
-    <div class="w-1/5">
-      <side-bar></side-bar>
-    </div>
-
     <div class="flex-1 w-full bg-[#E7F1E5]">
       <!-- 여기서부터 ~~~ -->
       <div class="flex flex-col items-center justify-center">
@@ -82,8 +78,6 @@
       </div>
       <!-- 여까지 -->
     </div>
-
-    <div class="w-1/5 p-4">side menu</div>
   </div>
 </template>
 
@@ -91,12 +85,10 @@
 import FadeLoader from "vue-spinner/src/FadeLoader.vue";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import SideBar from "@/components/SideBar";
 import apiClient from "./../../utils/apiClient";
 export default {
   name: "FaceAnalyze",
   components: {
-    SideBar,
     FadeLoader,
   },
   data() {
