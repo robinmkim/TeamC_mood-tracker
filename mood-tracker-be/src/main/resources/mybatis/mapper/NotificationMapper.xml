@@ -53,7 +53,7 @@
         SELECT n.*, m.*
         FROM notice n LEFT JOIN MEMBER m
         ON n.m_id_from = m.m_id
-        WHERE m_id_to = #{m_id_to} AND n_type = 'like'
+        WHERE m_id_to = #{m_id_to} AND n_type = 'boardlike' OR n_type = 'commentlike' OR n_type = 'replylike'
         ORDER BY n_id DESC
     </select>
 
