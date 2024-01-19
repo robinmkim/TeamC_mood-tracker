@@ -78,6 +78,12 @@
         VALUES(notice_seq.nextVal, #{m_id_to}, 1, sysdate, #{n_type}, #{m_id_from}, #{n_content}, #{n_url})
     </insert>
 
+    <select id="getReplyDetail" parameterType="int" resultType="jh_rvo">
+        SELECT *
+        FROM reply
+        WHERE re_id = #{re_id}
+    </select>
+
 
 
 </mapper>

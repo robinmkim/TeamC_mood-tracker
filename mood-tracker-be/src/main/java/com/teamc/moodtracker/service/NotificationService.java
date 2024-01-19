@@ -1,11 +1,8 @@
 package com.teamc.moodtracker.service;
 
-import com.teamc.moodtracker.dto.Board_LikeDto;
-import com.teamc.moodtracker.dto.CommentDto;
-import com.teamc.moodtracker.dto.Comment_LikeDto;
+import com.teamc.moodtracker.dto.*;
 import com.teamc.moodtracker.dto.JH.JH_CommentDto;
 import com.teamc.moodtracker.dto.JH.JH_ReplyDto;
-import com.teamc.moodtracker.dto.NotificationDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,4 +29,6 @@ public interface NotificationService {
     public void addBoardLike_SaveNotificationAndSendAlert(Board_LikeDto boardLikeDto);
 
     public void addReply_SaveNotificationAndSendAlert(JH_ReplyDto dto);
+
+    public void addReplyLike_SaveNotificationAndSendAlert(Reply_LikeDto replyLikeDto);
 }

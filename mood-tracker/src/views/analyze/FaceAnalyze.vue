@@ -148,7 +148,7 @@ export default {
       // })
 
       await axios
-        .post("http://192.168.0.21:9000/face/predictFace", formData, {
+        .post("http://localhost:9000/face/predictFace", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

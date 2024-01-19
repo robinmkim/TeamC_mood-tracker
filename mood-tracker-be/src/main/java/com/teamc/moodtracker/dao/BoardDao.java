@@ -17,6 +17,4 @@ public interface BoardDao {
     public BoardDto getBoardDetail(int b_id);
 
     public List<Integer> getBoardList(Map<String, Object> params);
-
-    public int getMemberIdByBoardId(int b_id);
 }

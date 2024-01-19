@@ -392,7 +392,7 @@ export default {
       try {
         // 장고로 보내기
         const res = await axios.post(
-          "http://192.168.0.43:9000/emotion/evaluatePositivity",
+          "http://localhost:9000/emotion/evaluatePositivity",
           requestData
         );
         // 장고에서 받아온데이터 확인하기
