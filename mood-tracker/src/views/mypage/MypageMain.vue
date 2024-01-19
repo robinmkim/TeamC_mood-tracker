@@ -12,15 +12,36 @@
               <img :src="getPrfileImgUrl()" alt="profile_img" />
             </div>
           </div>
-          <div class="flex ml-48 mt-2 w-full items-center">
-            <div class="flex flex-col mr-5">
-              <span class="text-3xl font-bold">{{ userInfo.m_name }}</span>
-              <p class="text-xl">{{ userInfo.m_handle }}</p>
+          <div class="flex-grow flex-col ml-48 mt-2 justify-start items-center">
+            <div class="flex flex-col border-b-2 border-slate-200 w-full">
+              <div class="flex items-center w-full">
+                <span class="text-lg mr-3">팔로워 12</span>
+                <span class="text-lg"> 팔로잉 26</span>
+              </div>
+              <div class="flex my-2">
+                <div>
+                  <span class="text-3xl font-bold mr-3">{{
+                    userInfo.m_name
+                  }}</span>
+                </div>
+                <span class="mt-2 text-lg text-slate-400">
+                  {{ userInfo.m_handle }}
+                </span>
+              </div>
             </div>
-            <div class="user-stats">
-              <span class="text-lg">팔로워 12</span> |
-              <span class="text-lg">팔로잉 26</span>
+            <div class="flex w-full mt-2 mr-auto">
+              <div>
+                <span class="mr-auto">{{ userInfo.m_bio }}</span>
+              </div>
             </div>
+          </div>
+          <div class="flex">
+            <router-link
+              to="/mypage/edit"
+              class="m-2 h-[30px] w-[100px] border-2 rounded-full border-slate-500 items-center justify-center"
+            >
+              <div class="text-slate-500">프로필 편집</div>
+            </router-link>
           </div>
         </div>
 
@@ -117,7 +138,6 @@ export default {
       apiClient
         .get(`/member/myInfo`)
         .then((info) => {
-          console.log("유저 정보를 불러옵니다");
           info.data.m_handle = "@" + info.data.m_handle;
           this.userInfo = info.data;
         })
