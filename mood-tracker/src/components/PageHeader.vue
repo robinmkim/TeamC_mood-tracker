@@ -109,6 +109,7 @@ import Stomp from "webstomp-client";
 import { EventBus } from "./../utils/EventBus.js";
 import { watch, ref } from "vue";
 import { useStore } from "vuex";
+import apiClient from "@/utils/apiClient.js";
 export default {
   name: "PageHeader",
   data() {
@@ -146,6 +147,8 @@ export default {
           } else if (newValue.message == "login") {
             console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIng");
             connect();
+            // unreadNotice 가져오기
+            getUnreadNotice();
           } else {
             console.log(
               ">>>>>> HEADER :: UNIDENTIFIED MESSAGE => ",
@@ -162,6 +165,16 @@ export default {
       }
     );
     //
+    function getUnreadNotice() {
+      apiClient.get("/notification/select/unread").then((res) => {
+        console.log(">>>>>> HEADER :: UNREAD NOTICE = ", res.data);
+        const unreadNoticeNumber = res.data;
+        //unreadNoticeNumber가 1 이상이면 알림 아이콘을 띄웁니다.
+        if (unreadNoticeNumber > 0) {
+          showAlertNoticeIcon();
+        }
+      });
+    }
     function disconnect() {
       console.log("UNSUB => ", subscriptionId.value);
       if (stompClient.value) {
