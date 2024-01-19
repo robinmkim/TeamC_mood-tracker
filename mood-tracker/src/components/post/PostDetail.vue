@@ -167,6 +167,21 @@
           </a>
 
           <span class="ml-2">{{ sentimentEmoji }}</span>
+          <!-- 자연어처리 부분 -->
+          <span class="ml-2">{{ sentimentEmoji }}</span>
+          <div class="ml-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              @click="evaluatePositivity"
+            >
+              <path
+                d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm2.5 8.5c-.98 0-1.865.404-2.502 1.054-.634-.649-1.519-1.054-2.498-1.054-1.933 0-3.5 1.567-3.5 3.5s1.567 3.5 3.5 3.5c.979 0 1.864-.404 2.498-1.054.637.649 1.522 1.054 2.502 1.054 1.933 0 3.5-1.566 3.5-3.5s-1.567-3.5-3.5-3.5zm0 6c-1.378 0-2.5-1.122-2.5-2.5s1.122-2.5 2.5-2.5c1.379 0 2.5 1.122 2.5 2.5s-1.121 2.5-2.5 2.5z"
+              />
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -175,6 +190,7 @@
 <script>
 import apiClient from "@/utils/apiClient";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 export default {
   props: {
@@ -246,6 +262,33 @@ export default {
     },
   },
   methods: {
+    // 장고로 자연어처리 보내기 부분
+    async evaluatePositivity() {
+      console.log("b_content 확인: ", this.board.b_content);
+
+      // 추가 데이터 가능하게
+      // const requestData = {
+      //   b_content: this.board.b_content,
+      // };
+      const requestData = new FormData();
+      requestData.append("b_content", this.board.b_content);
+      //
+      try {
+        // 장고로 보내기
+        const res = await axios.post(
+          "http://localhost:9000/emotion/evaluatePositivity",
+          requestData
+        );
+        // 장고에서 받아온데이터 확인하기
+        // const serverResponse = res.data;
+        const serverResponse = JSON.stringify(res.data);
+        console.log("데이터 확인 : " + serverResponse);
+
+        console.log("데이터 확인2 : " + res.data.additional_message);
+      } catch (error) {
+        console.error("서버 오류 : ", error);
+      }
+    },
     addReport() {},
 
     likeThis() {

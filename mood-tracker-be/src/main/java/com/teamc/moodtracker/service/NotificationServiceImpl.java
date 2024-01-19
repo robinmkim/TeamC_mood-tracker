@@ -2,6 +2,7 @@ package com.teamc.moodtracker.service;
 
 import com.teamc.moodtracker.dao.BoardDao;
 import com.teamc.moodtracker.dao.JH.JH_CommentDao;
+import com.teamc.moodtracker.dao.JH.JH_ReplyLikeDao;
 import com.teamc.moodtracker.dao.NotificationDao;
 import com.teamc.moodtracker.dto.*;
 import com.teamc.moodtracker.dto.JH.JH_CommentDto;
@@ -71,9 +72,12 @@ public class NotificationServiceImpl implements NotificationService{
     public void addComment_SaveNotificationAndSendAlert(JH_CommentDto commentDto) { // 댓글 작성
         int m_id_from = commentDto.getM_id();
         int b_id = commentDto.getB_id();
-        int m_id_to = boardDao.getMemberIdByBoardId(b_id);
-        String cm_content = commentDto.getCm_content();
-
+        BoardDto bdto = boardDao.getBoardDetail(b_id);
+        int m_id_to = bdto.getM_id();
+        String cm_content = commentDto.getCm_content(); // 작성한 댓글 내용
+        if(cm_content.length() > 20){
+            cm_content = cm_content.substring(0,20) + "...";
+        }
         if(m_id_from != m_id_to){ // 본인의 게시물에 상호작용한 내용은 알림을 보내지 않습니다.
             // Notice 테이블에 저장
             NotificationDto notificationDto = new NotificationDto();
@@ -97,12 +101,13 @@ public class NotificationServiceImpl implements NotificationService{
     public void addCommentLike_SaveNotificationAndSendAlert(Comment_LikeDto commentLikeDto) { // 댓글 좋아요
         int m_id_from = commentLikeDto.getM_id();
         int cm_id = commentLikeDto.getCm_id(); // 대상 댓글 ID -> comments테이블에서 m_id 획득
-
         JH_CommentDto cmdto = jh_commentDao.getCommentDetail(cm_id);
         int m_id_to = cmdto.getMember().getM_id();
         int b_id = cmdto.getB_id();
-        String cm_content = cmdto.getCm_content();
-
+        String cm_content = cmdto.getCm_content(); // 대상 댓글 내용
+        if(cm_content.length() > 20){
+            cm_content = cm_content.substring(0,20) + "...";
+        }
         if(m_id_from != m_id_to){ // 본인의 게시물에 상호작용한 내용은 알림을 보내지 않습니다.
             //DB 저장
             NotificationDto notificationDto = new NotificationDto();
@@ -129,8 +134,8 @@ public class NotificationServiceImpl implements NotificationService{
         BoardDto bdto = boardDao.getBoardDetail(b_id); // 알림 받을 사람
         int m_id_to = bdto.getM_id();
         String b_content = bdto.getB_content();
-        if(b_content.length() > 10){
-            b_content = b_content.substring(0,10) + "...";
+        if(b_content.length() > 20){
+            b_content = b_content.substring(0,20) + "...";
         }
         if(m_id_from != m_id_to){ // 본인의 게시물에 상호작용한 내용은 알림을 보내지 않습니다.
             // DB 저장
@@ -158,11 +163,10 @@ public class NotificationServiceImpl implements NotificationService{
         JH_CommentDto cdto = jh_commentDao.getCommentDetail(cm_id); //
         int m_id_to = cdto.getMember().getM_id(); // 알림 받을 사람
         int b_id = cdto.getB_id();
-        String re_content = dto.getRe_content(); // 대댓글 내용
-        System.out.println("대댓글 작성 -> 알림 추가하기 전 검사");
-        System.out.println("m_id_to = "+ m_id_to);
-        System.out.println("m_id_from = " + m_id_from);
-        System.out.println("검사 끝");
+        String re_content = dto.getRe_content(); // 작성한 대댓글 내용
+        if(re_content.length() > 20){
+            re_content = re_content.substring(0,20) + "...";
+        }
         if(m_id_from != m_id_to){
             // DB 저장
             NotificationDto notificationDto = new NotificationDto();
@@ -175,6 +179,39 @@ public class NotificationServiceImpl implements NotificationService{
             // 알림 전송
             Alert alert = Alert.builder()
                     .type("reply")
+                    .m_id_to(m_id_to)
+                    .m_id_from(m_id_from)
+                    .m_content(re_content).build();
+            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+        }
+    }
+
+    @Override
+    public void addReplyLike_SaveNotificationAndSendAlert(Reply_LikeDto replyLikeDto) { // 대댓글 좋아요
+        int m_id_from = replyLikeDto.getM_id(); // 알림 보낸 사람
+        int re_id = replyLikeDto.getRe_id(); // 대상 대댓글 id -> reply테이블에서 m_id, re_content조회
+        JH_ReplyDto rldto = notificationDao.getReplyDetail(re_id);
+        int cm_id = rldto.getCm_id(); // 댓글 id
+        // cm_id -> comments테이블에서 -> b_id 조회
+        JH_CommentDto cdto = jh_commentDao.getCommentDetail(cm_id);
+        int b_id = cdto.getB_id();
+        int m_id_to = rldto.getM_id();
+        String re_content = rldto.getRe_content(); // 대상 대댓글 내용
+        if(re_content.length() > 20){
+            re_content = re_content.substring(0,20) + "...";
+        }
+        if(m_id_from != m_id_to){
+            // DB 저장
+            NotificationDto notificationDto = new NotificationDto();
+            notificationDto.setM_id_to(m_id_to);
+            notificationDto.setM_id_from(m_id_from);
+            notificationDto.setN_type("replylike");
+            notificationDto.setN_content(re_content);
+            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDao.insertNotice(notificationDto);
+            // 알림 전송
+            Alert alert = Alert.builder()
+                    .type("replylike")
                     .m_id_to(m_id_to)
                     .m_id_from(m_id_from)
                     .m_content(re_content).build();
