@@ -24,94 +24,24 @@
         class="h-5/6 bg-white rounded shadow-lg flex overflow-hidden"
         @click.stop=""
       >
-        <!--리스트-->
-        <div class="flex flex-col min-h-5/6 flex-grow overflow-auto">
+        <!-- PostList -->
+        <div class="w-2/5 flex flex-col min-h-5/6 overflow-auto">
           <div class="flex h-14 border-b justify-center items-center">
             {{ this.month }}월 {{ day }}일
           </div>
-          <div
-            class="flex flex-col h-16 border-b items-center justify-start pl-4"
-            v-if="ByDateList.length > 0"
-          >
-            <post-detail v-for="bId in ByDateList" :key="bId" :b_id="bId" />
+          <div class="flex flex-col" v-if="ByDateList.length > 0">
+            <PostList
+              v-for="bId in ByDateList"
+              @postSelected="onPostSelected"
+              :key="bId"
+              :b_id="bId"
+            />
           </div>
           <div v-else>데이터가 없습니다.</div>
         </div>
-        <div class="border-x flex flex-grow">
-          <div class="h-full">
-            <!-- post 내용 -->
-            <postDetail></postDetail>
-          </div>
-          <div class="flex flex-col flex-grow border-l border-l-slate-300">
-            <!-- 댓글창 -->
-            <div class="p-3 border-b border-b-slate-300">
-              <div class="postHerder flex flex-row m">
-                <div class="h-14 w-14 overflow-hidden relative">
-                  <img
-                    class="postDetailUserImg object-contain rounded-full"
-                    src="@/assets/logo.png"
-                    alt="user icon"
-                  />
-                </div>
-                <div class="flex flex-row items-center mx-3">
-                  <div class="notiUserName font-bold text-lg">UserName</div>
-                  <div class="text-slate-400 text-sm ml-2">2분전</div>
-                </div>
-                <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
-                  <!-- 미트볼 아이콘-->
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6 pt-1"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div class="text-left ml-6 mt-2">댓글내용~~~ 01</div>
-            </div>
-
-            <div class="p-3 border-b border-b-slate-300 pl-10">
-              <div class="postHerder flex flex-row m">
-                <div class="h-14 w-14 overflow-hidden relative">
-                  <img
-                    class="postDetailUserImg object-contain rounded-full"
-                    src="@/assets/logo.png"
-                    alt="user icon"
-                  />
-                </div>
-                <div class="flex flex-row items-center mx-3">
-                  <div class="notiUserName font-bold text-lg">UserName2</div>
-                  <div class="text-slate-400 text-sm ml-2">2분전</div>
-                </div>
-                <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
-                  <!-- 미트볼 아이콘-->
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6 pt-1"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div class="text-left ml-6 mt-2">댓글내용~~~ 02</div>
-            </div>
-          </div>
+        <!-- postDetail -->
+        <div class="border-x flex flex-grow w-3/5">
+          <PostDetailPage :b_id="b_id" />
         </div>
       </div>
     </div>
@@ -120,11 +50,15 @@
 
 <script>
 import { number } from "yup";
-import PostDetail from "./post/PostDetail";
+// import PostDetail from "./post/PostDetail";
+import PostList from "./post/PostList";
+import PostDetailPage from "@/views/post/PostDetailPage.vue";
 export default {
   name: "PostModal",
   components: {
-    PostDetail,
+    // PostDetail,
+    PostList,
+    PostDetailPage,
   },
   props: {
     isOpen: {
@@ -163,6 +97,10 @@ export default {
     document.body.classList.remove("overflow-hidden");
   },
   methods: {
+    onPostSelected(b_id) {
+      // PostList에서 전달받은 b_id를 사용하여 처리
+      this.b_id = b_id;
+    },
     closeModal() {
       this.$emit("close");
     },

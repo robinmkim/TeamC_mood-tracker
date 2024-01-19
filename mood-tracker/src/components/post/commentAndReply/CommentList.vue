@@ -1,5 +1,5 @@
 <template>
-  <div class="flex" @scroll="handleScroll" :class="childClass">
+  <div class="flex h-full" @scroll="handleScroll" :class="childClass">
     <div class="flex-1 border-l border-l-slate-300">
       <div class="p-3 pb-0 border-b border-t-slate-300">
         <div class="postHerder flex flex-row">

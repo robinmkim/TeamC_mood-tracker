@@ -1,8 +1,5 @@
 <template>
-  <div class="flex h-full" @scroll="handleScroll">
-    <div class="w-1/5">
-      <side-bar></side-bar>
-    </div>
+  <div class="flex h-full w-full">
     <div class="flex-1 border-x flex h-full">
       <div
         class="flex-1 flex flex-col border-r h-full relative overflow-y-auto"
@@ -60,7 +57,6 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
-import SideBar from "@/components/SideBar";
 import PostDetail from "@/components/post/PostDetail";
 // import postComment from "@/components/post/PostComment";
 import { jwtDecode } from "jwt-decode";
@@ -147,7 +143,6 @@ export default {
   props: {},
   name: "PostDetailPage",
   components: {
-    SideBar,
     PostDetail,
     // postComment,
     CommentList,

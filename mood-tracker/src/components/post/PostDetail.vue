@@ -193,7 +193,6 @@ export default {
       currentImageIndex: 1,
       isLikeClicked: false,
       showMoreText: false,
-      mid: 1,
       board: {
         b_id: null,
         m_id: null,

@@ -53,7 +53,7 @@ public class CY_BoardController {
                                        @AuthenticationPrincipal MemberDto memberDto) {
         int mid = memberDto.getM_id();
         System.out.println("-------controller get list by regdate-----");
-        System.out.println("regdate:" + regdate  + "mid:" + mid);
+        System.out.println("regdate:" + regdate  + " / mid:" + mid);
         return cboardService.getListByDate(regdate, mid);
     }
 

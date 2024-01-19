@@ -43,7 +43,7 @@
 
     <!-- 날짜를 기준으로 게시글 디테일-->
     <select id="getListByDate" parameterType="map" resultType="java.lang.Integer">
-        select b_id from board where m_id=#{mid} and trunc(regdate) = #{regdate} order by b_id desc
+        SELECT b_id FROM board WHERE m_id=#{mid} AND TRUNC(regdate) = TO_DATE(#{regdate}, 'YYYYMMDD') ORDER BY b_id DESC
     </select>
 
 <!--    연속 날짜-->
