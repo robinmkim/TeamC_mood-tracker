@@ -3,6 +3,7 @@ package com.teamc.moodtracker.controller.JH;
 import com.teamc.moodtracker.dto.Comment_LikeDto;
 import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.service.JH.JH_CommentLikeService;
+import com.teamc.moodtracker.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 public class JH_CommentLikeController {
     @Autowired
     private JH_CommentLikeService service;
+
+    @Autowired
+    private NotificationService notificationService;
 
 //    @GetMapping("/isMylike")
 //    public boolean isMyLike(@AuthenticationPrincipal MemberDto memberDto,@RequestParam("b_id")int b_id){
@@ -52,6 +56,9 @@ public class JH_CommentLikeController {
         dto.setM_id(memberDto.getM_id());
         dto.setCm_id(cm_id);
         System.out.println("cm_id: "+dto.getCm_id());
+
+        notificationService.addCommentLike_SaveNotificationAndSendAlert(dto); // 알림 윤영호
+
         return service.addCommentLike(dto);
     }
 

@@ -5,6 +5,7 @@ import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.dto.Reply_LikeDto;
 import com.teamc.moodtracker.service.JH.JH_ReplyLikeService;
 import com.teamc.moodtracker.service.JH.JH_ReplyService;
+import com.teamc.moodtracker.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class JH_ReplyController {
 
     @Autowired
     private JH_ReplyLikeService likeService;
+
+    @Autowired
+    private NotificationService notificationService; //윤영호
 
     @Transactional
     @GetMapping("/getReplyList")
@@ -54,6 +58,9 @@ public class JH_ReplyController {
         System.out.println("!!!");
         System.out.println(dto);
         replyService.addReply(dto);
+
+        notificationService.addReply_SaveNotificationAndSendAlert(dto); // 댓글 알림/ 윤영호
+
         return 1;
     }
 

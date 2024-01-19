@@ -102,4 +102,30 @@
     <delete id="delComment" parameterType="Integer">
         delete comments where cm_id = #{cm_id}
     </delete>
+
+    <resultMap id="commentDetailMap" type="jh_cvo">
+        <id property="cm_id" column="cm_id" />
+        <result property="b_id" column="b_id" />
+        <result property="m_id" column="cm_id" />
+        <result property="cm_content" column="cm_content" />
+        <result property="regdate" column="regdate" />
+
+        <!-- MemberDto를 위한 resultMap -->
+        <association property="member" javaType="jh_mvo">
+            <id property="m_id" column="m_id" />
+            <result property="m_name" column="m_name" />
+            <result property="m_handle" column="m_handle" />
+            <result property="m_img_name" column="m_img_name" />
+            <result property="m_img_path" column="m_img_path" />
+        </association>
+    </resultMap>
+
+    <select id="getCommentDetail" resultMap="commentDetailMap">
+        SELECT
+        c.cm_id, c.b_id, c.m_id as cm_id, c.cm_content, c.regdate,
+        m.m_id, m.m_name, m.m_handle, m.m_img_name, m.m_img_path
+        FROM comments c
+        LEFT JOIN member m ON c.m_id = m.m_id
+        WHERE c.cm_id = #{cm_id}
+    </select>
 </mapper>

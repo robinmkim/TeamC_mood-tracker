@@ -252,6 +252,7 @@ export default {
       subscriptionId,
       memberId,
       connect,
+      disconnect,
       onMessageReceived,
       alertNoticeIcon,
       alertChatIcon,
@@ -276,7 +277,7 @@ export default {
       //
       this.hideAlertNoticeIcon();
       this.hideAlertChatIcon();
-      // this.sendEventLogout();
+      this.sendEventLogout(); // -> websocket Disconnet
     },
     clickChatIcon() {
       this.hideAlertChatIcon();

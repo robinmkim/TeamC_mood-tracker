@@ -70,8 +70,6 @@ import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
 import AuthService from "@/services/AuthService";
 import router from "@/router";
-// import EventBus from "@/eventBus/eventBus";
-// import EventBus from "@/utils/EventBus";
 import { EventBus } from "./../../utils/EventBus.js";
 import { watch, ref } from "vue";
 
@@ -81,7 +79,7 @@ export default {
     //
     const receivedMessage = ref("");
 
-    const sendEvent = () => {
+    const sendLoginEvent = () => {
       EventBus.myLoginEvent = { message: "login" };
     };
 
@@ -124,8 +122,7 @@ export default {
             window.localStorage.clear();
             window.localStorage.setItem("jwtToken", response.data.accessToken);
 
-            //로그인 됬다고 header에 EventBus 전송
-            sendEvent();
+            sendLoginEvent(); //로그인 됬다고 header에 EventBus 전송
             router.push("/");
           }
         }
@@ -138,7 +135,7 @@ export default {
       idError,
       passwordError,
       onSubmit,
-      sendEvent,
+      sendLoginEvent,
       receivedMessage,
     };
   },

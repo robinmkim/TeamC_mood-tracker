@@ -22,4 +22,6 @@ public interface NotificationDao {
 
     public void deleteNotice(int m_id_to, int n_id);
 
+    public void insertNotice(NotificationDto notificationDto);
+
 }
