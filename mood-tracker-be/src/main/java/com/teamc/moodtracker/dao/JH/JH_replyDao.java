@@ -16,4 +16,13 @@ public interface JH_replyDao {
     public void delReply(int re_id);
 
 
+    public List<Integer> getRe_idList(int cm_id);
+
+    public JH_ReplyDto getReplyDetail(int re_id);
+
+
+
+
+
+
 }

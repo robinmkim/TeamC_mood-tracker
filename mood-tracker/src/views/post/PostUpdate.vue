@@ -269,8 +269,11 @@ export default {
       this.board.mediaList.forEach((media) => {
         mb_idList.push(media.md_id);
       });
-
-      formData.append("mb_idList", mb_idList);
+      if (mb_idList === null) {
+        formData.append("mb_idList", ["isNull"]);
+      } else {
+        formData.append("mb_idList", mb_idList);
+      }
 
       // formData.append("m_id", 1);
       formData.append("b_id", this.b_id);

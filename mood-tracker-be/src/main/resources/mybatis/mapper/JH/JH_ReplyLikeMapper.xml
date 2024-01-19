@@ -8,8 +8,16 @@
         select count(relike_id) from reply_like where re_id=#{re_id} and m_id=#{m_id}
     </select>
 
+    <select id="replyLikeCount" parameterType="Integer" resultType="Integer">
+        select count(relike_id) from reply_like where re_id = #{re_id}
+    </select>
+
     <select id="getRelike_id" parameterType="relvo" resultType="Integer">
         select relike_id from reply_like where re_id=#{re_id} and m_id=#{m_id}
+    </select>
+
+    <select id="getRelike_idAll" parameterType="Integer" resultType="Integer">
+        select relike_id from reply_like where re_id=#{re_id}
     </select>
 
     <delete id="delReplyLike" parameterType="Integer">
