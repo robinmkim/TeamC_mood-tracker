@@ -99,7 +99,7 @@ public class NotificationServiceImpl implements NotificationService{
         int cm_id = commentLikeDto.getCm_id(); // 대상 댓글 ID -> comments테이블에서 m_id 획득
 
         JH_CommentDto cmdto = jh_commentDao.getCommentDetail(cm_id);
-        int m_id_to = cmdto.getM_id();
+        int m_id_to = cmdto.getMember().getM_id();
         int b_id = cmdto.getB_id();
         String cm_content = cmdto.getCm_content();
 
@@ -108,13 +108,13 @@ public class NotificationServiceImpl implements NotificationService{
             NotificationDto notificationDto = new NotificationDto();
             notificationDto.setM_id_to(m_id_to);
             notificationDto.setM_id_from(m_id_from);
-            notificationDto.setN_type("like");
+            notificationDto.setN_type("commentlike");
             notificationDto.setN_content(cm_content);
             notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
             notificationDao.insertNotice(notificationDto);
             //알림 전송
             Alert alert = Alert.builder()
-                    .type("like")
+                    .type("commentlike")
                     .m_id_to(m_id_to)
                     .m_id_from(m_id_from)
                     .m_content(cm_content).build();
@@ -132,19 +132,18 @@ public class NotificationServiceImpl implements NotificationService{
         if(b_content.length() > 10){
             b_content = b_content.substring(0,10) + "...";
         }
-
         if(m_id_from != m_id_to){ // 본인의 게시물에 상호작용한 내용은 알림을 보내지 않습니다.
             // DB 저장
             NotificationDto notificationDto = new NotificationDto();
             notificationDto.setM_id_to(m_id_to);
             notificationDto.setM_id_from(m_id_from);
-            notificationDto.setN_type("like");
+            notificationDto.setN_type("boardlike");
             notificationDto.setN_content(b_content);
             notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
             notificationDao.insertNotice(notificationDto);
             // 알림 전송
             Alert alert = Alert.builder()
-                    .type("like")
+                    .type("boardlike")
                     .m_id_to(m_id_to)
                     .m_id_from(m_id_from)
                     .m_content(b_content).build();
@@ -157,7 +156,7 @@ public class NotificationServiceImpl implements NotificationService{
         int m_id_from = dto.getM_id(); // 알림 보낸 사람(대댓글 작성자)
         int cm_id = dto.getCm_id(); // -> 대상 댓글 ID
         JH_CommentDto cdto = jh_commentDao.getCommentDetail(cm_id); //
-        int m_id_to = cdto.getMember().getM_id(); // 알림 받을 사람 // 지금 m_id 말고 cm_id를 받아오는듯?
+        int m_id_to = cdto.getMember().getM_id(); // 알림 받을 사람
         int b_id = cdto.getB_id();
         String re_content = dto.getRe_content(); // 대댓글 내용
         System.out.println("대댓글 작성 -> 알림 추가하기 전 검사");
