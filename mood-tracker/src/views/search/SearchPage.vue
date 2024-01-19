@@ -1,8 +1,5 @@
 <template>
   <div class="flex">
-    <div class="w-1/5 border-r h-full">
-      <side-bar />
-    </div>
     <div class="w-5/6" ref="postScrollContainer">
       <div class="flex search-container p-4 mt-5">
         <input
@@ -126,7 +123,6 @@
 
 <script>
 import apiClient from "./../../utils/apiClient";
-import SideBar from "@/components/SideBar";
 import PostDetail from "@/components/post/PostDetail.vue";
 // import axios from "axios";
 
@@ -201,7 +197,6 @@ export default {
   },
   name: "NotiPage",
   components: {
-    SideBar,
     PostDetail,
   },
 };
