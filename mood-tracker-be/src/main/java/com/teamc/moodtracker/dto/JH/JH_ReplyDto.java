@@ -19,5 +19,5 @@ public class JH_ReplyDto { // 대댓글 테이블
         this.isMyLike = isMyLike;
     }
 
-
+    private int likeCount;
 }

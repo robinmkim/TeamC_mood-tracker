@@ -12,6 +12,15 @@
         select blike_id from board_like where b_id=#{b_id} and m_id=#{m_id}
     </select>
 
+    <select id="getBlike_idAll" parameterType="Integer" resultType="Integer">
+        select blike_id from board_like where b_id=#{b_id}
+    </select>
+
+    <select id="boardLikeCount" parameterType="Integer" resultType="Integer">
+        select count(blike_id) from board_like where b_id = #{b_id}
+    </select>
+
+
     <delete id="delBoardLike" parameterType="Integer">
         delete from board_like where blike_id = #{blike_id}
     </delete>

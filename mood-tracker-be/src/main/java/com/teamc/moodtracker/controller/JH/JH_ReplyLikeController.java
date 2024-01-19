@@ -51,4 +51,11 @@ public class JH_ReplyLikeController {
         return service.addReplyLike(dto);
     }
 
+    //commentController 사용
+//    @GetMapping("/ReplyLikeCount")
+//    public int ReplyLikeCount(@RequestParam("re_id")int re_id){
+//
+//        return service.replyLikeCount(re_id);
+//    }
+
 }

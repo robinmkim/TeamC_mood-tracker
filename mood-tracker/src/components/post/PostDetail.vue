@@ -11,7 +11,7 @@
         <!-- src="../../assets/notiProfileImage01.jpg" -->
       </div>
       <div class="flex flex-row items-center mx-3">
-        <div class="userName font-bold text-lg">
+        <div class="userName font-[600] text-lg">
           {{ this.board.member ? this.board.member.m_name : "No Name" }}
         </div>
         <div class="userHandle text-sm text-slate-500 ml-1">
@@ -23,7 +23,7 @@
       </div>
       <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
         <!-- 미트볼 아이콘 -->
-        <button @click="BoardToggleDropdown">
+        <button @click="BoardToggleDropdown()" class="commentDropdown">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -40,14 +40,17 @@
           </svg>
         </button>
         <div
-          v-show="isDoardToggleDropdownOpen"
-          class="absolute flex flex-col bg-white shadow-md mt-2 rounded-md py-2 w-32 right-[1px] z-10"
+          v-show="isDropdownOpen"
+          class="absolute flex flex-col bg-white shadow-md mt-2 rounded-md py-2 w-32 right-[1px] top-4 z-10"
         >
           <router-link
             :to="{ path: '/jh_post/update', query: { b_id: this.board.b_id } }"
-            ><span class="border-b">수정하기</span></router-link
+            ><span class="border-b" v-if="isMain">수정하기</span></router-link
           >
-          <span class="border-b" @click="delPost()">삭제하기</span>
+          <span class="border-b" @click="delPost()" v-if="isMain"
+            >삭제하기</span
+          >
+          <span class="border-b" @click="addReport()">신고하기</span>
         </div>
       </div>
     </div>
@@ -171,6 +174,7 @@
 </template>
 <script>
 import apiClient from "@/utils/apiClient";
+import { jwtDecode } from "jwt-decode";
 
 export default {
   props: {
@@ -179,10 +183,13 @@ export default {
       type: Number,
       required: true,
     },
+    isDropdownOpen: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
-      isDoardToggleDropdownOpen: false,
       currentImageIndex: 1,
       isLikeClicked: false,
       showMoreText: false,
@@ -199,6 +206,7 @@ export default {
         countLike: 0,
         countComments: 0,
         myLike: false,
+        showDrop: this.isDropdownOpen,
       },
       emotionMap: {
         "😆": "happy",
@@ -216,6 +224,7 @@ export default {
         m_img_path: "",
       },
       commentCount: 0,
+      isMain: false,
     };
   },
   computed: {
@@ -237,6 +246,8 @@ export default {
     },
   },
   methods: {
+    addReport() {},
+
     likeThis() {
       apiClient
         .get(`/jh_postLike/addBoardLike?b_id=${this.b_id}`)
@@ -348,9 +359,12 @@ export default {
           this.board = response.data;
           console.log(this.board);
           console.log(this.board.myLike);
-          // this.isMylikeMethod();
+          console.log("loadBoardData: " + this.board.member.m_id);
 
-          // this.getUserInfo(); // user 데이터 갖고오기
+          // jwtToken을 decode해서 m_id를 추출한다.
+          const token = localStorage.getItem("jwtToken");
+          const decoded = jwtDecode(token);
+          this.isMain = this.board.member.m_id === decoded.m_id ? true : false;
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
@@ -389,13 +403,31 @@ export default {
       return postDate.toLocaleDateString("ko-KR");
     },
     BoardToggleDropdown() {
-      this.isDoardToggleDropdownOpen = !this.isDoardToggleDropdownOpen;
+      this.$emit("toggle-dropdown", this.b_id);
+      // 부모로부터 전달된 isDropdownOpen 값을 내부 상태에 할당
+      this.board.showDrop = this.isDropdownOpen;
+      // 내부 상태를 이용해 드롭다운을 토글
+      this.board.showDrop = !this.board.showDrop;
+    },
+    handleDocumentClick(event) {
+      // 클릭된 엘리먼트가 드롭다운 영역인지 확인
+      const isDropdown = event.target.closest(".commentDropdown") !== null;
+      // 만약 드롭다운 영역이 아니면 드롭다운을 닫기
+      if (!isDropdown) {
+        this.$emit("toggle-dropdown", this.b_id);
+      }
     },
   },
   created() {
     // this.getUserInfo();
     this.loadBoardData();
     // this.getCommentCount();
+  },
+  mounted() {
+    document.addEventListener("click", this.handleDocumentClick);
+  },
+  beforeUnmount() {
+    document.removeEventListener("click", this.handleDocumentClick);
   },
 };
 </script>

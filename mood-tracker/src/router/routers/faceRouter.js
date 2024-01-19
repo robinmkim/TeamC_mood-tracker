@@ -1,10 +1,14 @@
 import FaceAnalyze from "/src/views/analyze/FaceAnalyze.vue";
 import AnalyzeResult from "/src/views/analyze/AnalyzeResult";
+import SideWidget from "/src/components/SideWidget.vue";
 
 export default [
   {
     path: "/faceanalyze",
-    component: FaceAnalyze,
+    components: {
+      default: FaceAnalyze,
+      widget: SideWidget,
+    },
   },
   // {
   //   path: "/faceanalyze/result/:formData",
@@ -15,7 +19,10 @@ export default [
   {
     path: "/faceanalyze/result/:lastResultId",
     name: "AnalyzeResult",
-    component: AnalyzeResult,
+    components: {
+      default: AnalyzeResult,
+      widget: SideWidget,
+    },
     props: true,
   },
   // {

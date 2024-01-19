@@ -18,11 +18,9 @@ import java.util.Map;
 public class JH_BoardService {
     @Autowired
     private JH_BoardDao dao;
-    @Autowired
-    private JH_CommentDao cdao;
 
     @Autowired
-    private JH_CommentService commentService;
+    private JH_BoardLikeService likeService;
 
 
     @Transactional
@@ -65,19 +63,13 @@ public class JH_BoardService {
         return dao.getBoardList(params);
     }
 
+    @Transactional
     public void delPost (int b_id) {
         System.out.println("delPost");
-        if (cdao.commentCount(b_id) == 0) {
-            dao.delBoard(b_id);
-            return;
-        }else {
-            List<JH_CommentDto> commnetList = cdao.getCommentList(b_id);
-            for (JH_CommentDto comment :commnetList) {
-                System.out.println(comment.getCm_id());
-                commentService.delComment(comment.getCm_id());
-            }
-            dao.delBoard(b_id);
-        };
+        if(likeService.boardLikeCount(b_id) > 0){
+            likeService.delBoardLikeAll(b_id);
+        }
+        dao.delBoard(b_id);
     }
 
 

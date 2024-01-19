@@ -13,8 +13,9 @@ import java.util.List;
 public class BoardDto {
     private int b_id;
     private int m_id;
-    private String b_content ;
+    private String b_content;
     private String b_sentiment;
     private String regdate;
     private List<MultipartFile> mediaList;
+
 }

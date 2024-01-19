@@ -40,24 +40,24 @@ export default {
     chartData: {
       labels: [
         "Angry",
-        "Anxiety",
         "Happy",
-        "Hurt",
-        "Neutral",
-        "Sad",
         "Surprise",
+        "Neutral",
+        "Hurt",
+        "Sad",
+        "Anxiety",
       ],
       datasets: [
         {
           label: 0,
           backgroundColor: [
-            "#FF6666",
-            "#3F9DDA",
-            "#715DB2",
-            "#FFE886",
-            "#779B5D",
-            "#7071FF",
-            "#33D6FF",
+            "#F67D73",
+            "#FFDDE4",
+            "#FFE778",
+            "#D9F3C1",
+            "#597F61",
+            "#A4BED3",
+            "#C9BCE8",
           ],
           data: [],
         },
@@ -66,6 +66,11 @@ export default {
 
     chartOptions: {
       responsive: true,
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
     },
   }),
 
