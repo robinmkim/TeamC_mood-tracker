@@ -1,13 +1,10 @@
 <template>
   <div class="relative flex">
-    <!-- 사이드바-->
-    <!-- <side-bar /> -->
-
     <!-- 본문 -->
-    <div class="border-x md:w-[900px] sm:w-[300px]" ref="postScrollContainer">
+    <div class="border-x md:w-[800px] sm:w-[300px]" ref="postScrollContainer">
       <div class="">
-        <div class="w-full h-40 bg-slate-200"></div>
-        <div class="flex h-28">
+        <div class="w-full h-20 bg-slate-200"></div>
+        <div class="flex h-32">
           <div class="relative flex">
             <div
               class="border-4 absolute top-[-40px] left-8 flex border-white bg-gray-300 w-32 h-32 rounded-full overflow-hidden"
