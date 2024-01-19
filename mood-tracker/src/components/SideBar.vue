@@ -1,7 +1,7 @@
 <template>
   <div class="h-full w-48">
+    <!-- 슬라이드 바 -->
     <div class="relative flex flex-col">
-      <!-- 슬라이드 바 -->
       <div
         :class="{
           'translate-x-0': showSidebar,
@@ -110,29 +110,31 @@
       </div>
     </div>
 
-    <!-- relative 추가하여 프로필과 메뉴와 묶어준다 -->
-    <div class="  " @click="toggleSidebarOutside">
-      <div class="rounded-lg shadow-lg mx-2 mt-2 bg-[#FFF5ED] p-4">
-        <!-- 사용자 정보 및 이미지 시작 -->
-        <div class="mb-12">
-          <!-- 사용자 정보 좌우에 여백 추가 -->
-          <div class="h-24 rounded-t-lg mb-4"></div>
-          <img
-            src=""
-            height="100"
-            width="100"
-            class="rounded-full -mt-12 border-4 border-white mx-auto"
-            alt=""
-            style="aspect-ratio: 100/100; object-fit: cover"
-          />
-          <div class="text-center mt-2 mb-6">
-            <h2 class="text-lg font-bold">SOP</h2>
-            <p class="text-slate-500">기분?</p>
+    <!-- relative 추가하여 프로필과 메뉴를 묶어준다 -->
+    <!-- 사용자 정보 및 이미지 시작 -->
+    <div v-if="isMyPage">
+      <div class="rounded-lg shadow-lg mx-2 mt-2 bg-[#D9F3C1] p-4">
+        <!-- 사용자 정보 좌우에 여백 추가 -->
+        <div class="my-4">
+          <div
+            class="flex w-32 h-32 rounded-full overflow-hidden border-4 border-white mx-auto bg-slate-200 items-center justify-center"
+          >
+            <img
+              :src="getPrfileImgUrl()"
+              height="100"
+              width="100"
+              alt="profile img"
+              style="aspect-ratio: 100/100; object-fit: cover"
+            />
           </div>
         </div>
-        <!-- 사용자 정보 및 이미지 끝 -->
+        <div class="text-center mt-2 mb-6">
+          <h2 class="text-lg font-bold">{{ userInfo.m_name }}</h2>
+          <p class="text-slate-500">{{ userInfo.m_handle }}</p>
+        </div>
       </div>
     </div>
+    <!-- 사용자 정보 및 이미지 끝 -->
 
     <!-- 메뉴 시작 -->
     <nav class="p-4 text-left">
@@ -194,25 +196,7 @@
           <span class="ml-2">감정 분석</span>
         </div>
       </router-link>
-      <router-link to="/chat" class="text-lg">
-        <div class="flex px-2 py-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2.5"
-            stroke="currentColor"
-            class="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-            />
-          </svg>
-          <span class="ml-2">채팅</span>
-        </div>
-      </router-link>
+
       <router-link to="/musicrecommand" class="text-lg">
         <div class="flex px-2 py-1">
           <svg
@@ -230,6 +214,25 @@
             />
           </svg>
           <span class="ml-2">음악 추천</span>
+        </div>
+      </router-link>
+      <router-link to="/chat" class="text-lg">
+        <div class="flex px-2 py-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+            />
+          </svg>
+          <span class="ml-2">채팅</span>
         </div>
       </router-link>
       <div class="text-lg">
@@ -279,14 +282,32 @@
 </template>
 
 <script>
+import apiClient from "@/utils/apiClient";
+
 export default {
   name: "SideBar",
   data() {
     return {
       showSidebar: true,
+      userInfo: {},
     };
   },
   methods: {
+    // 유저 정보
+    getMemberInfo() {
+      apiClient
+        .get(`/member/myInfo`)
+        .then((info) => {
+          console.log("유저 정보를 불러옵니다");
+          this.userInfo = info.data;
+        })
+        .catch((err) => {
+          console.log(err, "유저 정보 못불러옴");
+        });
+    },
+    getPrfileImgUrl() {
+      return `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
+    },
     toggleSidebar() {
       this.showSidebar = !this.showSidebar;
       this.outsideShowSidebar = false;
@@ -301,6 +322,16 @@ export default {
         this.showSidebar = !this.showSidebar;
       }
     },
+  },
+  computed: {
+    isMyPage() {
+      const mypage = this.$route.path === "/";
+      return !mypage;
+    },
+  },
+  created() {
+    this.getMemberInfo();
+    this.getPrfileImgUrl();
   },
   mounted() {
     // Add a global click event listener to close the search bar when clicking outside
