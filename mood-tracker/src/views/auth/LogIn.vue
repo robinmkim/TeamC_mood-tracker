@@ -71,27 +71,13 @@ import * as yup from "yup";
 import AuthService from "@/services/AuthService";
 import router from "@/router";
 import { EventBus } from "./../../utils/EventBus.js";
-import { watch, ref } from "vue";
 
 export default {
   name: "LogIn",
   setup() {
-    //
-    const receivedMessage = ref("");
-
     const sendLoginEvent = () => {
       EventBus.myLoginEvent = { message: "login" };
     };
-
-    watch(
-      () => EventBus.myLoginEvent,
-      (newValue) => {
-        if (newValue) {
-          receivedMessage.value = newValue.message;
-        }
-      }
-    );
-    //
 
     const { value: id, errorMessage: idError } = useField(
       "id",
@@ -123,6 +109,7 @@ export default {
             window.localStorage.setItem("jwtToken", response.data.accessToken);
 
             sendLoginEvent(); //로그인 됬다고 header에 EventBus 전송
+
             router.push("/");
           }
         }
@@ -136,7 +123,6 @@ export default {
       passwordError,
       onSubmit,
       sendLoginEvent,
-      receivedMessage,
     };
   },
 };

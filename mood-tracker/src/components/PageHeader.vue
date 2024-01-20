@@ -110,6 +110,7 @@ import { EventBus } from "./../utils/EventBus.js";
 import { watch, ref } from "vue";
 import { useStore } from "vuex";
 import apiClient from "@/utils/apiClient.js";
+import { useRoute } from "vue-router";
 export default {
   name: "PageHeader",
   data() {
@@ -123,32 +124,20 @@ export default {
     const stompClient = ref(null);
     const subscriptionId = ref(null);
     const memberId = ref(null);
-    const alertNoticeIcon = ref(false);
-    const alertChatIcon = ref(false);
     const store = useStore(); // vuex store 가져오기
-
-    const sendEventLogout = () => {
-      EventBus.myLoginEvent = { message: "logout" };
-    };
-    // const sendEventNewChat = () => {
-    //   EventBus.myChatEvent = { message: "newChat" };
-    // };
+    const route = useRoute(); // route.path로 보고있는 페이지 경로 가져오기
 
     watch(
       () => EventBus.myLoginEvent,
       (newValue) => {
         if (newValue) {
           receivedMessage.value = newValue.message;
-          //newValue.message읽어서 로그인/로그아웃 구분
-          // 하고 ws구독/구독해제 작업
-          if (newValue.message == "logout") {
-            console.log(">>>>>> HEADER :: WEBSOCKET DIS-CONNECTIED");
-            disconnect();
-          } else if (newValue.message == "login") {
+          // Login.vue로부터 (로그인)이벤트버스를 전달받으면
+          // Header에서 웹소켓 연결합니다.
+          if (newValue.message == "login") {
             console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIng");
             connect();
-            // unreadNotice 가져오기
-            getUnreadNotice();
+            getUnreadNotice(); // 안 읽은 알림의 개수를 가져오고 알림아이콘을 표시한다.
           } else {
             console.log(
               ">>>>>> HEADER :: UNIDENTIFIED MESSAGE => ",
@@ -167,16 +156,18 @@ export default {
     //
     function getUnreadNotice() {
       apiClient.get("/notification/select/unread").then((res) => {
-        console.log(">>>>>> HEADER :: UNREAD NOTICE = ", res.data);
+        console.log(">>>>>> HEADER :: UNREAD NOTICE COUNT = ", res.data);
         const unreadNoticeNumber = res.data;
         //unreadNoticeNumber가 1 이상이면 알림 아이콘을 띄웁니다.
         if (unreadNoticeNumber > 0) {
+          console.log(">>>>>> HEADER :: UNREAD => SHOW ALERT NOTICE ICON !!");
           showAlertNoticeIcon();
         }
       });
     }
     function disconnect() {
-      console.log("UNSUB => ", subscriptionId.value);
+      console.log(">>>>>> HEADER :: WEBSOCKET DIS-CONNECTIED");
+      console.log(">>>>>> HEADER :: UNSUB => ", subscriptionId.value);
       if (stompClient.value) {
         stompClient.value.unsubscribe(subscriptionId.value, {});
       }
@@ -191,13 +182,13 @@ export default {
       console.log("token = ", token);
       console.log("CHECK MEMBERID>VALUE", memberId.value);
 
-      const socket = new SockJS("http://localhost:8083/ws");
+      const socket = new SockJS("http://192.168.0.43:8083/ws");
       stompClient.value = Stomp.over(socket);
 
       stompClient.value.connect(
         {},
         (frame) => {
-          console.log(">>> HEADER :: WEBSOCKET CONNECTIED");
+          console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIED");
           console.log(frame);
           if (memberId.value != null) {
             console.log("memberId === ", memberId.value);
@@ -206,15 +197,48 @@ export default {
               `/topic/notiChat/` + memberId.value,
               onMessageReceived
             ).id;
-            console.log(
-              ">>>>>> CONNECT :: subscriptionId.value ==> ",
-              subscriptionId.value
-            );
+            console.log(">>>>>> HEADER :: SUB => ", subscriptionId.value);
           }
         },
         (error) => {
-          console.log("CONNECT ERROR :: ", error);
-          connect();
+          console.log(">>>>>> HEADER :: CONNECT ERROR :: ", error);
+          // setTimeout(, 1000);
+          setTimeout(function () {
+            connect();
+          }, 3000);
+        }
+      );
+    }
+    function initialConnentWS() {
+      console.log("SUB");
+      const token = localStorage.getItem("jwtToken");
+      if (token != null) {
+        const decoded = jwtDecode(token);
+        memberId.value = decoded.m_id;
+      }
+      console.log("token = ", token);
+      console.log("CHECK MEMBERID>VALUE", memberId.value);
+
+      const socket = new SockJS("http://192.168.0.43:8083/ws");
+      stompClient.value = Stomp.over(socket);
+
+      stompClient.value.connect(
+        {},
+        (frame) => {
+          console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIED");
+          console.log(frame);
+          if (memberId.value != null) {
+            console.log("memberId === ", memberId.value);
+
+            subscriptionId.value = stompClient.value.subscribe(
+              `/topic/notiChat/` + memberId.value,
+              onMessageReceived
+            ).id;
+            console.log(">>>>>> HEADER :: SUB => ", subscriptionId.value);
+          }
+        },
+        (error) => {
+          console.log(">>>>>> HEADER :: CONNECT ERROR :: ", error);
         }
       );
     }
@@ -223,40 +247,38 @@ export default {
       console.log(">>> HEADER :: MESSAGE RECEIVED");
       let parseMessage = JSON.parse(payload.body);
       console.log(parseMessage);
-      console.log("type ==========> ", parseMessage.type);
+      console.log("type ==========>", parseMessage.type);
       if (parseMessage.type == "chat") {
-        showAlertChatIcon(); //  채팅 아이콘 뱃지를 보여줍니다.
+        showAlertChatIcon();
       } else {
-        showAlertNoticeIcon(); // 알림 아이콘 뱃지를 보여줍니다.
+        // parseMessage.type => follow, boardlike, comment, commentllike, reply, replylike
+        console.log(route.path); ////////////////////////////////
+        // route.path == '/noti' -> 이벤트버스 -> noti 리스트 리로딩
+        if (route.path != "/noti") {
+          showAlertNoticeIcon();
+        } else {
+          EventBus.newAlertNoticeEvent = { message: "newAlertNotice" };
+        }
       }
     }
     function showAlertNoticeIcon() {
-      console.log("SHOW ALERT ICON!!");
-      alertNoticeIcon.value = true;
-      // store.state.alertNewNotice = true;
-      store.commit("showAlertNewNotice");
+      console.log("SHOW ALERT NOTICE ICON !!");
+      store.commit("showAlertNewNotice"); //store.js의 showAlertNewChat함수 호출
     }
     function hideAlertNoticeIcon() {
-      console.log("SHOW ALERT ICON!!");
-      alertNoticeIcon.value = false;
-      // store.state.alertNewNotice = false;
+      console.log("HIDE ALERT NOTICE ICON!!");
       store.commit("hideAlertNewNotice");
     }
     function showAlertChatIcon() {
-      console.log("SHOW ALERT ICON!!");
-      alertChatIcon.value = true;
-      // store.state.alertNewNotice = true;
+      console.log("SHOW ALERT CHAT ICON!!");
       store.commit("showAlertNewChat");
     }
     function hideAlertChatIcon() {
-      console.log("SHOW ALERT ICON!!");
-      alertChatIcon.value = false;
-      // store.state.alertNewNotice = false;
+      console.log("HIDE ALERT CHAT ICON!!");
       store.commit("hideAlertNewChat");
     }
     //
     return {
-      sendEventLogout,
       receivedMessage,
       stompClient,
       subscriptionId,
@@ -264,20 +286,19 @@ export default {
       connect,
       disconnect,
       onMessageReceived,
-      alertNoticeIcon,
-      alertChatIcon,
       showAlertNoticeIcon,
       hideAlertNoticeIcon,
       showAlertChatIcon,
       hideAlertChatIcon,
+      initialConnentWS,
     };
   },
   created() {
-    this.connect();
-    console.log("@@@@@@@@@ store check => ", this.$store.state.alertNewNotice);
+    // this.connect();
+    this.initialConnentWS();
+    // console.log("@@@@@@@@@ store check => ", this.$store.state.alertNewNotice);
   },
   methods: {
-    // ...mapMutations(["showAlertNewChat", "hideAlertNewChat"]),
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
     },
@@ -287,7 +308,7 @@ export default {
       //
       this.hideAlertNoticeIcon();
       this.hideAlertChatIcon();
-      this.sendEventLogout(); // -> websocket Disconnet
+      this.disconnect();
     },
     clickChatIcon() {
       this.hideAlertChatIcon();

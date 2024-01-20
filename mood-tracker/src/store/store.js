@@ -20,7 +20,6 @@ export const store = new Vuex.Store({
     setVariable(state, value) {
       state.alertNewChat = value.alertNewChat;
       state.alertNewNotice = value.alertNewNotice;
-
       localStorage.setItem(key, JSON.stringify(value));
     },
     showAlertNewChat: function (state) {

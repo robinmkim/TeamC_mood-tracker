@@ -51,9 +51,6 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-
-
-
         return  noticeList;
     }
 
@@ -74,7 +71,7 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ///채팅 알림 테스트
+        ///채팅 알림 테스트 // 채팅기능 완성되면 옮길 것
         int m_id_to = 3;
         Alert alert = Alert.builder()
                 .type("chat")
@@ -83,7 +80,6 @@ public class NotificationController {
                 .m_content("TEST")
                 .build();
         messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
-
 
         return  noticeList;
     }
@@ -105,8 +101,6 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-
-
         return  noticeList;
     }
 
@@ -158,20 +152,5 @@ public class NotificationController {
             return 0;
         }
     }
-
-
-
-    //    @GetMapping("/select/follow")
-//    public List<NotificationDto> selectMyNotificationFollow(@AuthenticationPrincipal MemberDto memberDto){
-//        return  notificationService.selectMyNotificationFollow(memberDto.getM_id());
-//    }
-//    @GetMapping("/select/comment")
-//    public List<NotificationDto> selectMyNotificationComment(@AuthenticationPrincipal MemberDto memberDto){
-//        return  notificationService.selectMyNotificationComment(memberDto.getM_id());
-//    }
-//    @GetMapping("/select/like")
-//    public List<NotificationDto> selectMyNotificationLike(@AuthenticationPrincipal MemberDto memberDto){
-//        return  notificationService.selectMyNotificationLike(memberDto.getM_id());
-//    }
 
 }
