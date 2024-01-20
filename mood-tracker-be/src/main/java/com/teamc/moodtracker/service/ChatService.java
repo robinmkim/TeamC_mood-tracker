@@ -149,7 +149,5 @@ public class ChatService {
         String getLastMsgStatus = chatDao.getLastMsgStatus(roomId, memberId);
         return getLastMsgStatus;
 
-    public List<Integer> getMembersOfThisRoom(int roomId) { // 윤영호
-        return chatDao.getMembersOfThisRoom(roomId);
-    }
+
 }

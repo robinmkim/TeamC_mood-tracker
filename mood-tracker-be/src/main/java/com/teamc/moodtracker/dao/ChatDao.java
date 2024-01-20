@@ -26,5 +26,5 @@ public interface ChatDao {
 
     public String getLastMsgStatus(int roomId, int memberId);
 
-    List<Integer> getMembersOfThisRoom(int roomId); // 윤영호
+
 }
