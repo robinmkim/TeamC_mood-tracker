@@ -7,6 +7,8 @@ import com.teamc.moodtracker.dao.NotificationDao;
 import com.teamc.moodtracker.dto.*;
 import com.teamc.moodtracker.dto.JH.JH_CommentDto;
 import com.teamc.moodtracker.dto.JH.JH_ReplyDto;
+import com.teamc.moodtracker.dto.chat.SaveChat;
+import com.teamc.moodtracker.dto.chat.SendChat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -214,6 +216,26 @@ public class NotificationServiceImpl implements NotificationService{
                     .m_id_to(m_id_to)
                     .m_id_from(m_id_from)
                     .m_content(re_content).build();
+            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+        }
+    }
+
+    @Override
+    public void sendChat_SaveNotificationAndSendAlert(SendChat sendRequest) {
+        int m_id_from = sendRequest.getMemberId(); // 알림 보낸 사람( 채팅 보낸 사람 )
+        int m_id_to = sendRequest.getOtherMemberId(); // 알림 받을 사람 ( 채팅 받을 사람 )
+        String message = sendRequest.getMessage();
+        if(message.length() > 20){
+            message = message.substring(0,20) + "...";
+        }
+        if(m_id_from != m_id_to){
+            // DB 저장 X :: 채팅은 별도로 Notice테이블에 저장하지 않습니다.
+            // 알림 전송
+            Alert alert = Alert.builder()
+                    .type("chat")
+                    .m_id_to(m_id_to)
+                    .m_id_from(m_id_from)
+                    .m_content(message).build();
             messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
         }
     }

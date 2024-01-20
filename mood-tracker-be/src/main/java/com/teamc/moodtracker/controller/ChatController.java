@@ -5,7 +5,9 @@ import com.teamc.moodtracker.dto.MemberDto;
 
 import com.teamc.moodtracker.dto.chat.*;
 import com.teamc.moodtracker.service.ChatService;
+import com.teamc.moodtracker.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -23,28 +25,8 @@ public class ChatController {
     private final ChatService chatService;
     private final SimpMessagingTemplate messagingTemplate;
 
-    // @MessageMapping("/chat/send")
-    // public void sendMessage(@Payload SendChat dto) {
-    // String getLastMsgStatus = chatService.getLastMsgStatus(dto.getRoomId(),
-    // dto.getMemberId());
-    // CheckChat checkChat = CheckChat.builder()
-    // .userId1(dto.getMemberId())
-    // .userId2(dto.getOtherMemberId())
-    // .build();
-    //
-    // // 상대방이 채팅방을 나갔을 경우 기존 채팅방에 상대방을 다시 추가
-    // if (getLastMsgStatus == "LEFT") {
-    // chatService.createChatRoom(checkChat, dto.getRoomId());
-    // }
-    //
-    // SaveChat saveChat = SaveChat.builder()
-    // .roomId(dto.getRoomId())
-    // .memberId(dto.getMemberId())
-    // .message(dto.getMessage())
-    // .build();
-    // ResponseMessage res = chatService.saveChatMessage(saveChat);
-    // messagingTemplate.convertAndSend("/topic/" + res.getRoomId(), res);
-    // }
+    @Autowired
+    private NotificationService notificationService; // 알림
 
     @PostMapping("/send")
     public void sendChat(@RequestBody SendChat sendRequest) {
@@ -72,6 +54,9 @@ public class ChatController {
         ResponseMessage res = chatService.saveChatMessage(saveChat);
         messagingTemplate.convertAndSend("/topic/chat/" + sendRequest.getMemberId(), res);
         messagingTemplate.convertAndSend("/topic/chat/" + sendRequest.getOtherMemberId(), res);
+
+        // 알림 전송
+        notificationService.sendChat_SaveNotificationAndSendAlert(sendRequest);
     }
 
     @GetMapping("/rooms")

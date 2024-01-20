@@ -150,7 +150,5 @@ public class ChatService {
         return getLastMsgStatus;
     }
 
-    public List<Integer> getMembersOfThisRoom(int roomId) { // 윤영호
-        return chatDao.getMembersOfThisRoom(roomId);
-    }
+
 }

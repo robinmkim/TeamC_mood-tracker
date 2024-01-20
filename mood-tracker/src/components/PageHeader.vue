@@ -249,12 +249,19 @@ export default {
       console.log(parseMessage);
       console.log("type ==========>", parseMessage.type);
       if (parseMessage.type == "chat") {
-        showAlertChatIcon();
+        console.log("지금 보고 있는 페이지는 => ", route.path);
+        if (route.path != "/chat") {
+          // 채팅페이지를 보고있으면 아이콘을 띄우지 않습니다.
+          showAlertChatIcon();
+        } else {
+          EventBus.newAlertChatEvent = { message: "newAlertChat" };
+        }
       } else {
         // parseMessage.type => follow, boardlike, comment, commentllike, reply, replylike
-        console.log(route.path); ////////////////////////////////
+        console.log("지금 보고 있는 페이지는 => ", route.path); ////////////////////////////////
         // route.path == '/noti' -> 이벤트버스 -> noti 리스트 리로딩
         if (route.path != "/noti") {
+          // 알림페이지를 보고있으면 아이콘을 띄우지 않습니다.
           showAlertNoticeIcon();
         } else {
           EventBus.newAlertNoticeEvent = { message: "newAlertNotice" };
