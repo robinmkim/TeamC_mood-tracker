@@ -36,7 +36,6 @@
         <!-- [ED] 탭리스트 -->
 
         <!-- [ST] 알림 리스트 -->
-
         <div class="mt-3 overflow-auto">
           <div v-for="(bean, index) in showList" :key="index" :id="bean.n_id">
             <div>
@@ -48,7 +47,6 @@
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
-                    <!-- notiDisplay: 확인하지 않은 알림 표시 -->
                     <div
                       v-if="bean.n_state == 1"
                       class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
@@ -135,14 +133,6 @@
                       v-if="bean.n_state == 1"
                       class="notiDisplay absolute mt-0.5 z-1 h-4 w-4 rounded-full bg-red-500"
                     ></div>
-                    <!-- <div v-if="bean.n_state == 1">
-                      <div
-                        class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
-                      ></div>
-                      <div
-                        class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500 opacity-50 animate-ping"
-                      ></div>
-                    </div> -->
                     <img
                       class="object-contain rounded-full"
                       :src="bean.memberDto.img_byte"
@@ -442,6 +432,8 @@
 
 <script>
 import apiClient from "./../../utils/apiClient";
+import { EventBus } from "./../../utils/EventBus.js";
+import { watch, ref } from "vue";
 // import axios from "axios";
 
 export default {
@@ -449,14 +441,70 @@ export default {
   components: {},
   data() {
     return {
-      currentTab: 0,
+      // currentTab: 0,
       tabs: [
         { name: "전체", id: "notiTabsAll" },
         { name: "팔로잉", id: "notiTabsFollow" },
         { name: "답글", id: "notiTabsReply" },
         { name: "좋아요", id: "notiTabsLike" },
       ],
-      showList: null,
+      // showList: null,
+    };
+  },
+  setup() {
+    const currentTab = ref(0);
+    const showList = ref(null);
+
+    watch(
+      () => EventBus.newAlertNoticeEvent,
+      (newValue) => {
+        if (newValue) {
+          // Header로 부터 newAlertNoticeEvent를 전달받으면
+          // 알림 리스트를 리로딩
+          // this.loadNoticeList(tabId);
+          if (currentTab.value == 0) {
+            loadNoticeListAll();
+          } else if (currentTab.value == 1) {
+            loadNoticeListFollow();
+          } else if (currentTab.value == 2) {
+            loadNoticeListReply();
+          } else if (currentTab.value == 3) {
+            loadNoticeListLike();
+          }
+        }
+      }
+    );
+    function loadNoticeListAll() {
+      apiClient.get("/notification/select/all").then((res) => {
+        console.log(res.data);
+        showList.value = res.data;
+      });
+    }
+    function loadNoticeListFollow() {
+      apiClient.get("/notification/select/follow").then((res) => {
+        console.log(res.data);
+        showList.value = res.data;
+      });
+    }
+    function loadNoticeListReply() {
+      apiClient.get("/notification/select/comment").then((res) => {
+        console.log(res.data);
+        showList.value = res.data;
+      });
+    }
+    function loadNoticeListLike() {
+      apiClient.get("/notification/select/like").then((res) => {
+        console.log(res.data);
+        showList.value = res.data;
+      });
+    }
+    return {
+      currentTab,
+      showList,
+      loadNoticeListAll,
+      loadNoticeListFollow,
+      loadNoticeListReply,
+      loadNoticeListLike,
     };
   },
   created() {
@@ -474,30 +522,30 @@ export default {
         }
       });
     },
-    loadNoticeListAll() {
-      apiClient.get("/notification/select/all").then((res) => {
-        console.log(res.data);
-        this.showList = res.data;
-      });
-    },
-    loadNoticeListFollow() {
-      apiClient.get("/notification/select/follow").then((res) => {
-        console.log(res.data);
-        this.showList = res.data;
-      });
-    },
-    loadNoticeListReply() {
-      apiClient.get("/notification/select/comment").then((res) => {
-        console.log(res.data);
-        this.showList = res.data;
-      });
-    },
-    loadNoticeListLike() {
-      apiClient.get("/notification/select/like").then((res) => {
-        console.log(res.data);
-        this.showList = res.data;
-      });
-    },
+    // loadNoticeListAll() {
+    //   apiClient.get("/notification/select/all").then((res) => {
+    //     console.log(res.data);
+    //     this.showList = res.data;
+    //   });
+    // },
+    // loadNoticeListFollow() {
+    //   apiClient.get("/notification/select/follow").then((res) => {
+    //     console.log(res.data);
+    //     this.showList = res.data;
+    //   });
+    // },
+    // loadNoticeListReply() {
+    //   apiClient.get("/notification/select/comment").then((res) => {
+    //     console.log(res.data);
+    //     this.showList = res.data;
+    //   });
+    // },
+    // loadNoticeListLike() {
+    //   apiClient.get("/notification/select/like").then((res) => {
+    //     console.log(res.data);
+    //     this.showList = res.data;
+    //   });
+    // },
     changeTab(index, tabId) {
       // 전체-팔로잉-답글-좋아요 탭으로 이동
       this.currentTab = index;

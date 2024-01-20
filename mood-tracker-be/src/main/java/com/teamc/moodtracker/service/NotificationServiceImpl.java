@@ -162,7 +162,7 @@ public class NotificationServiceImpl implements NotificationService{
         int cm_id = dto.getCm_id(); // -> 대상 댓글 ID
         JH_CommentDto cdto = jh_commentDao.getCommentDetail(cm_id); //
         int m_id_to = cdto.getMember().getM_id(); // 알림 받을 사람
-        int b_id = cdto.getB_id();
+        int b_id = cdto.getB_id();  // 대댓글이 달린 게시물id(-> url)
         String re_content = dto.getRe_content(); // 작성한 대댓글 내용
         if(re_content.length() > 20){
             re_content = re_content.substring(0,20) + "...";
@@ -192,8 +192,7 @@ public class NotificationServiceImpl implements NotificationService{
         int re_id = replyLikeDto.getRe_id(); // 대상 대댓글 id -> reply테이블에서 m_id, re_content조회
         JH_ReplyDto rldto = notificationDao.getReplyDetail(re_id);
         int cm_id = rldto.getCm_id(); // 댓글 id
-        // cm_id -> comments테이블에서 -> b_id 조회
-        JH_CommentDto cdto = jh_commentDao.getCommentDetail(cm_id);
+        JH_CommentDto cdto = jh_commentDao.getCommentDetail(cm_id); // comments테이블에서 b_id 조회
         int b_id = cdto.getB_id();
         int m_id_to = rldto.getM_id();
         String re_content = rldto.getRe_content(); // 대상 대댓글 내용

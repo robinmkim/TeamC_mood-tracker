@@ -137,8 +137,7 @@ export default {
             console.log(">>>>>> RECEIVED EVENTBUS ==> ", newValue.message);
             console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIng");
             connect();
-            // unreadNotice 가져오기
-            getUnreadNotice();
+            getUnreadNotice(); // 안 읽은 알림의 개수를 가져오고 알림아이콘을 표시한다.
           } else {
             console.log(
               ">>>>>> HEADER :: UNIDENTIFIED MESSAGE => ",
@@ -157,10 +156,11 @@ export default {
     //
     function getUnreadNotice() {
       apiClient.get("/notification/select/unread").then((res) => {
-        console.log(">>>>>> HEADER :: UNREAD NOTICE = ", res.data);
+        console.log(">>>>>> HEADER :: UNREAD NOTICE COUNT = ", res.data);
         const unreadNoticeNumber = res.data;
         //unreadNoticeNumber가 1 이상이면 알림 아이콘을 띄웁니다.
         if (unreadNoticeNumber > 0) {
+          console.log(">>>>>> HEADER :: UNREAD => SHOW ALERT NOTICE ICON !!");
           showAlertNoticeIcon();
         }
       });
