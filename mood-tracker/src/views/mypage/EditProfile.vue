@@ -1,10 +1,7 @@
 <template>
   <div class="flex min-h-screen">
-    <div class="w-1/5">
-      <side-bar> side menu</side-bar>
-    </div>
     <div class="flex-1 border-x">
-      <home-post>
+      <div>
         <div class="w-full mt-3 flex justify-center items-center">
           <div class="profil-img">
             <div>
@@ -86,9 +83,8 @@
             />
           </div>
         </div>
-      </home-post>
+      </div>
     </div>
-    <div class="w-1/5">side menu</div>
   </div>
 </template>
 

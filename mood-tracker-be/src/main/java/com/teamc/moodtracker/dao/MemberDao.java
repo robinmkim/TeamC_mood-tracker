@@ -19,4 +19,5 @@ public interface MemberDao {
     // 검색 추가 주우진
     public List<MemberDto> SearchMember(String m_name);
 
+    public int checkHandleExist(String handle);
 }

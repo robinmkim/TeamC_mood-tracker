@@ -51,7 +51,7 @@
           <div class="text-gray-400 text-sm px-2">또는</div>
           <div class="bg-gray-200 h-0.5 flex-grow"></div>
         </div>
-        <router-link to="/singup/email" class="w-full">
+        <router-link to="/signup" class="w-full">
           <button
             type="button"
             class="bg-[#64CCC5] w-full text-white p-2 rounded-lg shadow hover:bg-[#3f827e]"

@@ -2,7 +2,6 @@ package com.teamc.moodtracker.dao;
 
 import java.util.List;
 
-import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.dto.chat.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,13 +12,19 @@ public interface ChatDao {
 
     public List<ChatRoom> getMemberInfo(int memberId);
 
-    public List<ChatMessage> getChatMessages(int id);
+    public List<ChatMessage> getChatMessages(int roomId, int memberId);
 
     public void saveChatMessage(SaveChat saveChat);
 
-    public List<Integer> checkChatRoom(CheckChat memberId);
+    public Integer findExistingChatRoom(EnterDto memberId);
 
     public int newChatRoom();
 
-    List<Integer> getMembersOfThisRoom(int roomId); //윤영호
+    public void exitChatRoom(int memberId, int roomId);
+
+    public int checkMemberInChatRoom(int memberId, int roomId);
+
+    public String getLastMsgStatus(int roomId, int memberId);
+
+    List<Integer> getMembersOfThisRoom(int roomId); // 윤영호
 }

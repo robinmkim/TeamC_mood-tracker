@@ -78,8 +78,6 @@
       </div>
       <!-- 여까지 -->
     </div>
-
-    <div class="w-1/5 p-4">side menu</div>
   </div>
 </template>
 
