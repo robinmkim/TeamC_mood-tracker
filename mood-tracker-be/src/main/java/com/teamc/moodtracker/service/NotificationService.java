@@ -36,5 +36,14 @@ public interface NotificationService {
 
     public void sendChat_SendAlert(SendChat sendRequest);
 
+    void deleteNoticeAll(int mId);
+
+    void deleteNoticeAllFollow(int mId);
+
+    void deleteNoticeAllComment(int mId);
+
+    void deleteNoticeAllLike(int mId);
+
+
 //    public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO); // 팔로우 부분 pull 한 다음 맞게 수정할 것
 }

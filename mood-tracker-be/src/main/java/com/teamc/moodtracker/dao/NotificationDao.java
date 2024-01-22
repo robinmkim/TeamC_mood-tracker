@@ -30,5 +30,11 @@ public interface NotificationDao {
     public JH_ReplyDto getReplyDetail(int re_id);
 
 
+    public void deleteNoticeAll(int mId);
+
+    public void deleteNoticeAllFollow(int mId);
+    public void deleteNoticeAllComment(int mId);
+    public void deleteNoticeAllLike(int mId);
+
 
 }

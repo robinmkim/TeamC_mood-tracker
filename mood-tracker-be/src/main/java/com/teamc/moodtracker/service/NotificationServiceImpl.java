@@ -240,6 +240,26 @@ public class NotificationServiceImpl implements NotificationService{
         }
     }
 
+    @Override
+    public void deleteNoticeAll(int mId) {
+        notificationDao.deleteNoticeAll(mId);
+    }
+
+    @Override
+    public void deleteNoticeAllFollow(int mId) {
+        notificationDao.deleteNoticeAllFollow(mId);
+    }
+
+    @Override
+    public void deleteNoticeAllComment(int mId) {
+        notificationDao.deleteNoticeAllComment(mId);
+    }
+
+    @Override
+    public void deleteNoticeAllLike(int mId) {
+        notificationDao.deleteNoticeAllLike(mId);
+    }
+
 //    @Override
 //    public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO) {
 //        int m_id_from = followRequestDTO.getFollower_id(); // 팔로우 하는 사람
