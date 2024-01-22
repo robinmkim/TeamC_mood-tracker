@@ -152,9 +152,6 @@ export default {
     this.getCommentCount();
     this.getLoginUser();
     this.getCm_idList();
-    console.log("openCm_id ");
-    console.log(this.openCm_id);
-    console.log("openCm_id ");
   },
 };
 </script>

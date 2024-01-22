@@ -48,8 +48,21 @@
                   {{ userInfo.m_name }}
                 </span>
               </div>
-              <div class="w-1/3">
-                <img src="./../../assets/profile/edit-button1.png" alt="수정" @click="toggleName">
+              <div class="w-1/3" @click="toggleName">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                  />
+                </svg>
               </div>
             </div>
             <div v-if="changingName" class="flex w-2/3 my-3 mx-5">
@@ -61,8 +74,18 @@
                   @input="adjustHeight"
                 />
                 <div class="flex mt-2">
-                  <button @click="updateName" class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">저장</button>
-                  <button @click="toggleName" class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">취소</button>
+                  <button
+                    @click="updateName"
+                    class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    저장
+                  </button>
+                  <button
+                    @click="toggleName"
+                    class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    취소
+                  </button>
                 </div>
               </div>
             </div>
@@ -70,10 +93,11 @@
           <div class="flex items-center justify-center min-h-[150px] text-left">
             <div class="w-1/6 text-base max-h-[130px]">
               <span>비밀번호</span>
-            </div> 
+            </div>
             <div class="flex w-2/3 my-3 mx-5">
               <div class="flex flex-col w-2/3 bg-s min-h-100">
-                <div class="flex items-center mb-4"> <!-- Add margin-bottom to create space between rows -->
+                <div class="flex items-center mb-4">
+                  <!-- Add margin-bottom to create space between rows -->
                   <span class="mr-2 min-w-[115px]">현재 비밀번호</span>
                   <input
                     class="bg-inherit flex-grow h-7 resize-none focus:outline-none border px-3"
@@ -82,7 +106,8 @@
                   />
                 </div>
 
-                <div class="flex items-center mb-4"> <!-- Add margin-bottom to create space between rows -->
+                <div class="flex items-center mb-4">
+                  <!-- Add margin-bottom to create space between rows -->
                   <span class="mr-2 min-w-[115px]">새 비밀번호</span>
                   <input
                     class="bg-inherit flex-grow h-7 resize-none focus:outline-none border px-3"
@@ -92,7 +117,8 @@
                   />
                 </div>
 
-                <div class="flex items-center mb-4"> <!-- No margin-bottom for the last row -->
+                <div class="flex items-center mb-4">
+                  <!-- No margin-bottom for the last row -->
                   <span class="mr-2 min-w-[115px]">새 비밀번호 확인</span>
                   <input
                     class="bg-inherit flex-grow h-7 resize-none focus:outline-none border px-3"
@@ -102,7 +128,12 @@
                   />
                 </div>
                 <div class="flex mt-2">
-                  <button @click="updatePassword" class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">비밀번호 변경</button>
+                  <button
+                    @click="updatePassword"
+                    class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    비밀번호 변경
+                  </button>
                 </div>
               </div>
             </div>
@@ -117,8 +148,21 @@
                   {{ userInfo.m_handle }}
                 </span>
               </div>
-              <div class="w-1/3">
-                <img src="./../../assets/profile/edit-button1.png" alt="수정" @click="toggleHandle">
+              <div class="w-1/3" @click="toggleHandle">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                  />
+                </svg>
               </div>
             </div>
             <div v-if="changingHandle" class="flex w-2/3 my-3 mx-5">
@@ -130,8 +174,18 @@
                   @input="adjustHeight"
                 />
                 <div class="flex mt-2">
-                  <button @click="updateHandle" class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">저장</button>
-                  <button @click="toggleHandle" class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">취소</button>
+                  <button
+                    @click="updateHandle"
+                    class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    저장
+                  </button>
+                  <button
+                    @click="toggleHandle"
+                    class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    취소
+                  </button>
                 </div>
               </div>
             </div>
@@ -146,8 +200,21 @@
                   {{ userInfo.m_bio }}
                 </span>
               </div>
-              <div class="w-1/3">
-                <img src="./../../assets/profile/edit-button1.png" alt="수정" @click="toggleBio">
+              <div class="w-1/3" @click="toggleBio">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                  />
+                </svg>
               </div>
             </div>
             <div v-if="changingBio" class="flex w-2/3 my-3 mx-5">
@@ -159,8 +226,18 @@
                   @input="adjustHeight"
                 />
                 <div class="flex mt-2">
-                  <button @click="updateBio" class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">저장</button>
-                  <button @click="toggleBio" class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">취소</button>
+                  <button
+                    @click="updateBio"
+                    class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    저장
+                  </button>
+                  <button
+                    @click="toggleBio"
+                    class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    취소
+                  </button>
                 </div>
               </div>
             </div>
@@ -173,9 +250,22 @@
             <div v-if="!changingGender" class="flex w-2/3 my-3 mx-5">
               <div class="w-2/3 bg-s h-8">
                 <span>{{ userInfo.m_gender }}</span>
-              </div>
-              <div class="w-1/3">
-                <img src="./../../assets/profile/edit-button1.png" alt="수정" @click="toggleGender">
+                <div class="w-1/3" @click="toggleGender">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
 
@@ -205,8 +295,18 @@
                   </label>
                 </div>
                 <div class="flex mt-3">
-                  <button @click="updateGender" class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">저장</button>
-                  <button @click="toggleGender" class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">취소</button>
+                  <button
+                    @click="updateGender"
+                    class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    저장
+                  </button>
+                  <button
+                    @click="toggleGender"
+                    class="flex items-center justify-center mr-3 h-7 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    취소
+                  </button>
                 </div>
               </div>
             </div>
