@@ -1,6 +1,6 @@
 <template>
   <div class="flex" @scroll="handleScroll" :class="childClass">
-    <div class="flex-1 border-l border-l-slate-300">
+    <div class="flex-1">
       <div class="p-3 pb-0 border-b border-t-slate-300">
         <div class="postHerder flex flex-row">
           <div class="h-14 w-14 overflow-hidden relative rounded-full">
@@ -27,7 +27,7 @@
             </div>
           </div>
           <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
-            <button @click="toggleDropdown()" class="commentDropdown">
+            <button @click="toggleDropdown" class="commentDropdown">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -44,7 +44,7 @@
               </svg>
             </button>
             <div
-              v-show="isDropdownOpen"
+              v-if="isOpen"
               class="commentDropdown absolute flex flex-col bg-white shadow-md mt-2 rounded-md py-2 w-32 top-4 right-[1px] z-10"
             >
               <span class="border-b" @click="addReport()">신고하기</span>
@@ -52,6 +52,65 @@
               <span class="border-b" v-if="isMain" @click="delComment()"
                 >삭제하기</span
               >
+              <div
+                v-if="reportModal"
+                class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center"
+                @click="closeReportModal"
+              >
+                <!-- 모달 내용 -->
+                <div class="bg-white rounded-lg max-w-screen-sm w-1/3">
+                  <span
+                    class="close absolute top-4 right-4 cursor-pointer"
+                    @click="closeReportModal"
+                  ></span>
+                  <p class="border-b py-2">신고 사유를 선택하세요:</p>
+                  <ul>
+                    <li
+                      @click="submitReport('스팸')"
+                      class="cursor-pointer border-b py-2"
+                    >
+                      스팸
+                    </li>
+                    <li
+                      @click="submitReport('나체 이미지 또는 성적 행위')"
+                      class="cursor-pointer border-b py-2"
+                    >
+                      나체 이미지 또는 성적 행위
+                    </li>
+                    <li
+                      @click="submitReport('혐오 발언 또는 상징')"
+                      class="cursor-pointer border-b py-2"
+                    >
+                      혐오 발언 또는 상징
+                    </li>
+                    <li
+                      @click="submitReport('폭력 또는 위험 단체')"
+                      class="cursor-pointer border-b py-2"
+                    >
+                      폭력 또는 위험 단체
+                    </li>
+                    <li
+                      @click="submitReport('불법 또는 규제 상품 판매')"
+                      class="cursor-pointer border-b py-2"
+                    >
+                      불법 또는 규제 상품 판매
+                    </li>
+                    <li
+                      @click="submitReport('따돌림 또는 괴롭힘')"
+                      class="cursor-pointer border-b py-2"
+                    >
+                      따돌림 또는 괴롭힘
+                    </li>
+                    <li
+                      @click="submitReport('지식 재산권 침해')"
+                      class="cursor-pointer border-b py-2"
+                    >
+                      지식 재산권 침해
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- <div @click.stop="preventClose"></div> -->
             </div>
           </div>
         </div>
@@ -134,16 +193,9 @@
             </div>
           </div>
         </div>
-
         <div v-if="comment.reply_count > 0" class="flex flex-col ml-2">
           <div v-if="showReplyList" class="flex-col bg-slate-100">
-            <ReplyList
-              v-for="re_id in replyList"
-              :key="re_id"
-              :re_id="re_id"
-              :isDropdownOpen="openRm_id === re_id"
-              @toggle-dropdown="toggleDropdownReply"
-            />
+            <ReplyList v-for="re_id in replyList" :key="re_id" :re_id="re_id" />
           </div>
         </div>
       </div>
@@ -170,6 +222,11 @@ export default {
       required: true,
     },
   },
+  watch: {
+    cm_id(newCMId) {
+      this.getCommentDetail(newCMId);
+    },
+  },
   data() {
     return {
       comment: {
@@ -181,32 +238,60 @@ export default {
         reply_count: null,
         isMyLike: false,
         likeCount: null,
-        showDrop: this.isDropdownOpen,
+        showAddReply: false,
       },
       replyList: [],
       openRm_id: null,
       showReplyList: false,
       isMain: false,
+      isOpen: false,
+      reportModal: false,
     };
   },
   created() {
-    this.getCommentDetail();
+    this.getCommentDetail(this.cm_id);
     this.getRe_idList();
   },
   methods: {
-    toggleDropdownReply(re_id) {
-      // 클릭한 댓글 ID와 현재 열린 드롭다운의 댓글 ID를 비교하여 상태를 토글
-      this.openRm_id = this.openRm_id === re_id ? null : re_id;
+    closeReportModal() {
+      this.reportModal = false;
+    },
+
+    addReport() {
+      // 모달 열기 등의 동작 추가
+      this.reportModal = true;
+    },
+    submitReport(reportType) {
+      const reportData = {
+        b_c_id: this.comment.cm_id,
+        report_type: reportType,
+        regdate: this.getCurrentDate(),
+        r_type: 1,
+      };
+      console.log("reportData : ", reportData);
+
+      apiClient
+        .post("/report/add", reportData)
+        .then((res) => {
+          // 보냈을때
+          alert("신고를 하였습니다.");
+          console.log("신고 전송", res);
+        })
+        .catch((err) => {
+          console.err("전송에 오류가 있습니다.", err);
+        });
+    },
+
+    getCurrentDate() {
+      // 현재 날짜를 가져오기
+      const currentDate = new Date();
+      return currentDate.toLocaleString();
     },
     addReply() {
       const currentContent = this.content;
       const formData = new FormData();
       formData.append("cm_id", this.comment.cm_id);
       formData.append("re_content", `${currentContent}`);
-
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
       apiClient
         .post("/jh_reply/addReply", formData, {
           headers: {
@@ -217,7 +302,11 @@ export default {
           if (res.data === 1) {
             // 응답 값이 1이면 페이지를 새로고침
             // window.location.reload();
-            this.getCommentDetail();
+            this.getCommentDetail(this.cm_id);
+            this.getRe_idList();
+            this.showReplyList = true;
+            this.content = null;
+            this.comment.showAddReply = true;
           }
         })
         .catch((error) => {
@@ -227,10 +316,6 @@ export default {
         });
     },
     moreReply() {
-      // showReplyList
-      // 해당 댓글의 showReplies 상태를 토글
-      // this.getReplyList();
-
       this.showReplyList = !this.showReplyList;
     },
 
@@ -238,7 +323,7 @@ export default {
       apiClient
         .get(`/jh_CommentLike/addCommentLike?cm_id=${this.comment.cm_id}`)
         .then(() => {
-          this.getCommentDetail();
+          this.getCommentDetail(this.cm_id);
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
@@ -251,7 +336,7 @@ export default {
       apiClient
         .get(`/jh_CommentLike/delCommentLike?cm_id=${this.comment.cm_id}`)
         .then(() => {
-          this.getCommentDetail();
+          this.getCommentDetail(this.cm_id);
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
@@ -261,35 +346,43 @@ export default {
       apiClient
         .get(`/jh_comment/delComment?cm_id=${this.cm_id}`)
         .then(() => {
-          this.getCommentDetail();
+          this.getCommentDetail(this.cm_id);
         })
         .catch((error) => {
           console.log(error);
         });
     },
     toggleDropdown() {
-      this.$emit("toggle-dropdown", this.cm_id);
-      // 부모로부터 전달된 isDropdownOpen 값을 내부 상태에 할당
-      this.comment.showDrop = this.isDropdownOpen;
-      // 내부 상태를 이용해 드롭다운을 토글
-      this.comment.showDrop = !this.comment.showDrop;
-    },
-    handleDocumentClick(event) {
-      // 클릭된 엘리먼트가 드롭다운 영역인지 확인
-      const isDropdown = event.target.closest(".commentDropdown") !== null;
-      // 만약 드롭다운 영역이 아니면 드롭다운을 닫기
-      if (!isDropdown) {
-        this.$emit("toggle-dropdown", this.cm_id);
-        this.comment.showDrop = false;
+      this.isOpen = !this.isOpen;
+      if (this.isOpen) {
+        // 다른 드롭다운 닫기 이벤트 등록
+        window.addEventListener("click", this.closeDropdowns);
+      } else {
+        // 다른 드롭다운 닫기 이벤트 제거
+        window.removeEventListener("click", this.closeDropdowns);
       }
+    },
+    closeDropdowns(event) {
+      // 다른 드롭다운 닫기
+      if (!this.$el.contains(event.target)) {
+        this.isOpen = false;
+      }
+    },
+    preventClose(event) {
+      // 클릭 이벤트 전파 방지
+      event.stopPropagation();
+    },
+    beforeDestroy() {
+      // 컴포넌트 파괴 시 이벤트 제거
+      window.removeEventListener("click", this.closeDropdowns);
     },
 
     getUserImageUrl(m_img_path, m_img_name) {
       return "http://localhost:8083/" + m_img_path + m_img_name;
     },
-    getCommentDetail() {
+    getCommentDetail(cm_id) {
       apiClient
-        .get(`/jh_comment/getCommentDetail?cm_id=${this.cm_id}`)
+        .get(`/jh_comment/getCommentDetail?cm_id=${cm_id}`)
         .then((response) => {
           this.comment = response.data;
 
@@ -337,11 +430,7 @@ export default {
         });
     },
   },
-  mounted() {
-    document.addEventListener("click", this.handleDocumentClick);
-  },
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleDocumentClick);
-  },
+  mounted() {},
+  beforeUnmount() {},
 };
 </script>
