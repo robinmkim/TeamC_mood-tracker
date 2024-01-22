@@ -135,7 +135,7 @@ export default {
         { name: "게시물 검색", id: "postSearch" },
       ],
       showList: null,
-      searchQuery: "", // 사용자의 검색어를 담을 변수
+      searchQuery: this.$route.query.searchQuery || "", // 사용자의 검색어를 담을 변수
       searchResults: [], // API로부터 받아온 결과를 담을 변수
       MylastRowNum: 0,
     };
@@ -198,6 +198,15 @@ export default {
   name: "NotiPage",
   components: {
     PostDetail,
+  },
+  mounted() {
+    this.searchQuery = this.$route.query.searchQuery || "";
+
+    // 현재 탭 설정
+    this.currentTab = this.$route.query.searchType === "postSearch" ? 1 : 0;
+
+    // 초기 데이터 로딩
+    this.fetchData(this.$route.query.searchType);
   },
 };
 </script>
