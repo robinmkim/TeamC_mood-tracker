@@ -1,11 +1,18 @@
 <template>
-  <div class="flex h-screen">
+  <div class="flex h-fit">
     <div class="flex-1 border-x-2">
       <div
         class="notiHeader bg-white-500 px-4 flex items-center justify-start"
         style="flex: 1; height: 45px"
       >
         <h1 class="notiHeaderMessage text-black font-bold text-2xl">알림</h1>
+        <div
+          class="ml-auto cursor-pointer pr-1.5 pl-1.5 text-sm text-center rounded-md border-2 border-teal-400"
+          typeof="button"
+          @click="deleteAllNotice"
+        >
+          모두 삭제
+        </div>
       </div>
 
       <div class="">
@@ -39,15 +46,24 @@
           </div>
         </nav>
         <!-- [ED] 탭리스트 -->
+        <div class="flex border-t border-gray-200">
+          <div
+            class="cursor-pointer pr-1.5 pl-1.5 ml-auto mr-2 text-sm text-center rounded-md border-2 border-teal-400"
+            typeof="button"
+            @click="deleteAllNotice"
+          >
+            모두 삭제
+          </div>
+        </div>
 
         <!-- [ST] 알림 리스트 -->
         <div class="mt-3 overflow-auto">
           <div v-for="(bean, index) in showList" :key="index" :id="bean.n_id">
-            <div>
+            <div class="hover:bg-gray-100 border-t border-gray-200">
               <!-- 알림 follow -->
               <div v-if="bean.n_type == 'follow'">
                 <div
-                  class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200"
+                  class="notiItem followNoti flex justify-start p-4 mt-[-12px]"
                 >
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
@@ -128,7 +144,7 @@
               <!-- [ST] 알림 content - comment -->
               <div v-if="bean.n_type == 'comment'">
                 <div
-                  class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
+                  class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px]"
                 >
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
@@ -186,7 +202,7 @@
               <!-- [ST] 알림 대댓글 Reply -->
               <div v-if="bean.n_type == 'reply'">
                 <div
-                  class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
+                  class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px]"
                 >
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
@@ -243,9 +259,7 @@
 
               <!-- [ST] 알림 게시물 좋아요 boardlike -->
               <div v-if="bean.n_type == 'boardlike'">
-                <div
-                  class="notiItem likeNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
-                >
+                <div class="notiItem likeNoti h-24 flex items-center p-4">
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
@@ -305,7 +319,7 @@
               <!-- [ST] 알림 댓글 좋아요 commentlike -->
               <div v-if="bean.n_type == 'commentlike'">
                 <div
-                  class="notiItem likeNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
+                  class="notiItem likeNoti h-28 flex items-center p-4 mt-[-12px]"
                 >
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
@@ -366,7 +380,7 @@
               <!-- [ST] 알림 대댓글 좋아요 replylike -->
               <div v-if="bean.n_type == 'replylike'">
                 <div
-                  class="notiItem likeNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
+                  class="notiItem likeNoti h-28 flex items-center p-4 mt-[-12px]"
                 >
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
@@ -430,7 +444,7 @@
       </div>
     </div>
 
-    <div class="w-1/5">side menu</div>
+    <!-- <div class="w-1/5">side menu</div> -->
   </div>
 </template>
 
@@ -610,6 +624,38 @@ export default {
           .catch((error) => {
             console.log(error);
           });
+      }
+    },
+    deleteAllNotice() {
+      const currentTabName = this.tabs[this.currentTab].name;
+      let userReturn = confirm(
+        "모든 " + currentTabName + " 알림을 영구적으로 삭제하시겠습니까?"
+      );
+      if (userReturn == true) {
+        //   let userReturn2 = confirm("삭제한 알림은 복구할 수 없습니다. \n그래도 삭제하시겠습니까?");
+        //   if(userReturn2 == true){
+        //     apiClient
+        //     .delete("/notification/deleteAll")
+        //     .then((res) => {
+        //       if (res.data == 1) {
+        //         console.log(n_id, " 삭제 완료");
+        //         if (this.currentTab == 0) {
+        //           this.loadNoticeListAll();
+        //         } else if (this.currentTab == 1) {
+        //           this.loadNoticeListFollow();
+        //         } else if (this.currentTab == 2) {
+        //           this.loadNoticeListReply();
+        //         } else if (this.currentTab == 3) {
+        //           this.loadNoticeListLike();
+        //         }
+        //       } else {
+        //         console.log(n_id, " 삭제 실패");
+        //       }
+        //     })
+        //     .catch((error) => {
+        //       console.log(error);
+        //     });
+        //   }
       }
     },
     formatTime(dateString) {
