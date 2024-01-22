@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <div class="w-5/6" ref="postScrollContainer">
+    <div class="w-full" ref="postScrollContainer">
       <div class="flex search-container p-4 mt-5">
         <input
           v-model="searchQuery"

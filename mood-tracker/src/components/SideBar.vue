@@ -414,7 +414,12 @@ export default {
   computed: {
     isMyPage() {
       // 현재 경로가 / 이거나 /mypage로 시작할 때 true
-      const mypage = this.$route.path.startsWith("/mypage") || /^\/(\d+)$/.test(this.$route.path) || this.$route.path === "/";
+
+      const mypage =
+        this.$route.path.startsWith("/mypage") ||
+        /^\/(\d+)$/.test(this.$route.path) ||
+        this.$route.path === "/";
+
       return !mypage;
     },
   },

@@ -148,6 +148,7 @@ public class ChatService {
     public String getLastMsgStatus(int roomId, int memberId) {
         String getLastMsgStatus = chatDao.getLastMsgStatus(roomId, memberId);
         return getLastMsgStatus;
+
     }
 
 

@@ -9,6 +9,7 @@ import com.teamc.moodtracker.service.JH.JH_CommentService;
 import com.teamc.moodtracker.service.NotificationService;
 import com.teamc.moodtracker.service.JH.JH_ReplyLikeService;
 import com.teamc.moodtracker.service.JH.JH_ReplyService;
+import com.teamc.moodtracker.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class JH_CommentController {
 
     @Autowired
     private JH_ReplyService replyService;
+    private NotificationService notificationService; // 윤영호
 
     @GetMapping("/allCommentCount")
     public int allCommentCount(@RequestParam(value = "b_id") int b_id) {

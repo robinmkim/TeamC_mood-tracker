@@ -20,6 +20,8 @@ import SignupEmail from "@/views/auth/SignupEmail";
 import AdminPage from "@/views/admin/AdminPage";
 import apiClient from "@/utils/apiClient";
 import ErrorPage from "@/views/error/ErrorPage";
+import chatbotRouter from "./routers/chatbotRouter";
+
 const routes = [
   {
     path: "/",
@@ -83,6 +85,7 @@ const routes = [
       ...faceRouter,
       ...postDetailRouter,
       ...questionRouter,
+      ...chatbotRouter,
     ],
   },
   {

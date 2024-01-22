@@ -112,5 +112,10 @@
                  ORDER BY SEND_TIME DESC
              )
         WHERE ROWNUM = 1
+
+    <select id="getMembersOfThisRoom" parameterType="int" resultType="int">
+        SELECT m_id
+        FROM chat
+        WHERE room_id = #{room_id)
     </select>
 </mapper >
