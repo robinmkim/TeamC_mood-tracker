@@ -221,7 +221,7 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void sendChat_SaveNotificationAndSendAlert(SendChat sendRequest) {
+    public void sendChat_SendAlert(SendChat sendRequest) {
         int m_id_from = sendRequest.getMemberId(); // 알림 보낸 사람( 채팅 보낸 사람 )
         int m_id_to = sendRequest.getOtherMemberId(); // 알림 받을 사람 ( 채팅 받을 사람 )
         String message = sendRequest.getMessage();

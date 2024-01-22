@@ -132,9 +132,9 @@ export default {
       (newValue) => {
         if (newValue) {
           receivedMessage.value = newValue.message;
-          // Login.vue로부터 (로그인)이벤트버스를 전달받으면
-          // Header에서 웹소켓 연결합니다.
+          // Login.vue로부터 (로그인성공)이벤트버스를 전달받으면 Header에서 웹소켓 연결합니다.
           if (newValue.message == "login") {
+            console.log(">>>>>> RECEIVED EVENTBUS ==> ", newValue.message);
             console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIng");
             connect();
             getUnreadNotice(); // 안 읽은 알림의 개수를 가져오고 알림아이콘을 표시한다.
@@ -153,12 +153,19 @@ export default {
         console.log("ch.채팅 => ", newValue.message);
       }
     );
+    // watch(
+    //   () => EventBus.newAlertNotice_return,
+    //   (newValue) => {
+    //     console.log(">>>>>> HEADER :: Return from NotiPage", newValue.message);
+    //     showAlertNoticeIcon();
+    //   }
+    // );
     //
     function getUnreadNotice() {
       apiClient.get("/notification/select/unread").then((res) => {
         console.log(">>>>>> HEADER :: UNREAD NOTICE COUNT = ", res.data);
         const unreadNoticeNumber = res.data;
-        //unreadNoticeNumber가 1 이상이면 알림 아이콘을 띄웁니다.
+        // 안 읽은 알림의 개수가  1개 이상이면 알림 아이콘을 띄웁니다.
         if (unreadNoticeNumber > 0) {
           console.log(">>>>>> HEADER :: UNREAD => SHOW ALERT NOTICE ICON !!");
           showAlertNoticeIcon();
@@ -202,7 +209,7 @@ export default {
         },
         (error) => {
           console.log(">>>>>> HEADER :: CONNECT ERROR :: ", error);
-          // setTimeout(, 1000);
+          // 연결 오류 시 3초 마다 다시 시도
           setTimeout(function () {
             connect();
           }, 3000);
@@ -252,19 +259,22 @@ export default {
         console.log("지금 보고 있는 페이지는 => ", route.path);
         if (route.path != "/chat") {
           // 채팅페이지를 보고있으면 아이콘을 띄우지 않습니다.
+          console.log("알림 보낸 사람 = ", parseMessage.m_id_from);
           showAlertChatIcon();
         } else {
           EventBus.newAlertChatEvent = { message: "newAlertChat" };
         }
       } else {
-        // parseMessage.type => follow, boardlike, comment, commentllike, reply, replylike
-        console.log("지금 보고 있는 페이지는 => ", route.path); ////////////////////////////////
-        // route.path == '/noti' -> 이벤트버스 -> noti 리스트 리로딩
+        console.log("지금 보고 있는 페이지는 => ", route.path);
         if (route.path != "/noti") {
           // 알림페이지를 보고있으면 아이콘을 띄우지 않습니다.
+          console.log("알림 보낸 사람 = ", parseMessage.m_id_from);
           showAlertNoticeIcon();
         } else {
-          EventBus.newAlertNoticeEvent = { message: "newAlertNotice" };
+          EventBus.newAlertNoticeEvent = {
+            message: "newAlertNotice",
+            parseMessage: parseMessage,
+          };
         }
       }
     }
@@ -301,9 +311,7 @@ export default {
     };
   },
   created() {
-    // this.connect();
     this.initialConnentWS();
-    // console.log("@@@@@@@@@ store check => ", this.$store.state.alertNewNotice);
   },
   methods: {
     toggleDropdown() {

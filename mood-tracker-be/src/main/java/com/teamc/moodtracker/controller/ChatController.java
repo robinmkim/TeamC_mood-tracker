@@ -56,7 +56,7 @@ public class ChatController {
         messagingTemplate.convertAndSend("/topic/chat/" + sendRequest.getOtherMemberId(), res);
 
         // 알림 전송
-        notificationService.sendChat_SaveNotificationAndSendAlert(sendRequest);
+        notificationService.sendChat_SendAlert(sendRequest);
     }
 
     @GetMapping("/rooms")

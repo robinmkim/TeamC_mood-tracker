@@ -34,5 +34,5 @@ public interface NotificationService {
 
     public void addReplyLike_SaveNotificationAndSendAlert(Reply_LikeDto replyLikeDto);
 
-    public void sendChat_SaveNotificationAndSendAlert(SendChat sendRequest);
+    public void sendChat_SendAlert(SendChat sendRequest);
 }

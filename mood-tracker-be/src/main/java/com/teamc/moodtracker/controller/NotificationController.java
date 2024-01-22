@@ -71,16 +71,6 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ///채팅 알림 테스트 // 채팅기능 완성되면 옮길 것
-        int m_id_to = 3;
-        Alert alert = Alert.builder()
-                .type("chat")
-                .m_id_to(m_id_to) // 수정
-                .m_id_from(21)
-                .m_content("TEST")
-                .build();
-        messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
-
         return  noticeList;
     }
 

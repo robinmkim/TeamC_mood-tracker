@@ -319,7 +319,7 @@
                   <div class="notiItemContent flex-1 pl-3 justify-start">
                     <span
                       class="notiItemContentTime text-sm text-slate-400 flex"
-                      >{{ formatTime(bean.regdate) }}</span
+                      >{{ bean.regdate }}</span
                     >
                     <div
                       class="notiItemContentMain w-auto flex items-center"
@@ -459,16 +459,26 @@ export default {
       () => EventBus.newAlertNoticeEvent,
       (newValue) => {
         if (newValue) {
+          const alertType = newValue.parseMessage.type;
+          console.log(">>>>>>>>>>>>>>>>>>>", alertType);
           // Header로 부터 newAlertNoticeEvent를 전달받으면
           // 알림 리스트를 리로딩
-          // this.loadNoticeList(tabId);
           if (currentTab.value == 0) {
+            // 전체 탭
             loadNoticeListAll();
           } else if (currentTab.value == 1) {
             loadNoticeListFollow();
+            // 팔로잉 탭 // 새 알람이 팔로우가 아니면 Header에 아이콘을 띄운다.
+            if (alertType == "follow") {
+              loadNoticeListFollow();
+            } else {
+              EventBus.newAlertNotice_return = { message: "follow" };
+            }
           } else if (currentTab.value == 2) {
+            // 답글 탭
             loadNoticeListReply();
           } else if (currentTab.value == 3) {
+            // 좋아요 탭
             loadNoticeListLike();
           }
         }
@@ -522,30 +532,6 @@ export default {
         }
       });
     },
-    // loadNoticeListAll() {
-    //   apiClient.get("/notification/select/all").then((res) => {
-    //     console.log(res.data);
-    //     this.showList = res.data;
-    //   });
-    // },
-    // loadNoticeListFollow() {
-    //   apiClient.get("/notification/select/follow").then((res) => {
-    //     console.log(res.data);
-    //     this.showList = res.data;
-    //   });
-    // },
-    // loadNoticeListReply() {
-    //   apiClient.get("/notification/select/comment").then((res) => {
-    //     console.log(res.data);
-    //     this.showList = res.data;
-    //   });
-    // },
-    // loadNoticeListLike() {
-    //   apiClient.get("/notification/select/like").then((res) => {
-    //     console.log(res.data);
-    //     this.showList = res.data;
-    //   });
-    // },
     changeTab(index, tabId) {
       // 전체-팔로잉-답글-좋아요 탭으로 이동
       this.currentTab = index;
