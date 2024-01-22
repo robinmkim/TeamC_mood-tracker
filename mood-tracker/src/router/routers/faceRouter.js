@@ -10,12 +10,6 @@ export default [
       widget: SideWidget,
     },
   },
-  // {
-  //   path: "/faceanalyze/result/:formData",
-  //   name: "AnalyzeResult",
-  //   component: AnalyzeResult,
-  //   props: true,
-  // },
   {
     path: "/faceanalyze/result/:lastResultId",
     name: "AnalyzeResult",
@@ -25,9 +19,4 @@ export default [
     },
     props: true,
   },
-  // {
-  //   path: "/faceanalyze/result",
-  //   name: "AnalyzeResult",
-  //   component: AnalyzeResult,
-  // },
 ];

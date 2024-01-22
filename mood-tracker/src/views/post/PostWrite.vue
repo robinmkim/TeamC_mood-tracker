@@ -11,7 +11,7 @@
             <div class="w-10 rounded-full overflow-hidden">
               <img src="@/assets/logo.png" />
             </div>
-            <span class="ml-2">ickhigh</span>
+            <span class="ml-2">{{ memberHandle }}</span>
             <div class="cursor-pointer ml-2" @click="isExpanded = !isExpanded">
               {{ selectedEmoji }}
             </div>
@@ -79,6 +79,7 @@ import apiClient from "@/utils/apiClient";
 export default {
   data() {
     return {
+      memberHandle: "",
       text: "",
       files: [],
       isExpanded: false,
@@ -102,6 +103,13 @@ export default {
     };
   },
   name: "PostWrite",
+  mounted() {
+    // 회원이름(m_handle)을 가져옵니다.
+    apiClient.get("/member/userInfo/memberHandle").then((res) => {
+      console.log("memberHandle = ", res.data);
+      this.memberHandle = res.data;
+    });
+  },
   methods: {
     adjustHeight(e) {
       // textarea높이 자동 조절

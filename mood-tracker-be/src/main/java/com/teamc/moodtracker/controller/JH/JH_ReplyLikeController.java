@@ -3,6 +3,7 @@ package com.teamc.moodtracker.controller.JH;
 import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.dto.Reply_LikeDto;
 import com.teamc.moodtracker.service.JH.JH_ReplyLikeService;
+import com.teamc.moodtracker.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 public class JH_ReplyLikeController {
     @Autowired
     private JH_ReplyLikeService service;
+
+    @Autowired
+    private NotificationService notificationService; // 알림
 
 //    @GetMapping("/isMylike")
 //    public boolean isMyLike(@AuthenticationPrincipal MemberDto memberDto,@RequestParam("b_id")int b_id){
@@ -48,6 +52,9 @@ public class JH_ReplyLikeController {
         dto.setM_id(memberDto.getM_id());
         dto.setRe_id(re_id);
         System.out.println("re_id: "+dto.getRe_id());
+
+        notificationService.addReplyLike_SaveNotificationAndSendAlert(dto); // 알림
+
         return service.addReplyLike(dto);
     }
 

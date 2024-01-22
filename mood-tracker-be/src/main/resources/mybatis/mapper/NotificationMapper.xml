@@ -21,11 +21,12 @@
         <association property="memberDto" javaType="mvo">
             <result property="m_handle" column="m_handle"/>
             <result property="m_img_name" column="m_img_name"/>
+            <result property="m_name" column="m_name"/>
         </association>
     </resultMap>
 
     <select id="selectMyNotificationAll" parameterType="int" resultMap="NotiWithMemberHandleDto">
-        SELECT n.*, m.m_handle, m.m_img_name
+        SELECT n.*, m.*
         FROM notice n LEFT JOIN MEMBER m
         ON n.m_id_from = m.m_id
         WHERE n.m_id_to = #{m_id_to}
@@ -33,7 +34,7 @@
     </select>
 
     <select id="selectMyNotificationFollow" parameterType="int" resultMap="NotiWithMemberHandleDto">
-        SELECT n.*, m.m_handle, m.m_img_name
+        SELECT n.*, m.*
         FROM notice n LEFT JOIN MEMBER m
         ON n.m_id_from = m.m_id
         WHERE m_id_to = #{m_id_to} AND n_type = 'follow'
@@ -41,18 +42,18 @@
     </select>
 
     <select id="selectMyNotificationComment" parameterType="int" resultMap="NotiWithMemberHandleDto">
-        SELECT n.*, m.m_handle, m.m_img_name
+        SELECT n.*, m.*
         FROM notice n LEFT JOIN MEMBER m
         ON n.m_id_from = m.m_id
-        WHERE m_id_to = #{m_id_to} AND n_type = 'comment'
+        WHERE m_id_to = #{m_id_to} AND ( n_type = 'comment'  OR n_type = 'reply' )
         ORDER BY n_id DESC
     </select>
 
     <select id="selectMyNotificationLike" parameterType="int" resultMap="NotiWithMemberHandleDto">
-        SELECT n.*, m.m_handle, m.m_img_name
+        SELECT n.*, m.*
         FROM notice n LEFT JOIN MEMBER m
         ON n.m_id_from = m.m_id
-        WHERE m_id_to = #{m_id_to} AND n_type = 'like'
+        WHERE m_id_to = #{m_id_to} AND ( n_type = 'boardlike' OR n_type = 'commentlike' OR n_type = 'replylike' )
         ORDER BY n_id DESC
     </select>
 
@@ -71,6 +72,18 @@
         DELETE FROM notice
         WHERE m_id_to = #{m_id_to} AND n_id = #{n_id}
     </delete>
+
+    <insert id="insertNotice" parameterType="NotificationDto">
+        INSERT INTO notice(n_id, m_id_to, n_state, regdate, n_type, m_id_from, n_content, n_url)
+        VALUES(notice_seq.nextVal, #{m_id_to}, 1, sysdate, #{n_type}, #{m_id_from}, #{n_content}, #{n_url})
+    </insert>
+
+    <select id="getReplyDetail" parameterType="int" resultType="jh_rvo">
+        SELECT *
+        FROM reply
+        WHERE re_id = #{re_id}
+    </select>
+
 
 
 </mapper>

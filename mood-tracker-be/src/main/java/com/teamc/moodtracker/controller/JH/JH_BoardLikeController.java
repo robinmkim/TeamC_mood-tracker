@@ -3,6 +3,7 @@ package com.teamc.moodtracker.controller.JH;
 import com.teamc.moodtracker.dto.Board_LikeDto;
 import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.service.JH.JH_BoardLikeService;
+import com.teamc.moodtracker.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 public class JH_BoardLikeController {
     @Autowired
     private JH_BoardLikeService service;
+    @Autowired
+    private NotificationService notificationService; //윤영호
 
     @GetMapping("/isMylike")
     public boolean isMyLike(@AuthenticationPrincipal MemberDto memberDto,@RequestParam("b_id")int b_id){
@@ -48,6 +51,9 @@ public class JH_BoardLikeController {
         dto.setM_id(memberDto.getM_id());
         dto.setB_id(b_id);
         System.out.println("b_id: "+dto.getB_id());
+
+        notificationService.addBoardLike_SaveNotificationAndSendAlert(dto); // 알림 // 윤영호
+
         return service.addBoardLike(dto);
     }
 
