@@ -28,7 +28,15 @@
                 v-if="currentTab === index"
               ></div>
             </transition>
-            <span class="notiTabName align-middle">
+            <span
+              class="notiTabName align-middle"
+              @click="tab.showAlert = false"
+            >
+              <div v-if="tab.showAlert">
+                <div
+                  class="notiDisplay absolute mt-[2px] ml-[-10px] z-1 h-2 w-2 rounded-full bg-red-500"
+                ></div>
+              </div>
               {{ tab.name }}
             </span>
           </div>
@@ -442,18 +450,24 @@ export default {
   data() {
     return {
       // currentTab: 0,
-      tabs: [
-        { name: "전체", id: "notiTabsAll" },
-        { name: "팔로잉", id: "notiTabsFollow" },
-        { name: "답글", id: "notiTabsReply" },
-        { name: "좋아요", id: "notiTabsLike" },
-      ],
+      // tabs: [
+      //   { name: "전체", id: "notiTabsAll" },
+      //   { name: "팔로잉", id: "notiTabsFollow" },
+      //   { name: "답글", id: "notiTabsReply" },
+      //   { name: "좋아요", id: "notiTabsLike" },
+      // ],
       // showList: null,
     };
   },
   setup() {
     const currentTab = ref(0);
     const showList = ref(null);
+    const tabs = ref([
+      { name: "전체", id: "notiTabsAll", showAlert: false },
+      { name: "팔로잉", id: "notiTabsFollow", showAlert: false },
+      { name: "답글", id: "notiTabsReply", showAlert: false },
+      { name: "좋아요", id: "notiTabsLike", showAlert: false },
+    ]);
 
     watch(
       () => EventBus.newAlertNoticeEvent,
@@ -461,24 +475,44 @@ export default {
         if (newValue) {
           const alertType = newValue.parseMessage.type;
           console.log(">>>>>>>>>>>>>>>>>>>", alertType);
-          // Header로 부터 newAlertNoticeEvent를 전달받으면
+          // 새로운 알림의 type과 currentTab을 비교 =>
+          // 전체탭에 있을 때 -> 무조건 리로딩, 알림표시 x
+
+          // 팔로우 알림 -> 전체탭, 팔로우탭이 아니면 아이콘 표시
+          if (alertType == "follow") {
+            if (currentTab.value != 0 && currentTab.value != 1) {
+              tabs.value[1].showAlert = true;
+            }
+          }
+          // 답글 알림 -> 전체탭, 답글탭이 아니면 아이콘 표시
+          else if (alertType == "comment" || alertType == "reply") {
+            if (currentTab.value != 0 && currentTab.value != 2) {
+              tabs.value[2].showAlert = true;
+            }
+          }
+          // 좋아요 알림 -> 전체탭, 좋아요탭이 아니면 아이콘 표시
+          else if (
+            alertType == "boardlike" ||
+            alertType == "commentlike" ||
+            alertType == "replylike"
+          ) {
+            if (currentTab.value != 0 && currentTab.value != 3) {
+              tabs.value[3].showAlert = true;
+            }
+          }
+
           // 알림 리스트를 리로딩
           if (currentTab.value == 0) {
-            // 전체 탭
+            // 현재페이지 : 전체 탭
             loadNoticeListAll();
           } else if (currentTab.value == 1) {
             loadNoticeListFollow();
-            // 팔로잉 탭 // 새 알람이 팔로우가 아니면 Header에 아이콘을 띄운다.
-            if (alertType == "follow") {
-              loadNoticeListFollow();
-            } else {
-              EventBus.newAlertNotice_return = { message: "follow" };
-            }
+            // 현재페이지 : 팔로잉 탭
           } else if (currentTab.value == 2) {
-            // 답글 탭
+            // 현재페이지 : 답글 탭
             loadNoticeListReply();
           } else if (currentTab.value == 3) {
-            // 좋아요 탭
+            // 현재페이지 : 좋아요 탭
             loadNoticeListLike();
           }
         }
@@ -515,6 +549,7 @@ export default {
       loadNoticeListFollow,
       loadNoticeListReply,
       loadNoticeListLike,
+      tabs,
     };
   },
   created() {
