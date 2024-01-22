@@ -486,6 +486,7 @@ export default {
           this.isMain = this.board.member.m_id === decoded.m_id ? true : false;
 
           this.onBoardDataLoaded();
+          this.processedText = "";
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
