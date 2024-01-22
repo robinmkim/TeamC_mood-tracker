@@ -48,17 +48,17 @@ public class ChatService {
 
         return result;
     }
-//    public List<ChatRoom> getChatRooms(int memberId) {
-//        List<ChatRoom> chatRooms = chatDao.getChatRooms(memberId);
-//        List<ChatRoom> chatMembers = chatDao.getMemberInfo(memberId);
-//        System.out.println("chatRooms: " + chatRooms.size());
-//        System.out.println("chatMembers: " + chatMembers.size());
-//
-//        for(int i=0; i<chatRooms.size(); i++) {
-//            int roomId = chatRooms.get(i).getRoomId();
-//        }
-//        return chatRooms;
-//    }
+    // public List<ChatRoom> getChatRooms(int memberId) {
+    // List<ChatRoom> chatRooms = chatDao.getChatRooms(memberId);
+    // List<ChatRoom> chatMembers = chatDao.getMemberInfo(memberId);
+    // System.out.println("chatRooms: " + chatRooms.size());
+    // System.out.println("chatMembers: " + chatMembers.size());
+    //
+    // for(int i=0; i<chatRooms.size(); i++) {
+    // int roomId = chatRooms.get(i).getRoomId();
+    // }
+    // return chatRooms;
+    // }
 
     public List<ChatMessage> getChatMessages(int memberId, int roomId) {
         if (chatDao.checkMemberInChatRoom(memberId, roomId) == 0) {
@@ -149,4 +149,6 @@ public class ChatService {
         String getLastMsgStatus = chatDao.getLastMsgStatus(roomId, memberId);
         return getLastMsgStatus;
     }
+
+
 }

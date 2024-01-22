@@ -1,6 +1,8 @@
 package com.teamc.moodtracker.controller;
 
 import com.teamc.moodtracker.dto.MemberDto;
+import com.teamc.moodtracker.dto.follow.FollowCount;
+import com.teamc.moodtracker.dto.follow.FollowRequestDto;
 import com.teamc.moodtracker.dto.follow.MyFollow;
 import com.teamc.moodtracker.service.FollowService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,24 +23,35 @@ public class FollowController {
 
     private final FollowService followService;
 
+    @PostMapping("")
+    public ResponseEntity<String> makeFollow(@AuthenticationPrincipal MemberDto memberDto, @RequestBody Map<String, Integer> followedInfo) {
+        int followerId = memberDto.getM_id();
+        int followedId  = followedInfo.get("followedId");
+        System.out.println("followerId: " + followerId + " followedId: " + followedId                           );
+        if (followerId == followedId) {
+            return ResponseEntity.badRequest().body("자기 자신을 팔로우할 수 없습니다.");
+        }
+        FollowRequestDto followRequestDTO = FollowRequestDto.builder()
+                .followerId(followerId)
+                .followedId(followedId)
+                .build();
+        try {
+            followService.makeFollow(followRequestDTO);
+            return ResponseEntity.ok("Follow Success");
+        } catch (DuplicateKeyException e) {
+            followService.deleteFollow(followRequestDTO);
+            return ResponseEntity.ok("Follow Cancel");
+        }
+    }
+
     @GetMapping("/myfollow")
     public ResponseEntity<List<MemberDto>> getMyFollow(@AuthenticationPrincipal MemberDto memberDto) {
-        // header에 bearer token으로부터 m_id를 얻어오는 코드 작성해줘
         int memberId = memberDto.getM_id();
         return ResponseEntity.ok(followService.getMyFollow(memberId));
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<String> test(@RequestBody MyFollow myFollow) {
-        if (myFollow.getFollowerId() == myFollow.getFollowedId()) {
-            return ResponseEntity.badRequest().body("자기 자신을 팔로우할 수 없습니다.");
-        }
-        try {
-            followService.newFollow(myFollow);
-            return ResponseEntity.ok("팔로우가 생성되었습니다.");
-        } catch (DuplicateKeyException e) {
-            followService.deleteFollow(myFollow);
-            return ResponseEntity.ok("팔로우가 해제되었습니다.");
-        }
+    @GetMapping("/followcnt/{memberId}")
+    public ResponseEntity<FollowCount> getFollowCnt(@PathVariable("memberId") int memberId) {
+        return ResponseEntity.ok(followService.getFollowCnt(memberId));
     }
 }
