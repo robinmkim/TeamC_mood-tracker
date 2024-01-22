@@ -27,7 +27,7 @@
             </div>
           </div>
           <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
-            <button @click="toggleDropdownReply()" class="replyDropdown">
+            <button @click="toggleDropdown" class="replyDropdown">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -44,7 +44,7 @@
               </svg>
             </button>
             <div
-              v-show="isDropdownOpen"
+              v-if="isOpen"
               class="replyDropdown absolute flex flex-col bg-white shadow-md mt-2 top-4 rounded-md py-2 w-32 right-[1px] z-10"
             >
               <span class="border-b" @click="addReport()">신고하기</span>
@@ -52,6 +52,7 @@
               <span class="border-b" v-if="isMain" @click="delReply()"
                 >삭제하기</span
               >
+              <div @click.stop="preventClose"></div>
             </div>
           </div>
         </div>
@@ -140,10 +141,6 @@ export default {
       type: Number,
       required: true,
     },
-    isDropdownOpen: {
-      type: Boolean,
-      required: true,
-    },
   },
   data() {
     return {
@@ -155,9 +152,9 @@ export default {
         member: {},
         isMyLike: false,
         likeCount: null,
-        showDrop: this.isDropdownOpen,
       },
       isMain: false,
+      isOpen: false,
     };
   },
   created() {
@@ -165,6 +162,7 @@ export default {
   },
   methods: {
     addReport() {},
+
     addReply() {
       const currentContent = this.content;
       const formData = new FormData();
@@ -225,20 +223,29 @@ export default {
           console.log(error);
         });
     },
-    toggleDropdownReply() {
-      this.$emit("toggle-dropdown", this.re_id);
-      // 부모로부터 전달된 isDropdownOpen 값을 내부 상태에 할당
-      this.reply.showDrop = this.isDropdownOpen;
-      // 내부 상태를 이용해 드롭다운을 토글
-      this.reply.showDrop = !this.reply.showDrop;
-    },
-    handleDocumentClick(event) {
-      // 클릭된 엘리먼트가 드롭다운 영역인지 확인
-      const isDropdown = event.target.closest(".replyDropdown") !== null;
-      // 만약 드롭다운 영역이 아니면 드롭다운을 닫기
-      if (!isDropdown) {
-        this.$emit("toggle-dropdown", this.cm_id);
+    toggleDropdown() {
+      this.isOpen = !this.isOpen;
+      if (this.isOpen) {
+        // 다른 드롭다운 닫기 이벤트 등록
+        window.addEventListener("click", this.closeDropdowns);
+      } else {
+        // 다른 드롭다운 닫기 이벤트 제거
+        window.removeEventListener("click", this.closeDropdowns);
       }
+    },
+    closeDropdowns(event) {
+      // 다른 드롭다운 닫기
+      if (!this.$el.contains(event.target)) {
+        this.isOpen = false;
+      }
+    },
+    preventClose(event) {
+      // 클릭 이벤트 전파 방지
+      event.stopPropagation();
+    },
+    beforeDestroy() {
+      // 컴포넌트 파괴 시 이벤트 제거
+      window.removeEventListener("click", this.closeDropdowns);
     },
 
     getUserImageUrl(m_img_path, m_img_name) {
@@ -275,15 +282,8 @@ export default {
 
       return postDate.toLocaleDateString("ko-KR");
     },
-    handleScroll() {
-      this.$emit("post-reply-scroll");
-    },
   },
-  mounted() {
-    document.addEventListener("click", this.handleDocumentClick);
-  },
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleDocumentClick);
-  },
+  mounted() {},
+  beforeUnmount() {},
 };
 </script>

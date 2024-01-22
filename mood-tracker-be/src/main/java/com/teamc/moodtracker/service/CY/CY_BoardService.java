@@ -62,4 +62,12 @@ public class CY_BoardService {
         params.put("b_content", b_content);
         return cdao.SearchBoard(params); // 매개변수 맵을 전달하도록 수정
     }
+
+    // 달력 감정
+    public String getTopSentiment(String regdate, int m_id) {
+        Map<String, Object> params = new HashMap();
+        params.put("regdate", regdate);
+        params.put("m_id", m_id);
+        return cdao.getTopSentiment(params);
+    }
 }

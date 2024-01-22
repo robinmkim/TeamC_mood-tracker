@@ -3,9 +3,44 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamc.moodtracker.dao.ReportDao">
+<!-- 신고 게시글 목록 조회 -->
+        <select id="reportList" resultType="report">
+                SELECT * FROM REPORT_BOARD
+                WHERE r_type = 0
+        </select>
+<!-- 신고 게시글 상세 조회 -->
+    <select id="reportDetail" parameterType="int" resultType="report">
+        SELECT * FROM REPORT_BOARD
+        WHERE report_id = #{report_id} AND r_type = 0
+    </select>
+
+ <!-- 신고 댓글 목록 조회 -->
+    <select id="reportCommentList" resultType="report">
+        SELECT * FROM REPORT_BOARD
+        WHERE r_type = 1
+    </select>
+
+    <!-- 신고 댓글 상세 조회 -->
+    <select id="reportCommentDetail" parameterType="int" resultType="report">
+        SELECT * FROM REPORT_BOARD
+        WHERE comment_id = #{comment_id} AND r_type = 1
+    </select>
+
+    <insert id="addReport" parameterType="report">
+                <selectKey keyProperty="report_id"
+                        resultType="int" order="BEFORE"> SELECT REPLY_SEQ.NEXTVAL FROM DUAL 
+                </selectKey>
+                insert into REPORT_BOARD values (#{report_id}, #{b_c_id}, #{report_type}, sysdate,
+                #{m_id}, #{r_type}) 
+    </insert>
 
 
 
-
+    <!-- <select id="reportList" parameterType="map" resultType="java.lang.Integer">
+        SELECT r.report_id
+        FROM report r
+        WHERE (SELECT COUNT(*) FROM report WHERE report_id > r.report_id) BETWEEN #{lastRowNum} AND (#{lastRowNum} + 4)
+        ORDER BY r.report_id DESC
+    </select> -->
 
 </mapper>
