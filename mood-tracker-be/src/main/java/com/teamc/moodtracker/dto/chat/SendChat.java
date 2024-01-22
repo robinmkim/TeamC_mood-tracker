@@ -9,11 +9,10 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseMessage {
+public class SendChat {
     private int roomId;
     private int memberId;
-    private String memberName;
+    private int otherMemberId;
     private String message;
-    private LocalDateTime sendTime;
     private String status;
 }

@@ -17,6 +17,8 @@ import com.teamc.moodtracker.dto.auth.AuthenticationResponse;
 import com.teamc.moodtracker.util.JwtTokenProvider;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @RestController
 //CORS (Cross-Origin Resource Sharing) 요청을 허용함, 다른 도메인/포트에서 이 서비스에 접근할 수 있게 해준다.
 @CrossOrigin
@@ -88,5 +90,16 @@ public class AuthController {
         System.out.println(dto.toString());
         service.addMember(dto);
         return 1; // 예시: 성공 시 1 반환
+    }
+    
+    @PostMapping("/checkHandle")
+    public int checkHandle(@RequestBody Map<String, String> map){
+        System.out.println("handle =>"+map.get("handle"));
+        System.out.println("checkHandleExist =>"+service.checkHandleExist(map.get("handle")));
+        if(service.checkHandleExist(map.get("handle")) == 1){
+
+            throw new NullPointerException("이미 존재하는 이름입니다.");
+        }
+        return service.checkHandleExist(map.get("handle"));
     }
 }
