@@ -35,4 +35,6 @@ public interface NotificationService {
     public void addReplyLike_SaveNotificationAndSendAlert(Reply_LikeDto replyLikeDto);
 
     public void sendChat_SendAlert(SendChat sendRequest);
+
+//    public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO); // 팔로우 부분 pull 한 다음 맞게 수정할 것
 }

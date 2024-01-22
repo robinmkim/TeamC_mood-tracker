@@ -19,7 +19,7 @@
               // 'border-[#64CCC5]': currentTab === index,
               'hover:border-[#e0e0e0] border-transparent': currentTab !== index,
             }"
-            @click="changeTab(index, tab.id)"
+            @click="changeTab(index, tab.id), (tab.showAlert = false)"
             role="tab"
           >
             <transition name="selTab">
@@ -28,10 +28,7 @@
                 v-if="currentTab === index"
               ></div>
             </transition>
-            <span
-              class="notiTabName align-middle"
-              @click="tab.showAlert = false"
-            >
+            <span class="notiTabName align-middle">
               <div v-if="tab.showAlert">
                 <div
                   class="notiDisplay absolute mt-[2px] ml-[-10px] z-1 h-2 w-2 rounded-full bg-red-500"
@@ -128,9 +125,8 @@
               </div>
               <!-- [ED] follow -->
 
-              <!-- [ST] 알림 comment -->
+              <!-- [ST] 알림 content - comment -->
               <div v-if="bean.n_type == 'comment'">
-                <!-- [ST] 알림 content - comment -->
                 <div
                   class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px] border-b border-gray-200"
                 >
@@ -503,16 +499,12 @@ export default {
 
           // 알림 리스트를 리로딩
           if (currentTab.value == 0) {
-            // 현재페이지 : 전체 탭
             loadNoticeListAll();
           } else if (currentTab.value == 1) {
             loadNoticeListFollow();
-            // 현재페이지 : 팔로잉 탭
           } else if (currentTab.value == 2) {
-            // 현재페이지 : 답글 탭
             loadNoticeListReply();
           } else if (currentTab.value == 3) {
-            // 현재페이지 : 좋아요 탭
             loadNoticeListLike();
           }
         }
@@ -553,20 +545,9 @@ export default {
     };
   },
   created() {
-    console.log("mounted");
     this.loadNoticeListAll(); // 첫 화면은 '전체' 탭 이기 때문
-    this.checkUnreadNotice(); // 안읽은 메세지 개수 체크 -> Header에 전달
   },
   methods: {
-    checkUnreadNotice() {
-      //안읽은 메세지가 1 이상이면 header아이콘 on, 0이면 off
-      apiClient.get("notification/select/unread").then((res) => {
-        console.log(">>>>>> NOTICE :: CHECK UNREAD NOTICE => ", res.data);
-        if (res.data > 0) {
-          console.log(">>>>>> NOTICE :: UNREAD NOTICE > 0");
-        }
-      });
-    },
     changeTab(index, tabId) {
       // 전체-팔로잉-답글-좋아요 탭으로 이동
       this.currentTab = index;
@@ -577,22 +558,19 @@ export default {
       if (tabId == "notiTabsAll") {
         console.log("ALL 조회");
         this.loadNoticeListAll();
-        this.checkUnreadNotice(); // 안읽은 메세지 개수 체크 -> Header에 전달
       } else if (tabId == "notiTabsFollow") {
         console.log("Follow 조회");
         this.loadNoticeListFollow();
-        this.checkUnreadNotice(); // 안읽은 메세지 개수 체크 -> Header에 전달
       } else if (tabId == "notiTabsReply") {
         console.log("Reply 조회");
         this.loadNoticeListReply();
-        this.checkUnreadNotice(); // 안읽은 메세지 개수 체크 -> Header에 전달
       } else if (tabId == "notiTabsLike") {
         console.log("Like 조회");
         this.loadNoticeListLike();
-        this.checkUnreadNotice(); // 안읽은 메세지 개수 체크 -> Header에 전달
       }
     },
     readNotice(n_id) {
+      // 알림 읽음 처리
       apiClient
         .patch("/notification/read", {
           n_id: n_id,
@@ -603,7 +581,6 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-      // this.$router.push("postDetail");
     },
     deleteNotice(n_id) {
       let userReturn = confirm("알림을 영구적으로 삭제하시겠습니까?");

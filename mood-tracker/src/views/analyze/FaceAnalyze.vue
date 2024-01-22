@@ -6,7 +6,7 @@
   </div>
 
   <div class="flex h-screen">
-    <div class="flex-1 w-full bg-[#E7F1E5]">
+    <div class="flex-1 w-full border-r border-l border-gray-200">
       <!-- 여기서부터 ~~~ -->
       <div class="flex flex-col items-center justify-center">
         <div class="p-5 mt-5 w-[700px] bg-slate-200">
@@ -31,7 +31,7 @@
         </div>
         <!-- 드래그하여 파일 업로드-->
         <div
-          class="flex m-1 w-[550px] h-[450px] bg-white box-content text-center"
+          class="flex m-1 w-[550px] h-[450px] bg-[#eaeaea] hover:bg-[#dad9d9] duration-150 box-content text-center border-2 border-gray-200"
           @dragover.prevent="handleDragOver"
           @drop="handleDrop"
         >
@@ -64,10 +64,11 @@
           <span
             v-if="!isLoading"
             id="submit"
-            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center hover:bg-[#6fe3db] hover:scale-110 duration-300"
+            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center hover:bg-[#6fe3db] hover:scale-110 duration-200"
             @click="goToResult"
             >분석하기</span
           >
+
           <span
             v-if="isLoading"
             id="submit"
@@ -95,6 +96,7 @@ export default {
     return {
       image: null,
       isLoading: false,
+      fileTo: null,
       // memberNum: 1, // 로그인 기능 구현 이후 삭제합니다.
     };
   },
@@ -105,11 +107,13 @@ export default {
     handleDrop(event) {
       event.preventDefault();
       const file = event.dataTransfer.files[0];
+      this.fileTo = file;
       this.handleImageUpload(file);
     },
     handleFileSelect() {
       const fileInput = this.$refs.fileInput;
       const file = fileInput.files[0];
+      this.fileTo = file;
       this.handleImageUpload(file);
     },
     handleImageUpload(file) {
@@ -138,7 +142,9 @@ export default {
       // [ED] jwtToken decode
 
       const formData = new FormData();
-      formData.append("file1", this.$refs.fileInput.files[0]);
+      // formData.append("file1", this.$refs.fileInput.files[0]);
+
+      formData.append("file1", this.fileTo);
       formData.append("m_id", decoded.m_id); // 임시 유저 회원번호 (로그인 되면 수정 필수)
       // formData.append("token", token); // decode는 장고에서.
 
