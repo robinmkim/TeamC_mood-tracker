@@ -49,19 +49,20 @@ const routes = [
         },
         beforeEnter: (to, from, next) => {
           apiClient
-            .get(`/member/info/${to.params.memberId}`)
-            .then((res) => {
-              if (res.data !== "") {
-                next();
-              } else {
-                next("/error");
-                // next();
-              }
-            })
-            .catch((err) => {
-              console.log(err);
+          .get(`/member/info/${to.params.memberId}`)
+          .then((res) => {
+            if (res.data !== "") {
+              next();
+            } else {
               next("/error");
-            });
+              // next();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            next("/error");
+          }
+          );
         },
       },
       {

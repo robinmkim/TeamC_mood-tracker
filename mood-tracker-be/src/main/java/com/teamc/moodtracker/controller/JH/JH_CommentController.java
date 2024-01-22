@@ -6,6 +6,7 @@ import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.service.BoardService;
 import com.teamc.moodtracker.service.JH.JH_CommentLikeService;
 import com.teamc.moodtracker.service.JH.JH_CommentService;
+import com.teamc.moodtracker.service.NotificationService;
 import com.teamc.moodtracker.service.JH.JH_ReplyLikeService;
 import com.teamc.moodtracker.service.JH.JH_ReplyService;
 import com.teamc.moodtracker.service.NotificationService;
@@ -28,6 +29,9 @@ public class JH_CommentController {
     private JH_CommentService commentService;
     @Autowired
     private JH_CommentLikeService likeService;
+
+    @Autowired
+    private NotificationService notificationService; // 윤영호
 
     @Autowired
     private JH_ReplyService replyService;

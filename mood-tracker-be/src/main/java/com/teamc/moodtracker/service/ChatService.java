@@ -149,5 +149,7 @@ public class ChatService {
         String getLastMsgStatus = chatDao.getLastMsgStatus(roomId, memberId);
         return getLastMsgStatus;
 
+    }
+
 
 }
