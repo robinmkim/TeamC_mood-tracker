@@ -153,7 +153,6 @@ export default {
         console.log("ch.채팅 => ", newValue.message);
       }
     );
-
     function getUnreadNotice() {
       // 안 읽은 알림 개수를 체크해서 알림아이콘을 표시
       apiClient.get("/notification/select/unread").then((res) => {
