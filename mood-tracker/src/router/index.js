@@ -123,15 +123,15 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const publicPages = ["/login"];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem("jwtToken");
+router.beforeEach((to, from, next) => {
+  const publicPages = ["/login"];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem("jwtToken");
 
-//   if (authRequired && !loggedIn) {
-//     return next("/login");
-//   }
-//   next();
-// });
+  if (authRequired && !loggedIn) {
+    return next("/login");
+  }
+  next();
+});
 
 export default router;
