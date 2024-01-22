@@ -200,8 +200,6 @@ export default {
       // 현재 채팅방 목록에 해당 채팅방이 존재하는지 확인
       // 존재하면 해당 채팅방의 메시지를 업데이트
       const foundRoom = this.rooms.findIndex((room) => room.roomId === roomId);
-      console.log("fofoff", foundRoom);
-      console.log("fofoff", parseMessage.memberName);
       if (foundRoom == -1) {
         // 현재 채팅방 목록에 존재하지 않으면 새로운 chats에 넣기 위한 객체 생성
         const newRoom = {
@@ -273,16 +271,6 @@ export default {
           console.log(error);
         });
 
-      // if (this.stompClient) {
-      //   // webstomp-client의 send() 메서드를 사용하여 서버로 메시지 전송
-      //   // send(destination, body, headers)
-      //   this.stompClient.send(
-      //     "/pub/chat/send",
-      //     JSON.stringify(chatMessage),
-      //     {}
-      //   );
-      //   this.message = "";
-      // }
     },
     autoExpand(event) {
       event.target.style.height = "auto";

@@ -1,8 +1,6 @@
 package com.teamc.moodtracker.controller;
 
-import com.teamc.moodtracker.dto.Alert;
 import com.teamc.moodtracker.dto.MemberDto;
-
 import com.teamc.moodtracker.dto.chat.*;
 import com.teamc.moodtracker.service.ChatService;
 import com.teamc.moodtracker.service.NotificationService;
@@ -40,11 +38,8 @@ public class ChatController {
 
         // 상대방이 채팅방을 나갔을 경우 기존 채팅방에 상대방을 다시 추가
         if (getLastMsgStatus.equals("LEFT")) {
-            System.out.println("추가되야지?");
             chatService.joinExistingChatRoom(enterDto, sendRequest.getRoomId());
-            System.out.println("추가됬나?");
         }
-        System.out.println("지나갔어");
 
         SaveChat saveChat = SaveChat.builder()
                 .roomId(sendRequest.getRoomId())
@@ -91,14 +86,6 @@ public class ChatController {
             return ResponseEntity.ok(existingRoomData);
         }
     }
-
-    // @PostMapping("/rooms/new")
-    // public ResponseEntity<ResponseRoom> newChatRoom(@RequestBody CheckChat
-    // checkChat) {
-    // int newRoomId = chatService.newChatRoomId();
-    // ResponseRoom newRoomData = chatService.createChatRoom(checkChat, newRoomId);
-    // return ResponseEntity.ok(newRoomData);
-    // }
 
     @PostMapping("/rooms/exit")
     public ResponseEntity<Integer> deleteChatRoom(@AuthenticationPrincipal MemberDto memberDto,

@@ -38,10 +38,7 @@ public class CY_BoardController {
 
     @GetMapping("/mylist")
     public List<Integer> getMyBoardList(@RequestParam(value = "lastRowNum") int lastRowNum,
-            @AuthenticationPrincipal MemberDto memberDto) {
-        int mid = memberDto.getM_id();
-        System.out.println("-------controller get boardlist-----");
-        System.out.println("rownum:" + lastRowNum + "mid:" + mid);
+            @RequestParam(value = "mid") int mid) {
         return cboardService.getMyBoardList(lastRowNum, mid);
     }
 

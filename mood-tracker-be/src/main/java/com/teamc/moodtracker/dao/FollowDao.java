@@ -1,6 +1,8 @@
 package com.teamc.moodtracker.dao;
 
 import com.teamc.moodtracker.dto.MemberDto;
+import com.teamc.moodtracker.dto.follow.FollowCount;
+import com.teamc.moodtracker.dto.follow.FollowRequestDto;
 import com.teamc.moodtracker.dto.follow.MyFollow;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,7 +13,9 @@ public interface FollowDao {
 
     public List<MemberDto> getMyFollow(int memberId);
 
-    public void newFollow(MyFollow myFollow);
+    public void makeFollow(FollowRequestDto followRequestDto);
 
-    public void deleteFollow(MyFollow myFollow);
+    public void deleteFollow(FollowRequestDto followRequestDto);
+
+    public FollowCount getFollowCnt(int memberId);
 }

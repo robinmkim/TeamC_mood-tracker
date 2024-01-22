@@ -4,6 +4,34 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.teamc.moodtracker.dao.CY.CY_MemberDao">
     <select id="getMemberInfo_board" parameterType="int" resultType="cmvo">
-        select m_id, m_name, m_handle, m_img_name, m_img_path, m_bio from member where m_id=#{mid}
+        select m_id, m_name, m_handle, m_email, m_img_name, m_gender, m_img_path, m_bio from member where m_id=#{mid}
+    </select>
+
+    <update id="updateProfileImage" parameterType="mvo">
+        update member set m_img_name=#{m_img_name}, m_img_path=#{m_img_path} where m_id=#{m_id}
+    </update>
+
+    <update id="updateProfileName" parameterType="mvo">
+        update member set m_name=#{m_name} where m_id=#{m_id}
+    </update>
+
+    <update id="updateProfileHandle" parameterType="mvo">
+        update member set m_handle=#{m_handle} where m_id=#{m_id}
+    </update>
+
+    <update id="updateProfileBio" parameterType="mvo">
+        update member set m_bio=#{m_bio} where m_id=#{m_id}
+    </update>
+
+    <update id="updateProfileGender" parameterType="mvo">
+        update member set m_gender=#{m_gender} where m_id=#{m_id}
+    </update>
+
+    <update id="updateProfilePassword" parameterType="mvo">
+        update member set m_password=#{new_pwd} where m_id=#{m_id}
+    </update>
+
+    <select id="checkPassword" parameterType="mvo" resultType="int">
+        select count(*) from member where m_id=#{m_id} and m_password=#{m_password}
     </select>
 </mapper>
