@@ -128,18 +128,24 @@
             />
           </div>
         </div>
-        <div class="text-center mt-2 mb-6">
-          <h2 class="text-lg font-bold">{{ userInfo.m_name }}</h2>
-          <p class="text-slate-500">{{ userInfo.m_handle }}</p>
-        </div>
+        <router-link to="/" class="hover:border-b border-black">
+          <div class="flex-col justify-center items-center mt-2 mb-6">
+            <span class="flex justify-center text-lg font-bold">
+              {{ userInfo.m_name }}
+            </span>
+            <span class="flex justify-center text-slate-500">
+              {{ userInfo.m_handle }}
+            </span>
+          </div>
+        </router-link>
       </div>
     </div>
     <!-- 사용자 정보 및 이미지 끝 -->
 
     <!-- 메뉴 시작 -->
     <nav class="p-4 text-left">
-      <router-link to="/" class="text-lg">
-        <div class="flex px-2 py-1">
+      <router-link to="/timeline" class="text-lg">
+        <div class="flex px-2 hover:bg-[#F67D73]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -158,7 +164,7 @@
         </div>
       </router-link>
       <router-link to="/postwrite" class="text-lg">
-        <div class="flex px-2 py-1">
+        <div class="flex px-2 hover:bg-[#FFDDE4]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -178,7 +184,7 @@
         </div>
       </router-link>
       <router-link to="/faceanalyze" class="text-lg">
-        <div class="flex px-2 py-1">
+        <div class="flex px-2 hover:bg-[#FFE778]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -198,7 +204,7 @@
       </router-link>
 
       <router-link to="/musicrecommand" class="text-lg">
-        <div class="flex px-2 py-1">
+        <div class="flex px-2 hover:bg-[#D9F3C1]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -217,7 +223,7 @@
         </div>
       </router-link>
       <router-link to="/chat" class="text-lg">
-        <div class="flex px-2 py-1">
+        <div class="flex px-2 hover:bg-[#597F61]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -237,7 +243,7 @@
       </router-link>
       <div class="text-lg">
         <div
-          class="searchbaricon px-2 flex cursor-pointer hover:bg-[#E0F2F6] rounded-lg"
+          class="searchbaricon px-2 flex cursor-pointer hover:bg-[#A4BED3]/50 rounded-lg"
           @click="toggleSidebar"
         >
           <svg
@@ -258,7 +264,7 @@
         </div>
       </div>
       <router-link to="/admin" class="text-lg">
-        <div class="flex px-2 py-1">
+        <div class="flex px-2 hover:bg-[#C9BCE8]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

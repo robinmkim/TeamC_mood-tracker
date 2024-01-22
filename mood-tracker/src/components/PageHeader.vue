@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-[#64CCC5] w-full h-16 py-3 flex justify-end items-center">
+  <div class="bg-[#64CCC5] w-full h-14 py-3 flex justify-end items-center">
     <div id="title" class="absolute left-1/2 transform -translate-x-1/2">
-      <router-link to="/">
+      <router-link to="/timeline">
         <span class="text-2xl font-[400]">Songtiment</span>
       </router-link>
     </div>
@@ -27,17 +27,23 @@
           v-show="isDropdownOpen"
           class="absolute flex flex-col bg-white shadow-md mt-2 rounded-md py-2 w-32 right-[1px]"
         >
-          <router-link to="/" @click="toggleDropdown"
-            ><span class="border-b">Home</span></router-link
+          <router-link
+            to="/timeline"
+            @click="toggleDropdown"
+            class="hover:bg-slate-100"
+            ><span class="">Home</span></router-link
           >
-          <router-link to="/login" @click="toggleDropdown"
-            ><span class="border-b">Log In</span></router-link
+          <router-link to="/" @click="toggleDropdown" class="hover:bg-slate-100"
+            ><span class="">마이페이지</span></router-link
           >
-          <router-link to="/timeline" @click="toggleDropdown"
-            ><span class="border-b">타임라인</span></router-link
+          <router-link
+            to="/login"
+            @click="toggleDropdown"
+            class="hover:bg-slate-100"
+            ><span class="">로그인</span></router-link
           >
           <span
-            class="border-b"
+            class="hover:bg-slate-100 cursor-pointer"
             @click="
               () => {
                 toggleDropdown();

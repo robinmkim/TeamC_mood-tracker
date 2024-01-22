@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isOpen"
-    class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center"
+    class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50"
     @click="closeModal"
   >
     <div class="lg:w-3/5 h-2/3 flex flex-col">
@@ -35,13 +35,19 @@
               :key="bId"
               :b_id="bId"
               @postSelected="handlePostSelected"
+              class="hover:bg-slate-200"
             />
           </div>
           <div v-else>데이터가 없습니다.</div>
         </div>
         <!-- postDetail -->
         <div class="border-x flex flex-grow w-2/3 overflow-y-auto">
-          <div v-if="this.selectedPostId === null">아무것도 안 불러옴!</div>
+          <div
+            v-if="this.selectedPostId === null"
+            class="flex w-full items-center justify-center"
+          >
+            <sapn class="flex">게시글을 선택해 주세요</sapn>
+          </div>
           <div v-else class="w-full">
             <div class="shadow">
               <postDetail
