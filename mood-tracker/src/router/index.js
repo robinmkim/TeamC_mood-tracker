@@ -18,7 +18,8 @@ import EmptyLayout from "@/layouts/EmptyLayout.vue";
 import LogIn from "@/views/auth/LogIn";
 import SignupEmail from "@/views/auth/SignupEmail";
 import AdminPage from "@/views/admin/AdminPage";
-
+import apiClient from "@/utils/apiClient";
+import ErrorPage from "@/views/error/ErrorPage";
 const routes = [
   {
     path: "/",
@@ -29,6 +30,37 @@ const routes = [
         components: {
           default: MypageMain,
           widget: SideWidget,
+        },
+      },
+      {
+        path: "/error",
+        components: {
+          default: ErrorPage,
+          widget: SideWidget,
+        },
+      },
+      {
+        path: "/:memberId",
+        components: {
+          default: MypageMain,
+          widget: SideWidget,
+        },
+        beforeEnter: (to, from, next) => {
+          apiClient
+          .get(`/member/info/${to.params.memberId}`)
+          .then((res) => {
+            if (res.data !== "") {
+              next();
+            } else {
+              next("/error");
+              // next();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            next("/error");
+          }
+          );
         },
       },
       {

@@ -2,6 +2,8 @@ package com.teamc.moodtracker.service;
 
 import com.teamc.moodtracker.dao.FollowDao;
 import com.teamc.moodtracker.dto.MemberDto;
+import com.teamc.moodtracker.dto.follow.FollowCount;
+import com.teamc.moodtracker.dto.follow.FollowRequestDto;
 import com.teamc.moodtracker.dto.follow.MyFollow;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +23,19 @@ public class FollowService {
         return followDao.getMyFollow(memberId);
     }
 
-    public void newFollow(MyFollow myFollow) {
-        followDao.newFollow(myFollow);
+    public void makeFollow(FollowRequestDto followRequestDTO) {
+        followDao.makeFollow(followRequestDTO);
     }
 
-    public void deleteFollow(MyFollow myFollow) {
-        followDao.deleteFollow(myFollow);
+    public void deleteFollow(FollowRequestDto followRequestDto) {
+        followDao.deleteFollow(followRequestDto);
+    }
+
+    public FollowCount getFollowCnt(int memberId) {
+        FollowCount followCount = followDao.getFollowCnt(memberId);
+        return FollowCount.builder()
+                .followerCnt(followCount.getFollowerCnt())
+                .followedCnt(followCount.getFollowedCnt())
+                .build();
     }
 }
