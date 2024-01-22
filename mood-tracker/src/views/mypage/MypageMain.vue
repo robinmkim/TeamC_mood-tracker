@@ -180,13 +180,14 @@ export default {
           { name: "기분", id: "mood" },
           { name: "게시글", id: "post" },
           { name: "달력", id: "calander" },
+          { name: "좋아요", id: "like" },
+
         ];
       } else {
         this.tabs = [
           { name: "기분", id: "mood" },
           { name: "게시글", id: "post" },
           { name: "달력", id: "calander" },
-          { name: "좋아요", id: "like" },
         ];
         this.isVisible = true;
       }
