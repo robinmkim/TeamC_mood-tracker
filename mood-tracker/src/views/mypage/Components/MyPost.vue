@@ -16,6 +16,7 @@
 <script>
 import apiClient from "@/utils/apiClient";
 import PostDetail from "@/components/post/PostDetail.vue";
+import { jwtDecode } from "jwt-decode";
 
 export default {
   name: "MyPost",
@@ -34,6 +35,15 @@ export default {
   },
   methods: {
     getMyBoardList() {
+      let mid = this.$route.path.replace("/", "");
+      // 파라미터로 받은 memberId가 비어있으면 내 정보를 가져옴
+
+      if (mid === "") {
+        const token = localStorage.getItem("jwtToken");
+        const decoded = jwtDecode(token);
+        mid = decoded.m_id;
+      }
+
       // this.getBIdList();
       if (this.isLoading) {
         console.log("post로딩중");
@@ -42,12 +52,11 @@ export default {
 
       this.isLoading = true;
       apiClient
-        .get(`/mypage/mylist?lastRowNum=${this.MylastRowNum}`)
+        .get(`/mypage/mylist?lastRowNum=${this.MylastRowNum}&mid=${mid}`)
         .then((res) => {
           console.log("my post 넘어옴");
           this.MylastRowNum += res.data.length;
           this.MybIdList = [...this.MybIdList, ...res.data];
-          console.los(res.data);
           // this.handlePostScroll();
         })
         .catch((err) => {
