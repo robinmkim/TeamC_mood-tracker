@@ -11,20 +11,27 @@
     <div class="flex-grow">
       <div>
         <div>
-          <button @click="prevMonth" class="p-2">◀</button>
-          <span class="text-lg">{{ currentMonth }}월</span>
-          <button @click="nextMonth" class="p-2">▶</button>
+          <div class="my-2">
+            <div class="text-xs mb-[-5px] text-slate-500">{{ this.year }}</div>
+            <button @click="prevMonth" class="px-2">◀</button>
+            <span class="text-lg">{{ currentMonth }}월</span>
+            <button @click="nextMonth" class="px-2">▶</button>
+          </div>
         </div>
         <table class="w-full">
-          <thead class="w-full">
+          <thead class="w-full shadow flex-auto">
             <th
               v-for="week in weekend"
               :key="week"
-              class="p-2 border-r w-auto h-10 xl:text-sm text-xs"
+              class="p-2 h-10 xl:text-sm text-xs flex-col items-center text-center"
             >
-              <span class="xl:block lg:block md:block sm:block hidden">{{
-                week
-              }}</span>
+              <span
+                class="w-20 xl:block lg:block md:block sm:block hidden ="
+                :class="{
+                  'text-red-400': week === 'Sunday',
+                }"
+                >{{ week }}</span
+              >
               <span class="xl:hidden lg:hidden md:hidden sm:hidden block">{{
                 week.slice(0, 3)
               }}</span>
@@ -36,21 +43,43 @@
               v-for="(date, idx) in dates"
               :key="idx"
               class="text-center h-12"
-              @click="isModalOpen = true"
             >
               <td
                 v-for="(day, secondIdx) in date"
                 :key="secondIdx"
-                class="border p-1 h-24 w-96 transition cursor-pointer duration-500 ease hover:bg-gray-300"
-                @click="setSelectedDate(day)"
+                class="p-1 transition cursor-pointer duration-500 ease"
+                :class="{
+                  'hover:bg-transparent': day === null,
+                }"
+                @click="day !== null ? setSelectedDate(day) : () => {}"
               >
-                <div class="flex flex-col h-24 mx-auto w-full overflow-hidden">
-                  <div class="top h-5 w-full">
-                    <span class="text-gray-500">{{ day }}</span>
-                  </div>
+                <div
+                  class="flex flex-col h-24 mx-auto w-full overflow-hidden hover:bg-teal-50 rounded-lg"
+                  :class="{
+                    'hover:bg-transparent': day === null,
+                  }"
+                >
                   <div
-                    class="bottom flex-grow h-30 py-2 w-full cursor-pointer item-center justify-center"
-                  ></div>
+                    class="bottom flex flex-grow h-30 py-2 w-full cursor-pointer item-center justify-center"
+                  >
+                    <!-- {{ getTopSentiment(day) }} -->
+                    <img
+                      v-show="this.sentimentList[day - 1]"
+                      :src="`http://localhost:8083/images/${
+                        this.sentimentList[day - 1]
+                      }.png`"
+                      alt="Post image"
+                      class="items-center rounded-lg w-12 h-12"
+                    />
+                    <!-- {{ getTopSentiment(day) }} -->
+                  </div>
+                  <div class="top h-5 w-full">
+                    <span
+                      class="text-gray-500 h-5 w-5"
+                      :class="{ 'text-red-400': secondIdx === 0 }"
+                      >{{ day }}</span
+                    >
+                  </div>
                 </div>
               </td>
             </tr>
@@ -93,6 +122,7 @@ export default {
       isModalOpen: false,
       selectedDate: null,
       ByDateList: [],
+      sentimentList: [],
     };
   },
   methods: {
@@ -117,6 +147,7 @@ export default {
         });
     },
     calendarData() {
+      // 현재 월의 첫번째 날, 마지막 날, 지난달의 마지망 날 등을 계산하여 달력에 표시할 데이터를 생성
       const [monthFirstDay, monthLastDate, lastMonthLastDate] =
         this.getFirstDayLastDate(this.year, this.month);
       this.dates = this.getMonthOfDays(
@@ -142,12 +173,20 @@ export default {
       let prevDay = prevMonthLastDate - monthFirstDay + 1;
       const dates = [];
       let weekOfDays = [];
+
+      // 이전 달의 마지막 날짜 이후부터 현재 월의 마지막 날짜까지만 추가
+      while (prevDay <= prevMonthLastDate) {
+        weekOfDays.push(prevDay);
+        prevDay += 1;
+      }
+
       while (day <= monthLastDate) {
         if (day === 1) {
-          // 1일이 어느 요일인지에 따라 테이블에 그리기 위한 지난 셀의 날짜들을 구할 필요가 있다.
-          for (let j = 0; j < monthFirstDay; j += 1) {
-            weekOfDays.push(prevDay);
-            prevDay += 1;
+          // 1일이 어느 요일인지에 따라 테이블에 그리기 위한 이번 달의 날짜들을 구할 필요가 있다.
+          weekOfDays = [];
+          for (let i = 0; i < monthFirstDay; i++) {
+            // 이전 달의 마지막 날짜 이후부터 현재 월의 첫 날짜까지는 비워둡니다.
+            weekOfDays.push(null);
           }
         }
         weekOfDays.push(day);
@@ -158,15 +197,19 @@ export default {
         }
         day += 1;
       }
+
+      // 남은 날짜 추가
       const len = weekOfDays.length;
       if (len > 0 && len < 7) {
         for (let k = 1; k <= 7 - len; k += 1) {
-          weekOfDays.push(k);
+          weekOfDays.push(null); // 다음 달의 시작부터 나머지 요일을 채웁니다.
         }
+        dates.push(weekOfDays); // 남은 날짜 추가
       }
-      if (weekOfDays.length > 0) dates.push(weekOfDays); // 남은 날짜 추가
+
       return dates;
     },
+
     prevMonth() {
       if (this.month === 1) {
         this.year -= 1;
@@ -176,6 +219,7 @@ export default {
       }
       this.currentMonth = this.month; // 수정된 부분
       this.calendarData();
+      this.getTopSentiment();
     },
     nextMonth() {
       if (this.month === 12) {
@@ -186,8 +230,10 @@ export default {
       }
       this.currentMonth = this.month; // 수정된 부분
       this.calendarData();
+      this.getTopSentiment();
     },
     formatDate(year, month, day) {
+      // 년, 월, 일을 받아서 'yy/mm/dd' 형식으로 포맷팅하여 반환
       // 각 자리수가 한 자리 수인 경우 앞에 0을 붙여줍니다.
       const formattedYear = year.toString().padStart(2, "0");
       const formattedMonth = (month + 1).toString().padStart(2, "0");
@@ -202,6 +248,60 @@ export default {
       this.modalData.mday = day;
       this.modalData.mmonth = this.currentMonth;
       this.getByRegList(formattedDate);
+      this.isModalOpen = true;
+    },
+    getImageUrl() {
+      return `http://localhost:8083/images/${this.board.b_sentiment}.png`;
+    },
+    getTopSentiment() {
+      const lastDate = new Date(this.year, this.month, 0).getDate();
+      const firstDay = 1;
+      console.log("year: " + this.year);
+      console.log("month: " + this.month);
+
+      console.log("monthFirstDay: " + 1);
+      console.log("lastDate: " + lastDate);
+      // sentimentList
+
+      apiClient
+        .get(
+          `/mypage/getTopSentiment?year=${this.year}&month=${this.month}&firstDay=${firstDay}&lastDate=${lastDate}&m_id=5`
+        )
+        .then((response) => {
+          this.sentimentList = response.data;
+          console.log(this.sentimentList);
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+
+      // console.log("lastMonthLastDate: " + lastMonthLastDate);
+
+      // if (day !== null) {
+      //   const formattedDate = this.formatDate(this.year, this.month - 1, day);
+      //   var img_url;
+      //   apiClient
+      //     .get(`/mypage/getTopSentiment?regdate=${formattedDate}&m_id=5`)
+      //     .then((response) => {
+      //       if (!response.data) {
+      //         img_url = `http://localhost:8083/images/Calendar_${response.data}.png`;
+      //       } else {
+      //         img_url = "http://localhost:8083/images/nullPostDayImage.png";
+      //       }
+      //     })
+      //     .catch((error) => {
+      //       console.error("Error fetching the board data:", error);
+      //       // return `http://localhost:8083/images/nullPostDayImage.png`;
+      //     });
+      //   console.log(img_url);
+      //   return img_url;
+      // } else {
+      //   return "!"; // 또는 다른 기본값을 반환할 수 있습니다.
+      // }
+      // this.ByDateList = [];
+      // this.modalData.mday = day;
+      // this.modalData.mmonth = this.currentMonth;
+      // this.getByRegList(formattedDate);
     },
     getByRegList(formattedDate) {
       console.log("컨트롤러에 전달할 날짜:", formattedDate);
@@ -233,6 +333,7 @@ export default {
     this.month = date.getMonth() + 1;
     this.currentMonth = this.month;
     this.calendarData();
+    this.getTopSentiment();
   },
 };
 </script>

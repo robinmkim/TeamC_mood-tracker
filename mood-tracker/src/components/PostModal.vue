@@ -20,97 +20,51 @@
           />
         </svg>
       </div>
-      <div
-        class="h-5/6 bg-white rounded shadow-lg flex overflow-hidden"
-        @click.stop=""
-      >
-        <!--리스트-->
-        <div class="flex flex-col min-h-5/6 flex-grow overflow-auto">
-          <div class="flex h-14 border-b justify-center items-center">
+      <div class="w-full h-full bg-white rounded shadow-lg flex" @click.stop="">
+        <!-- PostList -->
+        <div class="w-1/3 flex flex-col min-h-5/6">
+          <div class="flex border-b justify-center items-center h-1/6">
             {{ this.month }}월 {{ day }}일
           </div>
           <div
-            class="flex flex-col h-16 border-b items-center justify-start pl-4"
+            class="flex flex-col overflow-y-auto"
             v-if="ByDateList.length > 0"
           >
-            <post-detail v-for="bId in ByDateList" :key="bId" :b_id="bId" />
+            <PostList
+              v-for="bId in ByDateList"
+              :key="bId"
+              :b_id="bId"
+              @postSelected="handlePostSelected"
+            />
           </div>
           <div v-else>데이터가 없습니다.</div>
         </div>
-        <div class="border-x flex flex-grow">
-          <div class="h-full">
-            <!-- post 내용 -->
-            <postDetail></postDetail>
-          </div>
-          <div class="flex flex-col flex-grow border-l border-l-slate-300">
-            <!-- 댓글창 -->
-            <div class="p-3 border-b border-b-slate-300">
-              <div class="postHerder flex flex-row m">
-                <div class="h-14 w-14 overflow-hidden relative">
-                  <img
-                    class="postDetailUserImg object-contain rounded-full"
-                    src="@/assets/logo.png"
-                    alt="user icon"
-                  />
-                </div>
-                <div class="flex flex-row items-center mx-3">
-                  <div class="notiUserName font-bold text-lg">UserName</div>
-                  <div class="text-slate-400 text-sm ml-2">2분전</div>
-                </div>
-                <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
-                  <!-- 미트볼 아이콘-->
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6 pt-1"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div class="text-left ml-6 mt-2">댓글내용~~~ 01</div>
+        <!-- postDetail -->
+        <div class="border-x flex flex-grow w-2/3 overflow-y-auto">
+          <div v-if="this.selectedPostId === null">아무것도 안 불러옴!</div>
+          <div v-else class="w-full">
+            <div class="shadow">
+              <postDetail
+                :b_id="selectedPostId"
+                :isDropdownOpen="openCm_id === cm_id"
+                :on-board-data-loaded="getCm_idList"
+                customClass="w-full"
+                @toggle-dropdown="toggleDropdown"
+              ></postDetail>
             </div>
 
-            <div class="p-3 border-b border-b-slate-300 pl-10">
-              <div class="postHerder flex flex-row m">
-                <div class="h-14 w-14 overflow-hidden relative">
-                  <img
-                    class="postDetailUserImg object-contain rounded-full"
-                    src="@/assets/logo.png"
-                    alt="user icon"
-                  />
-                </div>
-                <div class="flex flex-row items-center mx-3">
-                  <div class="notiUserName font-bold text-lg">UserName2</div>
-                  <div class="text-slate-400 text-sm ml-2">2분전</div>
-                </div>
-                <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
-                  <!-- 미트볼 아이콘-->
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6 pt-1"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div class="text-left ml-6 mt-2">댓글내용~~~ 02</div>
+            <div>
+              <CommentList
+                v-for="cm_id in commentList"
+                :key="cm_id"
+                :cm_id="cm_id"
+                :isDropdownOpen="openCm_id === cm_id"
+                @toggle-dropdown="toggleDropdown"
+                class="mx-6"
+              />
             </div>
+
+            <!-- <PostDetailPage :bb_id="selectedPostId" /> -->
           </div>
         </div>
       </div>
@@ -119,12 +73,26 @@
 </template>
 
 <script>
+import apiClient from "@/utils/apiClient";
 import { number } from "yup";
-import PostDetail from "./post/PostDetail";
+// import PostDetail from "./post/PostDetail";
+import PostList from "./post/PostList";
+import PostDetail from "@/components/post/PostDetail";
+import CommentList from "@/components/post/commentAndReply/CommentList";
+
 export default {
+  data() {
+    return {
+      selectedPostId: null,
+      commentList: [],
+    };
+  },
   name: "PostModal",
   components: {
+    // PostDetail,
+    PostList,
     PostDetail,
+    CommentList,
   },
   props: {
     isOpen: {
@@ -163,8 +131,23 @@ export default {
     document.body.classList.remove("overflow-hidden");
   },
   methods: {
+    getCm_idList() {
+      apiClient
+        .get(`/jh_comment/getCm_idList?b_id=${this.selectedPostId}`)
+        .then((response) => {
+          this.commentList = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+    },
+    handlePostSelected(b_id) {
+      this.selectedPostId = b_id;
+    },
     closeModal() {
       this.$emit("close");
+      this.selectedPostId = null;
+      this.getCm_idList();
     },
   },
 };
