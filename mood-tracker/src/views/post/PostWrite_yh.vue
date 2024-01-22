@@ -106,7 +106,7 @@ export default {
   },
   name: "PostWrite",
   mounted() {
-    // userName을 가져옵니다.
+    // 회원이름(m_handle)을 가져옵니다.
     apiClient.get("/member/userInfo/memberHandle").then((res) => {
       console.log("memberHandle = ", res.data);
       this.memberHandle = res.data;

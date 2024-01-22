@@ -133,7 +133,7 @@ export default {
     async goToResult() {
       // 분석하기 -> 분석중
       this.isLoading = true;
-      // [ST] jwtToken decode해서 m_id를 추출한다.
+      // [ST] jwtToken decode(m_id를 추출한다.)
       const token = localStorage.getItem("jwtToken");
       console.log(token);
       const decoded = jwtDecode(token);
@@ -142,16 +142,8 @@ export default {
       // [ED] jwtToken decode
 
       const formData = new FormData();
-      // formData.append("file1", this.$refs.fileInput.files[0]);
-
       formData.append("file1", this.fileTo);
-      formData.append("m_id", decoded.m_id); // 임시 유저 회원번호 (로그인 되면 수정 필수)
-      // formData.append("token", token); // decode는 장고에서.
-
-      //장고로 토큰, file1을 보낸다. 토큰decode는 장고에서 하도록 수정할 것
-      // const {data} = await this.$axios({
-
-      // })
+      formData.append("m_id", decoded.m_id);
 
       await axios
         .post("http://localhost:9000/face/predictFace", formData, {
