@@ -49,7 +49,7 @@
         </div>
       </div>
       <router-link to="/chat" @click="clickChatIcon">
-        <!--  채팅  -->
+        <!--  Alert 채팅  -->
         <div v-if="this.$store.state.alertNewChat">
           <div
             class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
@@ -74,7 +74,7 @@
         </svg>
       </router-link>
       <router-link to="/noti" @click="clickNoticeIcon">
-        <!--  알림  -->
+        <!--  Alert 알림  -->
         <div v-if="this.$store.state.alertNewNotice">
           <div
             class="notiDisplay absolute mt-[2px] ml-[3px] z-1 h-3 w-3 rounded-full bg-red-500"
@@ -126,7 +126,7 @@ export default {
     const memberId = ref(null);
     const store = useStore(); // vuex store 가져오기
     const route = useRoute(); // route.path로 보고있는 페이지 경로 가져오기
-
+    //
     watch(
       () => EventBus.myLoginEvent,
       (newValue) => {
@@ -136,7 +136,7 @@ export default {
           if (newValue.message == "login") {
             console.log(">>>>>> RECEIVED EVENTBUS ==> ", newValue.message);
             console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIng");
-            connect();
+            connect(); // 알림용 웹소켓 연결
             getUnreadNotice(); // 안 읽은 알림의 개수를 가져오고 알림아이콘을 표시한다.
           } else {
             console.log(
@@ -153,19 +153,12 @@ export default {
         console.log("ch.채팅 => ", newValue.message);
       }
     );
-    // watch(
-    //   () => EventBus.newAlertNotice_return,
-    //   (newValue) => {
-    //     console.log(">>>>>> HEADER :: Return from NotiPage", newValue.message);
-    //     showAlertNoticeIcon();
-    //   }
-    // );
-    //
+
     function getUnreadNotice() {
+      // 안 읽은 알림 개수를 체크해서 알림아이콘을 표시
       apiClient.get("/notification/select/unread").then((res) => {
         console.log(">>>>>> HEADER :: UNREAD NOTICE COUNT = ", res.data);
         const unreadNoticeNumber = res.data;
-        // 안 읽은 알림의 개수가  1개 이상이면 알림 아이콘을 띄웁니다.
         if (unreadNoticeNumber > 0) {
           console.log(">>>>>> HEADER :: UNREAD => SHOW ALERT NOTICE ICON !!");
           showAlertNoticeIcon();
@@ -173,6 +166,7 @@ export default {
       });
     }
     function disconnect() {
+      // 로그아웃 시 사용 ( 웹소켓 연결 해제 )
       console.log(">>>>>> HEADER :: WEBSOCKET DIS-CONNECTIED");
       console.log(">>>>>> HEADER :: UNSUB => ", subscriptionId.value);
       if (stompClient.value) {
@@ -323,7 +317,7 @@ export default {
       //
       this.hideAlertNoticeIcon();
       this.hideAlertChatIcon();
-      this.disconnect();
+      this.disconnect(); // 알림 웹소켓 연결 해제
     },
     clickChatIcon() {
       this.hideAlertChatIcon();
