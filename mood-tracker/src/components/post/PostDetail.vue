@@ -155,7 +155,7 @@
             </button>
           </span>
         </div>
-        <div v-else>
+        <div v-else class="whitespace-pre">
           {{ board.b_content }}
         </div>
       </div>
@@ -226,7 +226,12 @@
             }}</span>
           </a>
 
-          <span class="ml-2">{{ sentimentEmoji }}</span>
+          <img
+            class="cursor-pointer ml-2"
+            :src="`http://localhost:8083/images/${board.b_sentiment}.png`"
+            width="20"
+            height="20"
+          />
           <!-- 자연어처리 부분 -->
           <div class="ml-2">
             <svg
@@ -296,15 +301,15 @@ export default {
         showDrop: this.isDropdownOpen,
         processedText: "",
       },
-      emotionMap: {
-        "😆": "happy",
-        "😡": "angry",
-        "😬": "anxiety",
-        "🤕": "hurt",
-        "😐": "neutral",
-        "😢": "sad",
-        "😨": "surprise",
-      },
+      sentimentList: [
+        "happy",
+        "angry",
+        "anxiety",
+        "hurt",
+        "neutral",
+        "sad",
+        "surprise",
+      ],
       user: {
         m_name: null,
         m_hanble: null,
@@ -322,14 +327,14 @@ export default {
       // 본문의 일부만 보여주되, 본문이 존재하는 경우에만 작업을 수행합니다.
       return this.board.b_content ? this.board.b_content.slice(0, 20) : "";
     },
-    sentimentEmoji() {
-      // 감정에 해당하는 이모지를 반환합니다.
-      return (
-        Object.keys(this.emotionMap).find(
-          (key) => this.emotionMap[key] === this.board.b_sentiment
-        ) || ""
-      );
-    },
+    // sentimentEmoji() {
+    //   // 감정에 해당하는 이모지를 반환합니다.
+    //   return (
+    //     Object.keys(this.emotionMap).find(
+    //       (key) => this.emotionMap[key] === this.board.b_sentiment
+    //     ) || ""
+    //   );
+    // },
     imageCount() {
       // mediaList 배열의 길이를 반환합니다.
       return this.board.mediaList.length;
@@ -535,13 +540,6 @@ export default {
       // 컴포넌트 파괴 시 이벤트 제거
       window.removeEventListener("click", this.closeDropdowns);
     },
-    // BoardToggleDropdown() {
-    //   this.$emit("toggle-dropdown", this.b_id);
-    //   // 부모로부터 전달된 isDropdownOpen 값을 내부 상태에 할당
-    //   this.board.showDrop = this.isDropdownOpen;
-    //   // 내부 상태를 이용해 드롭다운을 토글
-    //   this.board.showDrop = !this.board.showDrop;
-    // },
     handleDocumentClick(event) {
       // 클릭된 엘리먼트가 드롭다운 영역인지 확인
       const isDropdown = event.target.closest(".commentDropdown") !== null;
