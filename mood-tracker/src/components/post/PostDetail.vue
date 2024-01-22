@@ -336,7 +336,6 @@ export default {
     },
   },
   methods: {
-
     closeReportModal() {
       this.reportModal = false;
     },
@@ -362,7 +361,9 @@ export default {
           console.log("신고 전송", res);
         })
         .catch((err) => {
-          console.err("전송에 오류가 있습니다.", err);
+          console.log("then으로 들어가지 못하고 여기로 옴");
+          console.log(reportData);
+          console.error("전송에 오류가 있습니다.", err);
         });
     },
 
@@ -401,8 +402,6 @@ export default {
         console.error("서버 오류 : ", error);
       }
     },
-
-
 
     likeThis() {
       apiClient

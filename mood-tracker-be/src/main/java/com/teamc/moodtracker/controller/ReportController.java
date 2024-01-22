@@ -1,5 +1,6 @@
 package com.teamc.moodtracker.controller;
 
+import com.teamc.moodtracker.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -26,6 +27,10 @@ import com.teamc.moodtracker.service.ReportService;
 public class ReportController {
     @Autowired
     private ReportService service;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
 
     // 신고 게시글
     @GetMapping("/list")

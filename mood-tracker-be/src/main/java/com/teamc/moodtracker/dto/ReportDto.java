@@ -2,6 +2,7 @@ package com.teamc.moodtracker.dto;
 
 import java.util.Date;
 
+import lombok.ToString;
 import org.apache.ibatis.type.Alias;
 
 import lombok.Getter;
@@ -10,11 +11,12 @@ import lombok.Setter;
 @Alias("report")
 @Getter
 @Setter
+@ToString
 public class ReportDto {
     private int report_id; // 신고 id
     private int b_c_id; // 신고게시물
     private String report_type; // 신고종류
-    private Date regdate; // 신고날짜
+    private String regdate; // 신고날짜
     private int m_id; // 신고한 사람 번호
     private int r_type; // 신고 타입
 
