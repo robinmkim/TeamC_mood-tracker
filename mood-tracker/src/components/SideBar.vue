@@ -128,14 +128,10 @@
             />
           </div>
         </div>
-        <router-link to="/" class="hover:border-b border-black">
-          <div class="flex-col justify-center items-center mt-2 mb-6">
-            <span class="flex justify-center text-lg font-bold">
-              {{ userInfo.m_name }}
-            </span>
-            <span class="flex justify-center text-slate-500">
-              {{ userInfo.m_handle }}
-            </span>
+        <router-link to="/">
+          <div class="text-center mt-2 mb-6">
+            <h2 class="text-lg font-bold">{{ userInfo.m_name }}</h2>
+            <p class="text-slate-500">{{ userInfo.m_handle }}</p>
           </div>
         </router-link>
       </div>
@@ -144,7 +140,7 @@
 
     <!-- 메뉴 시작 -->
     <nav class="p-4 text-left">
-      <router-link to="/timeline" class="text-lg">
+      <router-link to="/" class="text-lg">
         <div class="flex px-2 hover:bg-[#F67D73]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"

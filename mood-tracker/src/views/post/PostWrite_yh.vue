@@ -106,7 +106,7 @@ export default {
   },
   name: "PostWrite",
   mounted() {
-    // userName을 가져옵니다.
+    // 회원이름(m_handle)을 가져옵니다.
     apiClient.get("/member/userInfo/memberHandle").then((res) => {
       console.log("memberHandle = ", res.data);
       this.memberHandle = res.data;
@@ -140,7 +140,7 @@ export default {
         console.log(res.data.ar_generated_img);
         //장고로 부터 FileResponse로 이미지파일을 반환받아 blob형태로 읽고
         axios
-          .get("http://192.168.0.13:9000/face/downloadGeneratedImage", {
+          .get("http://localhost:9000/face/downloadGeneratedImage", {
             params: {
               imageName: res.data.ar_generated_img,
             },
