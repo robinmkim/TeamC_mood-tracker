@@ -132,6 +132,7 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
+import { jwtDecode } from "jwt-decode";
 export default {
   name: "replyList",
   components: {},
@@ -180,8 +181,6 @@ export default {
         })
         .then((res) => {
           if (res.data === 1) {
-            // 응답 값이 1이면 페이지를 새로고침
-            // window.location.reload();
             this.getReplyDetail();
           }
         })
@@ -256,7 +255,9 @@ export default {
         .get(`/jh_reply/getReplyDetail?re_id=${this.re_id}`)
         .then((response) => {
           this.reply = response.data;
-          console.log("member: " + response.data.member.m_name);
+          const token = localStorage.getItem("jwtToken");
+          const decoded = jwtDecode(token);
+          this.isMain = this.reply.member.m_id === decoded.m_id ? true : false;
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
