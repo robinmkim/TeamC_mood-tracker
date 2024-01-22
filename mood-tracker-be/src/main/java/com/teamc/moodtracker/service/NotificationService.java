@@ -5,6 +5,7 @@ import com.teamc.moodtracker.dto.JH.JH_CommentDto;
 import com.teamc.moodtracker.dto.JH.JH_ReplyDto;
 import com.teamc.moodtracker.dto.chat.SaveChat;
 import com.teamc.moodtracker.dto.chat.SendChat;
+import com.teamc.moodtracker.dto.follow.FollowRequestDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,5 +46,5 @@ public interface NotificationService {
     void deleteNoticeAllLike(int mId);
 
 
-//    public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO); // 팔로우 부분 pull 한 다음 맞게 수정할 것
+    public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO); // 팔로우 부분 pull 한 다음 맞게 수정할 것
 }

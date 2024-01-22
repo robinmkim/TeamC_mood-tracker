@@ -92,21 +92,6 @@
                         content
                       </div> -->
                     </div>
-
-                    <div
-                      class="notiItemContentButton flex w-1/4 justify-center items-center"
-                    >
-                      <div
-                        class="notiItemContentButtonYes rounded-full mr-3 bg-[#ffede6] h-10 w-20 flex justify-center items-center hover:bg-[#fadcd0] duration-300"
-                      >
-                        수락
-                      </div>
-                      <div
-                        class="notiItemContentButtonNo rounded-full bg-slate-200 h-10 w-20 flex justify-center items-center hover:bg-slate-300 duration-300"
-                      >
-                        거절
-                      </div>
-                    </div>
                   </div>
 
                   <div

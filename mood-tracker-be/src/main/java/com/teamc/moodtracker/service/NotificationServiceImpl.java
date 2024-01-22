@@ -9,6 +9,7 @@ import com.teamc.moodtracker.dto.JH.JH_CommentDto;
 import com.teamc.moodtracker.dto.JH.JH_ReplyDto;
 import com.teamc.moodtracker.dto.chat.SaveChat;
 import com.teamc.moodtracker.dto.chat.SendChat;
+import com.teamc.moodtracker.dto.follow.FollowRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -260,27 +261,27 @@ public class NotificationServiceImpl implements NotificationService{
         notificationDao.deleteNoticeAllLike(mId);
     }
 
-//    @Override
-//    public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO) {
-//        int m_id_from = followRequestDTO.getFollower_id(); // 팔로우 하는 사람
-//        int m_id_to = followRequestDTO.getFollowed_id(); // 팔로우 당하는 사람
-//        String fw_content = "";
-//        if(m_id_from != m_id_to){  // 자기자신 팔로우 불가 -> FollowController에서 검사는 함
-//            // DB 저장
-//            NotificationDto notificationDto = new NotificationDto();
-//            notificationDto.setM_id_to(m_id_to);
-//            notificationDto.setM_id_from(m_id_from);
-//            notificationDto.setN_type("follow");
-//            notificationDto.setN_content(fw_content);
-//            notificationDto.setN_url(""); // 팔로우 알림 클릭 시 이동할 페이지.. 팔로우한 사람 회원페이지?
-//            notificationDao.insertNotice(notificationDto);
-//            // 알림 전송
-//            Alert alert = Alert.builder()
-//                    .type("follow")
-//                    .m_id_to(m_id_to)
-//                    .m_id_from(m_id_from)
-//                    .m_content(fw_content).build();
-//            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
-//        }
-//    }
+    @Override
+    public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO) {
+        int m_id_from = followRequestDTO.getFollowerId(); // 팔로우 하는 사람
+        int m_id_to = followRequestDTO.getFollowedId(); // 팔로우 당하는 사람
+        String fw_content = "";
+        if(m_id_from != m_id_to){  // 자기자신 팔로우 불가 -> FollowController에서 검사는 함
+            // DB 저장
+            NotificationDto notificationDto = new NotificationDto();
+            notificationDto.setM_id_to(m_id_to);
+            notificationDto.setM_id_from(m_id_from);
+            notificationDto.setN_type("follow");
+            notificationDto.setN_content(fw_content);
+            notificationDto.setN_url("http://localhost:8081/"+ m_id_from); // 팔로우 알림 클릭 시 이동할 페이지.. 팔로우한 사람 회원페이지?
+            notificationDao.insertNotice(notificationDto);
+            // 알림 전송
+            Alert alert = Alert.builder()
+                    .type("follow")
+                    .m_id_to(m_id_to)
+                    .m_id_from(m_id_from)
+                    .m_content(fw_content).build();
+            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+        }
+    }
 }
