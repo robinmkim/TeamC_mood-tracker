@@ -283,20 +283,25 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
+import { jwtDecode } from "jwt-decode";
 
 export default {
   name: "SideBar",
   data() {
     return {
       showSidebar: true,
+      memberId: "",
       userInfo: {},
     };
   },
   methods: {
     // 유저 정보
     getMemberInfo() {
+      const token = localStorage.getItem("jwtToken");
+      const decoded = jwtDecode(token);
+      this.memberId = decoded.m_id;
       apiClient
-        .get(`/member/myInfo`)
+        .get(`/member/info/${this.memberId}`)
         .then((info) => {
           console.log("유저 정보를 불러옵니다");
           this.userInfo = info.data;
@@ -325,7 +330,8 @@ export default {
   },
   computed: {
     isMyPage() {
-      const mypage = this.$route.path === "/";
+      // 현재 경로가 / 이거나 /mypage로 시작할 때 true
+      const mypage = this.$route.path.startsWith("/mypage") || /^\/(\d+)$/.test(this.$route.path) || this.$route.path === "/";
       return !mypage;
     },
   },

@@ -15,7 +15,7 @@
                 alt="user icon"
               />
             </div>
-            <span class="ml-2">{{ user.m_name }}</span>
+            <span class="ml-2">{{ memberHandle }}</span>
             <img
               class="cursor-pointer ml-2"
               @click="isExpanded = !isExpanded"
@@ -92,6 +92,7 @@ import { jwtDecode } from "jwt-decode";
 export default {
   data() {
     return {
+      memberHandle: "",
       text: "",
       files: [],
       isExpanded: false,
@@ -115,13 +116,12 @@ export default {
     };
   },
   name: "PostWrite",
-  created() {
-    this.getUsetInfo();
-  },
-  props: {
-    updateParentData: {
-      type: Function,
-    },
+  mounted() {
+    // 회원이름(m_handle)을 가져옵니다.
+    apiClient.get("/member/userInfo/memberHandle").then((res) => {
+      console.log("memberHandle = ", res.data);
+      this.memberHandle = res.data;
+    });
   },
   methods: {
     getUsetInfo() {

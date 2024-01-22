@@ -43,5 +43,11 @@
         WHERE (SELECT COUNT(*) FROM board WHERE b_id > b.b_id) BETWEEN #{lastRowNum} AND (#{lastRowNum} + 4)
         ORDER BY b.b_id DESC
     </select>
+
+    <select id="getMemberIdByBoardId" parameterType="int" resultType="int">
+        SELECT m_id
+        FROM board
+        WHERE b_id = #{b_id}
+    </select>
 </mapper>
 
