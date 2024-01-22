@@ -18,6 +18,7 @@ import EmptyLayout from "@/layouts/EmptyLayout.vue";
 import LogIn from "@/views/auth/LogIn";
 import SignupEmail from "@/views/auth/SignupEmail";
 import AdminPage from "@/views/admin/AdminPage";
+import chatbotRouter from "./routers/chatbotRouter";
 
 const routes = [
   {
@@ -51,6 +52,7 @@ const routes = [
       ...faceRouter,
       ...postDetailRouter,
       ...questionRouter,
+      ...chatbotRouter,
     ],
   },
   {
