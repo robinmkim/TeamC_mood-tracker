@@ -22,7 +22,7 @@
       </div>
       <div class="w-full h-full bg-white rounded shadow-lg flex" @click.stop="">
         <!-- PostList -->
-        <div class="w-1/3 flex flex-col min-h-5/6">
+        <div class="w-1/3 flex flex-col min-h-5/6 bg-red-200">
           <div class="flex border-b justify-center items-center h-1/6">
             {{ this.month }}월 {{ day }}일
           </div>
