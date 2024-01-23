@@ -164,8 +164,12 @@
         </div>
         <router-link to="/">
           <div class="text-center mt-2 mb-6">
-            <h2 class="text-lg font-bold">{{ this.$store.state.userInfo.m_name }}</h2>
-            <p class="text-slate-500">{{ this.$store.state.userInfo.m_handle }}</p>
+            <h2 class="text-lg font-bold">
+              {{ this.$store.state.userInfo.m_name }}
+            </h2>
+            <p class="text-slate-500">
+              {{ this.$store.state.userInfo.m_handle }}
+            </p>
           </div>
         </router-link>
       </div>
@@ -487,7 +491,7 @@ export default {
   },
   watch: {
     userInfo: {
-      handler: 'updateProfileImageUrl',
+      handler: "updateProfileImageUrl",
       deep: true,
     },
   },
@@ -505,7 +509,7 @@ export default {
   },
   methods: {
     updateProfileImageUrl() {
-      this.profileImageUrl = `http://localhost:8083/${this.$store.state.userInfo.m_img_path}${this.$store.state.userInfo.m_img_name}`
+      this.profileImageUrl = `http://localhost:8083/${this.$store.state.userInfo.m_img_path}${this.$store.state.userInfo.m_img_name}`;
     },
     adjustHeight(e) {
       // textarea높이 자동 조절

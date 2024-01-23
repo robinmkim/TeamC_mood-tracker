@@ -114,6 +114,11 @@
         WHERE ROWNUM = 1
     </select>
 
+<<<<<<< HEAD
+=======
+    </select>
+
+>>>>>>> 38f579a (💄 프로필 이미지 비율 등 수정)
     <select id="getMembersOfThisRoom" parameterType="int" resultType="int">
         SELECT m_id
         FROM chat
