@@ -26,6 +26,7 @@
             <button
               id="dupcheck"
               type="button"
+              @click="checkHandle"
               class="border-2 rounded-md ml-2 h-[44px] w-[75px] text-slate-500 border-[#64CCC5]"
             >
               중복확인
@@ -56,6 +57,8 @@ import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
+import apiClient from "@/utils/apiClient";
+
 const validationSchema = yup.object().shape({
   username: yup
     .string()
@@ -100,11 +103,24 @@ export default {
         },
       });
     };
+    const checkHandle = () => {
+      apiClient
+        .post(`api/auth/checkHandle`, { handle: username.value })
+        // .post(`api/auth/checkHandle?handle=${username.value}`)
+        .then((res) => {
+          console.log(res.data);
+          alert("사용가능한 닉네임입니다.");
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    };
 
     return {
       username,
       errors,
       onNextClick,
+      checkHandle,
     };
   },
 };

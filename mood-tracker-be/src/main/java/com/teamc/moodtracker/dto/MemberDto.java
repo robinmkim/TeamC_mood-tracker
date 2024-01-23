@@ -31,6 +31,9 @@ public class MemberDto implements UserDetails {
     private String m_img_path;
     private String m_bio;
     private String m_role = "ROLE_USER";
+
+    private String img_byte;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // role.name() 권한을 가져와서 , 스프링 시큐리티 타입의 Authority로 변환 해준다.
@@ -66,6 +69,11 @@ public class MemberDto implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true; // 계정이 활성화되어 있음을 나타냄
+    }
+
+    // 추가 : 검색 기능을 위한 메서드
+    public boolean nameKeyword(String keyword) {
+        return m_name.contains(keyword);
     }
 
 }

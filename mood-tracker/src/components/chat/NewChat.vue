@@ -24,11 +24,11 @@
                 <div v-for="member in members" :key="member.mem_num" class="flex justify-between border-b-2">
                     <div class="my-2 mx-3">
                         <!-- 상대 이름 -->
-                        {{ member.email }}
+                        {{ member.m_name }}
                     </div>
                     <div>
                         <!-- 선택 버튼 -->
-                        <button class="my-2 mx-3" @click="startChatting">채팅</button>
+                        <button class="my-2 mx-3" @click="startChatting(member.m_id, member.m_name)">채팅</button>
                     </div>
                 </div>
             </div>
@@ -45,8 +45,12 @@ export default {
         closeModal() {
             this.$emit('close');
         },
-        startChatting() {
-            
+        startChatting(memberId, memberName) {
+            const eventData = {
+                memberId: memberId,
+                memberName: memberName,
+            };
+            this.$emit('start-chat', eventData);
         }
     },
 };

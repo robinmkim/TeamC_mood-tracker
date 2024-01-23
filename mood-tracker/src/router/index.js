@@ -8,26 +8,117 @@ import notiRouter from "./routers/notiRouter";
 import faceRouter from "./routers/faceRouter";
 import postDetailRouter from "./routers/postRouter";
 import questionRouter from "./routers/questionRouter";
-import adminRouter from "./routers/adminRouter";
 import authRouter from "./routers/authRouter";
+import postRouter_yh from "./routers/postRouter_yh";
+import searchPage from "./routers/searchPage";
+import MypageMain from "/src/views/mypage/MypageMain";
+import SideWidget from "/src/components/SideWidget";
+import DefaultLayout from "@/layouts/DefaultLayout.vue";
+import EmptyLayout from "@/layouts/EmptyLayout.vue";
+import LogIn from "@/views/auth/LogIn";
+import SignupEmail from "@/views/auth/SignupEmail";
+import AdminPage from "@/views/admin/AdminPage";
+import apiClient from "@/utils/apiClient";
+import ErrorPage from "@/views/error/ErrorPage";
+import chatbotRouter from "./routers/chatbotRouter";
 
 const routes = [
   {
-    path: "/timeline",
-    component: PageHome,
+    path: "/",
+    component: DefaultLayout,
+    children: [
+      {
+        path: "",
+        components: {
+          default: MypageMain,
+          widget: SideWidget,
+        },
+      },
+      {
+        path: "/error",
+        components: {
+          default: ErrorPage,
+          widget: SideWidget,
+        },
+      },
+      {
+        path: "/:memberId",
+        components: {
+          default: MypageMain,
+          widget: SideWidget,
+        },
+        beforeEnter: (to, from, next) => {
+          apiClient
+          .get(`/member/info/${to.params.memberId}`)
+          .then((res) => {
+            if (res.data !== "") {
+              next();
+            } else {
+              next("/error");
+              // next();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            next("/error");
+          }
+          );
+        },
+      },
+      {
+        path: "/timeline",
+        components: {
+          default: PageHome,
+          widget: SideWidget,
+        },
+      },
+      {
+        path: "/postwrite",
+        component: PostWrite,
+        widget: SideWidget,
+      },
+      ...postRouter_yh,
+      ...searchPage,
+      ...chatRouter,
+      ...myPageRouter,
+      ...notiRouter,
+      ...faceRouter,
+      ...postDetailRouter,
+      ...questionRouter,
+      ...chatbotRouter,
+    ],
   },
   {
-    path: "/postwrite",
-    component: PostWrite,
+    path: "/login",
+    component: EmptyLayout,
+    children: [
+      {
+        path: "",
+        component: LogIn,
+      },
+    ],
   },
-  ...chatRouter,
-  ...myPageRouter,
-  ...notiRouter,
-  ...faceRouter,
-  ...postDetailRouter,
-  ...questionRouter,
-  ...adminRouter,
-  ...authRouter,
+  {
+    path: "/admin",
+    component: EmptyLayout,
+    children: [
+      {
+        path: "",
+        component: AdminPage,
+      },
+    ],
+  },
+  {
+    path: "/signup",
+    component: EmptyLayout,
+    children: [
+      {
+        path: "",
+        component: SignupEmail,
+      },
+      ...authRouter,
+    ],
+  },
 ];
 
 const router = createRouter({
@@ -35,15 +126,15 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const publicPages = ["/login"];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem("jwtToken");
+router.beforeEach((to, from, next) => {
+  const publicPages = ["/login"];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem("jwtToken");
 
-//   if (authRequired && !loggedIn) {
-//     return next("/login");
-//   }
-//   next();
-// });
+  if (authRequired && !loggedIn) {
+    return next("/login");
+  }
+  next();
+});
 
 export default router;

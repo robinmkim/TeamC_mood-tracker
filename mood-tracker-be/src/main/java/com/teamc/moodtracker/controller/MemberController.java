@@ -1,13 +1,21 @@
 package com.teamc.moodtracker.controller;
 
+import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import static java.lang.System.console;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,5 +30,16 @@ public class MemberController {
     PasswordEncoder passwordEncoder;
 
     String imageDirectory = "src/main/resources/static/images/";
+
+    @GetMapping("/userInfo/memberHandle") // 윤영호 postWrite_yh에서 닉네임 가져올 때 사용.
+    public String getMemberHandle(@AuthenticationPrincipal MemberDto memberDto) {
+        return memberDto.getM_handle();
+    }
+
+    @GetMapping("/search")
+    public List<MemberDto> SearchMember(@RequestParam String memberName) {
+        List<MemberDto> searchMembers = service.SearchMember(memberName);
+        return searchMembers;
+    }
 
 }

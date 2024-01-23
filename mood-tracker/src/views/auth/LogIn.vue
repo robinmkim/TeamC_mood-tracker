@@ -51,7 +51,7 @@
           <div class="text-gray-400 text-sm px-2">또는</div>
           <div class="bg-gray-200 h-0.5 flex-grow"></div>
         </div>
-        <router-link to="/singup/email" class="w-full">
+        <router-link to="/signup" class="w-full">
           <button
             type="button"
             class="bg-[#64CCC5] w-full text-white p-2 rounded-lg shadow hover:bg-[#3f827e]"
@@ -70,10 +70,15 @@ import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
 import AuthService from "@/services/AuthService";
 import router from "@/router";
+import { EventBus } from "./../../utils/EventBus.js";
 
 export default {
   name: "LogIn",
   setup() {
+    const sendLoginEvent = () => {
+      EventBus.myLoginEvent = { message: "login" };
+    };
+
     const { value: id, errorMessage: idError } = useField(
       "id",
       yup
@@ -102,6 +107,9 @@ export default {
             );
             window.localStorage.clear();
             window.localStorage.setItem("jwtToken", response.data.accessToken);
+
+            sendLoginEvent(); //로그인 됬다고 header에 EventBus 전송
+
             router.push("/");
           }
         }
@@ -114,6 +122,7 @@ export default {
       idError,
       passwordError,
       onSubmit,
+      sendLoginEvent,
     };
   },
 };

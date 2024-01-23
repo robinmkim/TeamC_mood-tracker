@@ -1,10 +1,12 @@
 <template>
-  <div class="flex h-screen">
-    <div class="w-1/5">
-      <side-bar></side-bar>
+  <div v-if="isLoading" class="loading-container">
+    <div class="loading">
+      <Fade-loader />
     </div>
+  </div>
 
-    <div class="flex-1 w-full bg-[#E7F1E5]">
+  <div class="flex h-screen">
+    <div class="flex-1 w-full border-r border-l border-gray-200">
       <!-- 여기서부터 ~~~ -->
       <div class="flex flex-col items-center justify-center">
         <div class="p-5 mt-5 w-[700px] bg-slate-200">
@@ -29,7 +31,7 @@
         </div>
         <!-- 드래그하여 파일 업로드-->
         <div
-          class="flex m-1 w-[550px] h-[450px] bg-white box-content text-center"
+          class="flex m-1 w-[550px] h-[450px] bg-[#eaeaea] hover:bg-[#dad9d9] duration-150 box-content text-center border-2 border-gray-200"
           @dragover.prevent="handleDragOver"
           @drop="handleDrop"
         >
@@ -60,32 +62,42 @@
 
         <div class="flex justify-center mt-3">
           <span
+            v-if="!isLoading"
             id="submit"
-            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center"
+            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center hover:bg-[#6fe3db] hover:scale-110 duration-200"
             @click="goToResult"
             >분석하기</span
+          >
+
+          <span
+            v-if="isLoading"
+            id="submit"
+            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center"
+            >분석 중...</span
           >
         </div>
       </div>
       <!-- 여까지 -->
     </div>
-
-    <div class="w-1/5 p-4">side menu</div>
   </div>
 </template>
 
 <script>
+import FadeLoader from "vue-spinner/src/FadeLoader.vue";
+import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import SideBar from "@/components/SideBar";
+import apiClient from "./../../utils/apiClient";
 export default {
   name: "FaceAnalyze",
   components: {
-    SideBar,
+    FadeLoader,
   },
   data() {
     return {
       image: null,
-      memberNum: 1, // 로그인 기능 구현 이후 삭제합니다.
+      isLoading: false,
+      fileTo: null,
+      // memberNum: 1, // 로그인 기능 구현 이후 삭제합니다.
     };
   },
   methods: {
@@ -95,11 +107,13 @@ export default {
     handleDrop(event) {
       event.preventDefault();
       const file = event.dataTransfer.files[0];
+      this.fileTo = file;
       this.handleImageUpload(file);
     },
     handleFileSelect() {
       const fileInput = this.$refs.fileInput;
       const file = fileInput.files[0];
+      this.fileTo = file;
       this.handleImageUpload(file);
     },
     handleImageUpload(file) {
@@ -116,13 +130,23 @@ export default {
       fileInput.click();
     },
 
-    goToResult() {
-      const formData = new FormData();
-      formData.append("file1", this.$refs.fileInput.files[0]);
-      formData.append("memberNum", this.memberNum); // 임시 유저 회원번호 (로그인 되면 수정 필수)
+    async goToResult() {
+      // 분석하기 -> 분석중
+      this.isLoading = true;
+      // [ST] jwtToken decode(m_id를 추출한다.)
+      const token = localStorage.getItem("jwtToken");
+      console.log(token);
+      const decoded = jwtDecode(token);
+      console.log(decoded);
+      console.log(decoded.m_id);
+      // [ED] jwtToken decode
 
-      axios
-        .post("http://192.168.0.13:9000/face/predictFace", formData, {
+      const formData = new FormData();
+      formData.append("file1", this.fileTo);
+      formData.append("m_id", decoded.m_id);
+
+      await axios
+        .post("http://localhost:9000/face/predictFace", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -131,12 +155,11 @@ export default {
           console.log(res.data);
           if (res.data.error != null) {
             // 이미지를 안 넣었거나, 얼굴이 없거나 하는 경우 error 메세지 alert
+            this.isLoading = false;
             alert(res.data.error);
           } else {
-            axios
-              .post("http://192.168.0.93:8083/faceresult/lastResultId", {
-                memberNum: this.memberNum,
-              })
+            apiClient
+              .get("/faceresult/lastResultId")
               .then((res) => {
                 console.log(res.data);
                 const lastResultId = res.data;
@@ -156,7 +179,10 @@ export default {
         })
         .catch((error) => {
           console.log(error.message);
+          this.isLoading = false;
         });
+      // 분석중 -> 분석하기
+      this.isLoading = false;
     },
   },
 };
@@ -164,4 +190,12 @@ export default {
 
 <style scoped>
 /* 추가적인 스타일링을 위해 필요한 경우 여기에 작성하세요 */
+.loading {
+  z-index: 2;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 0 0 9999px;
+}
 </style>

@@ -1,10 +1,6 @@
 <template>
   <div class="flex h-screen">
-    <div class="w-1/5">
-      <side-bar></side-bar>
-    </div>
-
-    <div class="flex-1 w-full bg-[#E7F1E5] h-screen overflow-auto">
+    <div class="flex-1 w-full h-fit border-r border-l border-gray-200">
       <!-- 여기서부터 ~~~ -->
       <div class="flex flex-col justify-center items-center">
         <div class="flex flex-col w-[700px] mt-5 items-center justify-center">
@@ -12,17 +8,30 @@
           <div class="flex flex-col w-[500px] h-auto" id="imoji">
             <div class="relative m-2">
               <div class="flex justify-center relative">
-                <img
-                  src="..\..\assets\e_neutral.png"
+                <!-- <img
+                  src="..\..\assets\e_happy.png"
                   alt="Post image"
                   class="w-20 h-20 mt-5"
-                />
+                /> -->
+                <!-- <img
+                  v-bind:src="emojiImageSource"
+                  alt="Post image"
+                  class="w-20 h-20 mt-5"
+                /> -->
                 <!-- <div class="w-20 h-20 bg-green-500" id="emojiPlace"></div> -->
               </div>
             </div>
             <div class="flex flex-col justify-center text-center">
-              <p class="w-auto mt-1">오늘의 기분은 ?<br /></p>
-              <p class="w-auto m-2 text-lg">"{{ myExpresion }}"</p>
+              <p class="w-auto mt-1 text-xl font-bold">오늘의 기분은?</p>
+              <div class="flex justify-center relative">
+                <img
+                  v-bind:src="emojiImageSource"
+                  alt="Post image"
+                  class="w-20 h-20 mt-5"
+                />
+              </div>
+
+              <p class="w-auto m-2 text-lg">{{ myExpresion }}</p>
             </div>
           </div>
 
@@ -34,57 +43,49 @@
             <!-- <div class="flex">차트</div>
             <result-chart class="flex"></result-chart> -->
 
-            <div class="w-72 h-auto">
+            <div class="flex-row w-auto h-auto">
               <img
                 v-bind:src="generatedImageSrc"
                 alt="Post image"
                 class="w-665 h-65"
               />
+
+              <button
+                class="flex ml-auto rounded-lg bg-[#e6e6e6] p-1 m-1 hover:bg-[#a0f9f0] hover:scale-110 duration-300"
+                v-on:click="imageDownload"
+              >
+                이미지 다운로드
+              </button>
             </div>
             <button
-              class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
-              v-on:click="imageDownload"
-            >
-              이미지 다운로드
-            </button>
-            <button
-              class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
+              class="flex rounded-lg bg-[#7deee2] p-2 m-1 hover:bg-[#a0f9f0] hover:scale-125 duration-300"
               v-on:click="writePost"
             >
               게시물 작성하기
             </button>
 
-            <!-- <p class="w-auto m-2 text-lg">*lastResultId={{ lastResultId }}</p>
-            <p class="w-auto m-2 text-lg">
-              *faceAnalyzeResult={{ faceAnalyzeResult }}
-            </p> -->
-            <!-- <p class="w-auto m-2 text-lg">
-              *generatedImageFileName={{ generatedImageFileName }}
-            </p> -->
-
-            <div><p>분석결과 피드백 하기</p></div>
-            <div class="flex">
-              <button
-                class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
-                v-on:click="feedbackGood"
-              >
-                마음에 들어요
-              </button>
-              <button
-                class="flex rounded-lg bg-[#DAFFFB] p-2 m-1"
-                v-on:click="feedbackBad"
-              >
-                마음에 안 들어요
-              </button>
+            <div class="m-2">
+              <div class="flex">
+                <span class="self-center m-1">분석결과 피드백 하기</span>
+                <button
+                  class="flex rounded-lg bg-[#7deee2] p-1 m-1 hover:bg-[#a0f9f0] hover:scale-125 duration-300"
+                  v-on:click="feedbackGood"
+                >
+                  <span>👍</span>
+                </button>
+                <button
+                  class="flex rounded-lg bg-[#fd6e66] p-1 m-1 hover:bg-[#f9857f] hover:scale-125 duration-300"
+                  v-on:click="feedbackBad"
+                >
+                  👎
+                </button>
+              </div>
             </div>
-            <!-- <p class="w-auto m-2 text-lg">**{{ faceAnalyzeResult }}</p>
-            <p class="w-auto m-2 text-lg">**{{ myExpresion }}</p> -->
-            <!-- <p class="w-auto m-2 text-lg">Neutral</p> -->
 
             <!-- <div class="text-center">와아 즐겁다아</div> -->
           </div>
           <!-- 음악추천 채팅창 -->
-          <div id="recMusic" class="flex justify-center overflow-scroll">
+          <!-- <div id="recMusic" class="flex justify-center overflow-scroll">
             <div
               id="customChat"
               class="flex flex-col bg-[#ADC4CE] w-[500px] h-fit"
@@ -143,21 +144,19 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
           <!-- 음악추천 fini -->
         </div>
       </div>
       <!-- 여까지 -->
     </div>
-
-    <div class="w-1/5 p-4">side menu</div>
   </div>
 </template>
 
 <script>
 // import { Radar } from "vue-chartjs";
 // import ResultChart from "./ResultChart.vue";
-import SideBar from "@/components/SideBar";
+import apiClient from "./../../utils/apiClient";
 import axios from "axios";
 export default {
   props: ["lastResultId"],
@@ -165,7 +164,6 @@ export default {
   name: "AnalyzeResult",
   components: {
     // ResultChart,
-    SideBar,
   },
   data() {
     return {
@@ -175,33 +173,31 @@ export default {
       // lastResultId: null,
       generatedImageFileName: null,
       generatedImageSrc: null,
+
+      emojiImageSource: null,
     };
   },
   mounted() {
-    // axios
-    //   .post("http://192.168.0.93:8083/faceresult/lastResultId", {
-    //     memberNum: this.memberNum,
-    //   })
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     this.lastResultId = res.data;
-
-    //   });
-    axios
-      .get("http://192.168.0.93:8083/faceresult/detail", {
+    apiClient
+      .get("/faceresult/detail", {
         params: {
           ar_id: this.lastResultId,
         },
       })
       .then((res) => {
-        console.log(res.data);
+        console.log("스프링->결과Detail=> ", res.data);
         this.myExpresion = res.data.ar_content_max;
         this.faceAnalyzeResult = res.data.ar_content;
         this.generatedImageFileName = res.data.ar_generated_img;
 
+        // 감정 이미지
+        this.emojiImageSource = require("../../assets/emoji/" +
+          this.myExpresion +
+          ".png");
+
         //  장고로부터 사진 base64형태로 반환받음
         axios
-          .get("http://192.168.0.13:9000/face/getGeneratedImage", {
+          .get("http://localhost:9000/face/getGeneratedImage", {
             params: {
               imageName: this.generatedImageFileName,
             },
@@ -211,31 +207,14 @@ export default {
             this.generatedImageSrc = `data:image/jpeg;base64, ${res.data.generatedImg}`;
           });
       });
-
-    // console.log(this.formData);
-    // // console.log(this.formData.get("lastResultId"));
-    // console.log(this.formData["lastResultId"]);
-    // // this.lastResultId = this.$route.query.lastResultId;
-    // this.lastResultId = this.formData.lastResultId;
-
-    // 스프링 -> ar_id = lastResultId 조회해서
-    // generated_img, content_max, content 조회해온다.
   },
   methods: {
-    notHappyWithResult: function () {
-      this.showFeedbackMenus = !this.showFeedbackMenus;
-      console.log("피드백 하기 클릭됨");
-      // alert(
-      //   this.lastResultId +
-      //     "\n분석결과가 마음에 들지 않으신가요?\n더 나은 서비스를 위해 피드백을 남겨주세요"
-      // );
-    },
     feedbackBad: function () {
       const formData = new FormData();
       formData.append("ar_id", this.lastResultId);
 
-      axios
-        .post("http://192.168.0.93:8083/faceresult/feedback/bad", {
+      apiClient
+        .post("/faceresult/feedback/bad", {
           ar_id: this.lastResultId,
         })
         .then(() => {
@@ -247,8 +226,8 @@ export default {
         });
     },
     feedbackGood: function () {
-      axios
-        .post("http://192.168.0.93:8083/faceresult/feedback/good", {
+      apiClient
+        .post("/faceresult/feedback/good", {
           ar_id: this.lastResultId,
         })
         .then(() => {
@@ -260,8 +239,9 @@ export default {
         });
     },
     imageDownload: function () {
+      //장고
       axios
-        .get("http://192.168.0.13:9000/face/downloadGeneratedImage", {
+        .get("http://localhost:9000/face/downloadGeneratedImage", {
           params: {
             imageName: this.generatedImageFileName,
           },
@@ -282,7 +262,8 @@ export default {
     writePost: function () {
       // confirm("게시물 작성하러 가기");
       this.$router.push({
-        path: "/postwrite",
+        name: "PostWriteWithAnalyzeResult",
+        params: { resultId: this.$props.lastResultId },
       });
     },
   },

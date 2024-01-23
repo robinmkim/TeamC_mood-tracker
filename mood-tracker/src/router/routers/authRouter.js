@@ -1,5 +1,3 @@
-import LogIn from "@/views/auth/LogIn";
-import SignupEmail from "@/views/auth/SignupEmail";
 import SignupPassword from "@/views/auth/SignupPassword";
 import SignupUsername from "@/views/auth/SignupUsername";
 import SignupBday from "@/views/auth/SignupBday";
@@ -8,39 +6,28 @@ import SignupSuccess from "@/views/auth/SignupSuccess";
 
 export default [
   {
-    path: "/login",
-    name: "LogIn",
-    component: LogIn,
-  },
-  {
-    path: "/singup/email",
-    name: "SignupEmail",
-    component: SignupEmail,
-  },
-  {
-    path: "/singup/password",
+    path: "/password",
     name: "SignupPassword",
     component: SignupPassword,
     props: true,
   },
   {
-    path: "/singup/username",
+    path: "/username",
     name: "SignupUsername",
     component: SignupUsername,
   },
   {
-    path: "/singup/birth",
+    path: "/birth",
     name: "SignupBday",
     component: SignupBday,
   },
   {
-    path: "/singup/profileImg",
+    path: "/profileImg",
     name: "SignupProfileImg",
-    component: ProfileImg
-    ,
+    component: ProfileImg,
   },
   {
-    path: "/singup/success",
+    path: "/success",
     name: "SignupSuccess",
     component: SignupSuccess,
   },

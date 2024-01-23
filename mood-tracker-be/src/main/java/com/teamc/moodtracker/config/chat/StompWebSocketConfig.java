@@ -11,10 +11,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://192.168.0.214:8081", "http://localhost:8081") // CORS 허용
+                .setAllowedOrigins("http://192.168.0.214:8081", "http://localhost:8081", "http://192.168.0.43:8081") // CORS 허용
                 .withSockJS(); // SocketJS 연결 설정
     }
 
@@ -25,6 +26,6 @@ public class StompWebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.setApplicationDestinationPrefixes("/pub");
 
         // 서버가 메세지를 보내는 주소
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "/queue");
     }
 }
