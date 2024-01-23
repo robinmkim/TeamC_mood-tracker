@@ -319,7 +319,7 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
-import PostList from "./post/PostList";
+import PostList from "@/views/post/components/PostList";
 import { jwtDecode } from "jwt-decode";
 
 export default {

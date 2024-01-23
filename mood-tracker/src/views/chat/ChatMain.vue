@@ -115,38 +115,6 @@
             </div>
           </div>
         </div>
-      </div>
-      <div
-        id="inputMessage"
-        class="flex flex-grow items-center text-center p-1"
-      >
-        <span class="rounded-lg hover:bg-gray-100">
-          <label for="file" class="">
-            <img src="" alt="12" />
-          </label>
-          <input type="file" name="file" id="file" />
-        </span>
-        <span class="flex-grow mr-0.5">
-          <textarea
-            v-model="message"
-            id="myTextarea"
-            class="autoExpand bg-gray-300 block w-full rounded-md border-0 py-1.5 pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-600 focus:ring-2 focus:ring-inset focus:ring-gray-100 sm:text-sm sm:leading-6"
-            rows="1"
-            placeholder="메세지 입력.."
-            @input="autoExpand"
-            @keyup.enter="sendMessage"
-          >
-          </textarea>
-        </span>
-        <span class="flex items-center w-10">
-          <button
-            type="submit"
-            class="flex rounded-lg hover:bg-gray-100 bg-gray-100 p-1"
-          >
-            전송
-          </button>
-        </span>
-      </div>
     </div>
   </div>
 </template>
