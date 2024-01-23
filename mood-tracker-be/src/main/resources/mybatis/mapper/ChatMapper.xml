@@ -113,6 +113,8 @@
              )
         WHERE ROWNUM = 1
 
+    </select>
+
     <select id="getMembersOfThisRoom" parameterType="int" resultType="int">
         SELECT m_id
         FROM chat
