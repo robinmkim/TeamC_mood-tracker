@@ -312,6 +312,12 @@
           <span class="ml-2">문의</span>
         </div>
       </router-link>
+      <div
+        class="mt-6 text-md text-slate-400 flex px-2 cursor-pointer hover:text-[#64CCC5]"
+        @click="openTab"
+      >
+        <span class="">about Songti ▶</span>
+      </div>
     </nav>
     <!-- 메뉴 끝 -->
   </div>
@@ -407,6 +413,9 @@ export default {
       ) {
         this.showSidebar = !this.showSidebar;
       }
+    },
+    openTab() {
+      window.open(this.$router.resolve("/introduction").href, "_blank");
     },
   },
   computed: {
