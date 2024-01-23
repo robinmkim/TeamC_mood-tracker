@@ -23,7 +23,7 @@
         <result property="b_sentiment" column="b_sentiment"/>
         <result property="regdate" column="regdate"/>
         <result property="countLike" column="countLike"/>
-        <association property="member" javaType="jh_mvo">
+        <association property="member" javaType="mvo">
             <id property="m_id" column="m_id"/>
             <result property="m_name" column="m_name"/>
             <result property="m_handle" column="m_handle"/>

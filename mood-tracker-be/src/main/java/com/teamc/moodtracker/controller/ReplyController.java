@@ -28,6 +28,7 @@ public class ReplyController {
     @Autowired
     private ReplyLikeService likeService;
 
+
     @Autowired
     private NotificationService notificationService; // 윤영호
 
@@ -35,7 +36,6 @@ public class ReplyController {
     @GetMapping("/getReplyList")
     public List<ReplyDto> getReplyLis(@AuthenticationPrincipal MemberDto memberDto,
                                       @RequestParam(value = "cm_id") int cm_id) {
-        System.out.println(cm_id);
         List<ReplyDto> replys = replyService.getReplyLis(cm_id);
         ReplyLikeDto dto = new ReplyLikeDto();
         dto.setM_id(memberDto.getM_id());
@@ -70,15 +70,8 @@ public class ReplyController {
     @GetMapping("/delReply")
     public void delReply(@RequestParam(value = "re_id") int re_id) {
         replyService.delReply(re_id);
-        System.out.println("delReply!!!!!!!!!!!!!!!!!!!!!!!!" + re_id);
     }
 
-    // commentController사용
-    // @GetMapping("/replyCount")
-    // public int replyCount(@RequestParam("cm_id")int cm_id){
-    //
-    // return replyService.replyCount(cm_id);
-    // }
 
     @GetMapping("/getRe_idList")
     public List<Integer> getRe_idList(@RequestParam("cm_id") int cm_id) {
