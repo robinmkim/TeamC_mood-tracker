@@ -85,7 +85,7 @@ public class NotificationServiceImpl implements NotificationService{
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("comment");
             notificationDto.setN_content(cm_content);
-            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDto.setN_url("/postDetail/?b_id="+b_id);
             notificationDao.insertNotice(notificationDto);
             //알림 전송
             Alert alert = Alert.builder()
@@ -115,7 +115,7 @@ public class NotificationServiceImpl implements NotificationService{
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("commentlike");
             notificationDto.setN_content(cm_content);
-            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDto.setN_url("/postDetail/?b_id="+b_id);
             notificationDao.insertNotice(notificationDto);
             //알림 전송
             Alert alert = Alert.builder()
@@ -144,7 +144,7 @@ public class NotificationServiceImpl implements NotificationService{
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("boardlike");
             notificationDto.setN_content(b_content);
-            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDto.setN_url("/postDetail/?b_id="+b_id);
             notificationDao.insertNotice(notificationDto);
             // 알림 전송
             Alert alert = Alert.builder()
@@ -174,7 +174,7 @@ public class NotificationServiceImpl implements NotificationService{
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("reply");
             notificationDto.setN_content(re_content);
-            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDto.setN_url("/postDetail/?b_id="+b_id);
             notificationDao.insertNotice(notificationDto);
             // 알림 전송
             Alert alert = Alert.builder()
@@ -206,7 +206,7 @@ public class NotificationServiceImpl implements NotificationService{
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("replylike");
             notificationDto.setN_content(re_content);
-            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDto.setN_url("/postDetail/?b_id="+b_id);
             notificationDao.insertNotice(notificationDto);
             // 알림 전송
             Alert alert = Alert.builder()
@@ -270,7 +270,7 @@ public class NotificationServiceImpl implements NotificationService{
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("follow");
             notificationDto.setN_content(fw_content);
-            notificationDto.setN_url("http://localhost:8081/"+ m_id_from); // 팔로우 알림 클릭 시 이동할 페이지.. 팔로우한 사람 회원페이지?
+            notificationDto.setN_url("/"+ m_id_from); // 팔로우 알림 클릭 시 이동할 페이지.. 팔로우한 사람 회원페이지?
             notificationDao.insertNotice(notificationDto);
             // 알림 전송
             Alert alert = Alert.builder()
