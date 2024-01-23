@@ -29,8 +29,8 @@ public class MemberService {
     }
 
     public int checkHandleExist(String handle) {
-        System.out.println("checkHandleExist Service: " +  handle);
-        System.out.println("checkHandleExist Service: " +  dao.checkHandleExist(handle));
+        System.out.println("checkHandleExist Service: " + handle);
+        System.out.println("checkHandleExist Service: " + dao.checkHandleExist(handle));
         return dao.checkHandleExist(handle);
     }
 

@@ -38,6 +38,7 @@ public class MemberController {
         List<MemberDto> searchMembers = memberService.SearchMember(memberName);
         return searchMembers;
     }
+
     @GetMapping("/info/{memberId}")
     public MemberDto getMemberInfo_board(@PathVariable("memberId") int memberId) {
         System.out.println(memberId);
@@ -47,7 +48,7 @@ public class MemberController {
 
     @PutMapping("/profile/image")
     public String getProfileImage(@AuthenticationPrincipal MemberDto dto,
-                                  @RequestParam(value = "m_profile", required = true) MultipartFile m_profile) {
+            @RequestParam(value = "m_profile", required = true) MultipartFile m_profile) {
         int memberId = dto.getM_id();
 
         if (m_profile != null) {
@@ -62,7 +63,7 @@ public class MemberController {
 
     @PutMapping("/profile/name")
     public String updateProfileName(@AuthenticationPrincipal MemberDto dto,
-                                    @RequestBody Map<String, String> m_name) {
+            @RequestBody Map<String, String> m_name) {
         dto.setM_name(m_name.get("m_name"));
         memberService.updateProfileName(dto);
         return "닉네임 변경 성공";
@@ -70,7 +71,7 @@ public class MemberController {
 
     @PutMapping("/profile/password")
     public String updateProfilePassword(@AuthenticationPrincipal MemberDto dto,
-                                        @RequestBody Map<String, String> m_password) {
+            @RequestBody Map<String, String> m_password) {
         try {
             dto.setM_pwd(passwordEncoder.encode(m_password.get("m_pwd")));
             memberService.checkPassword(dto);
@@ -84,7 +85,7 @@ public class MemberController {
 
     @PutMapping("/profile/handle")
     public String updateProfileHandle(@AuthenticationPrincipal MemberDto dto,
-                                      @RequestBody Map<String, String> m_handle) {
+            @RequestBody Map<String, String> m_handle) {
         dto.setM_handle(m_handle.get("m_handle"));
         memberService.updateProfileHandle(dto);
         return "핸들 변경 성공";
@@ -92,7 +93,7 @@ public class MemberController {
 
     @PutMapping("/profile/gender")
     public String updateProfileGender(@AuthenticationPrincipal MemberDto dto,
-                                      @RequestBody Map<String, String> m_gender) {
+            @RequestBody Map<String, String> m_gender) {
         dto.setM_gender(m_gender.get("m_gender"));
         memberService.updateProfileGender(dto);
         return "성별 변경 성공";
@@ -100,7 +101,7 @@ public class MemberController {
 
     @PutMapping("/profile/bio")
     public String updateProfileBio(@AuthenticationPrincipal MemberDto dto,
-                                   @RequestBody Map<String, String> m_bio) {
+            @RequestBody Map<String, String> m_bio) {
         dto.setM_bio(m_bio.get("m_bio"));
         memberService.updateProfileBio(dto);
         return "자기소개 변경 성공";
