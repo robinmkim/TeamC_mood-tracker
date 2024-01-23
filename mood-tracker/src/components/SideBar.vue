@@ -157,8 +157,6 @@
           >
             <img
               :src="getPrfileImgUrl()"
-              height="100"
-              width="100"
               alt="profile img"
               style="aspect-ratio: 100/100; object-fit: cover"
             />

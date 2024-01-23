@@ -8,11 +8,12 @@
           @dragover.prevent
         >
           <div class="flex items-center border-b h-10">
-            <div class="w-10 roickhighunded-full overflow-hidden">
+            <div class="w-9 h-9 roickhighunded-full overflow-hidden">
               <img
                 class="postDetailUserImg object-contain rounded-full"
                 :src="getUserImageUrl()"
                 alt="user icon"
+                style="aspect-ratio: 100/100; object-fit: cover"
               />
             </div>
             <span class="ml-2 text-lg">{{ user.m_name }}</span>

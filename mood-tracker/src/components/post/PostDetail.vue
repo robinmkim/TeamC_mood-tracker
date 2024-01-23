@@ -7,6 +7,7 @@
           class="postDetailUserImg object-contain rounded-full"
           :src="getUserImageUrl()"
           alt="user icon"
+          style="aspect-ratio: 100/100; object-fit: cover"
         />
         <!-- src="../../assets/notiProfileImage01.jpg" -->
       </div>
