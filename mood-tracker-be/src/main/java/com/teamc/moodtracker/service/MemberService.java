@@ -4,6 +4,7 @@ import com.teamc.moodtracker.dao.MemberDao;
 import com.teamc.moodtracker.dto.MemberDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -31,5 +32,36 @@ public class MemberService {
         System.out.println("checkHandleExist Service: " +  handle);
         System.out.println("checkHandleExist Service: " +  dao.checkHandleExist(handle));
         return dao.checkHandleExist(handle);
+    }
+
+    public void updateProfileImage(MemberDto dto) {
+        dao.updateProfileImage(dto);
+    }
+
+    public void updateProfileName(MemberDto dto) {
+        dao.updateProfileName(dto);
+    }
+
+    public void updateProfilePassword(MemberDto dto) {
+        dao.updateProfilePassword(dto);
+    }
+
+    public void updateProfileHandle(MemberDto dto) {
+        dao.updateProfileHandle(dto);
+    }
+
+    public void updateProfileGender(MemberDto dto) {
+        dao.updateProfileGender(dto);
+    }
+
+    public void updateProfileBio(MemberDto dto) {
+        dao.updateProfileBio(dto);
+    }
+
+    public void checkPassword(MemberDto dto) {
+        int res = dao.checkPassword(dto);
+        if (res == 0) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
     }
 }

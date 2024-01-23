@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isOpen"
-    class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center"
+    class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50"
     @click="closeModal"
   >
     <div class="lg:w-3/5 h-2/3 flex flex-col">
@@ -22,7 +22,7 @@
       </div>
       <div class="w-full h-full bg-white rounded shadow-lg flex" @click.stop="">
         <!-- PostList -->
-        <div class="w-1/3 flex flex-col min-h-5/6">
+        <div class="w-1/3 flex flex-col min-h-5/6 bg-red-200">
           <div class="flex border-b justify-center items-center h-1/6">
             {{ this.month }}월 {{ day }}일
           </div>
@@ -76,9 +76,9 @@
 import apiClient from "@/utils/apiClient";
 import { number } from "yup";
 // import PostDetail from "./post/PostDetail";
-import PostList from "./post/PostList";
-import PostDetail from "@/components/post/PostDetail";
-import CommentList from "@/components/post/commentAndReply/CommentList";
+import PostList from "@/views/post/components/PostList";
+import PostDetail from "@/views/post/components/PostDetail";
+import CommentList from "@/views/post/components/commentAndReply/CommentList";
 
 export default {
   data() {

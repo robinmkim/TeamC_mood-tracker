@@ -1,30 +1,37 @@
 <template>
-  <div class="flex h-full" ref="scrollContainer">
-    <div class="flex-1 border-x h-full">
-      <post-detail
-        v-for="bId in bIdList"
-        :key="bId"
-        :b_id="bId"
-        :isDropdownOpen="openB_id === bId"
-        @toggle-dropdown="toggleDropdown"
-      />
-
+  <div class="flex h-full border-x relative">
+    <div class="flex-1 h-full overflow-hidden">
+      <div class="flex flex-col h-full">
+        <!-- PostWriteVue를 스크롤 영역 밖에 위치 -->
+        <PostWriteVue class="p-3" @update-parent-data="updateParentData" />
+        <!-- post-detail 스크롤 영역 내에 배치 -->
+        <div class="overflow-y-auto">
+          <post-detail
+            v-for="bId in bIdList"
+            :key="bId"
+            :b_id="bId"
+            :isDropdownOpen="openB_id === bId"
+            @toggle-dropdown="toggleDropdown"
+          />
+        </div>
+      </div>
       <div v-if="isLoading" class="loading-spinner">
         <!-- 로딩 스피너 -->
       </div>
     </div>
-    <!-- <div class="w-1/5">side menu</div> -->
   </div>
 </template>
 
 <script>
 import apiClient from "@/utils/apiClient";
-import PostDetail from "@/components/post/PostDetail";
+import PostDetail from "@/views/post/components/PostDetail";
+import PostWriteVue from "../post/PostWrite.vue";
 
 export default {
   name: "PageHome",
   components: {
     PostDetail,
+    PostWriteVue,
   },
   data() {
     return {
@@ -41,6 +48,9 @@ export default {
   methods: {
     toggleDropdown(b_id) {
       this.openB_id = this.openB_id === b_id ? null : b_id;
+    },
+    updateParentData() {
+      window.location.reload();
     },
     getBIdList() {
       if (this.isLoading) {

@@ -111,13 +111,11 @@
 </template>
 
 <script>
-import ReportList from "../../components/admin/ReportList.vue";
-import ReportComments from "../../components/admin/ReportComments.vue";
-// import PostDetailPageVue from "../post/PostDetailPage.vue";
-
-import FaqList from "../../components/admin/FaqList.vue";
-import QnaList from "../../components/admin/QnaList.vue";
-import AdminMain from "../../components/admin/AdminMain.vue";
+import ReportList from "@/views/admin/components/ReportList.vue";
+import ReportComments from "@/views/admin/components/ReportComments.vue";
+import FaqList from "@/views/admin/components/FaqList.vue";
+import QnaList from "@/views/admin/components/QnaList.vue";
+import AdminMain from "@/views/admin/components/AdminMain.vue";
 // import Editor from "@toast-ui/editor";
 // import "@toast-ui/editor/dist/toastui-editor.css";
 

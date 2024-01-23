@@ -57,10 +57,10 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
-import PostDetail from "@/components/post/PostDetail";
+import PostDetail from "@/views/post/components/PostDetail";
 import { jwtDecode } from "jwt-decode";
 
-import CommentList from "@/components/post/commentAndReply/CommentList";
+import CommentList from "@/views/post/components/commentAndReply/CommentList";
 // import { number } from "yup";
 
 export default {
@@ -152,9 +152,6 @@ export default {
     this.getCommentCount();
     this.getLoginUser();
     this.getCm_idList();
-    console.log("openCm_id ");
-    console.log(this.openCm_id);
-    console.log("openCm_id ");
   },
 };
 </script>

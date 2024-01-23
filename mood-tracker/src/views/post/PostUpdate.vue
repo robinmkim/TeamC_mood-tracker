@@ -7,27 +7,36 @@
           @drop.prevent="handleFileDrop"
           @dragover.prevent
         >
-          <div class="flex items-center border-b">
-            <div class="w-10 roickhighunded-full overflow-hidden">
+          <div class="flex items-center border-b h-10">
+            <div class="w-9 h-9 roickhighunded-full overflow-hidden">
               <img
                 class="postDetailUserImg object-contain rounded-full"
                 :src="getUserImageUrl()"
                 alt="user icon"
+                style="aspect-ratio: 100/100; object-fit: cover"
               />
             </div>
             <span class="ml-2 text-lg">{{ user.m_name }}</span>
-            <div class="cursor-pointer ml-2" @click="isExpanded = !isExpanded">
-              {{ selectedEmoji }}
-            </div>
-            <div v-if="isExpanded" class="cursor-pointer">
-              <span
-                v-for="(emotion, emoji) in emotionMap"
-                :key="emoji"
-                @click="selectEmoji(emoji)"
-                class="ml-1"
-              >
-                {{ emoji }}
-              </span>
+            <img
+              class="cursor-pointer ml-2"
+              @click="isExpanded = !isExpanded"
+              :src="`http://localhost:8083/images/${emotion}.png`"
+              width="20"
+              height="20"
+            />
+            <div v-if="isExpanded" class="cursor-pointer flex flex-col my-1">
+              <div class="flex">
+                <img
+                  v-for="(sentiment, index) in sentimentList"
+                  :key="index"
+                  :src="`http://localhost:8083/images/${sentiment}.png`"
+                  alt="sentiment"
+                  class="inline-block ml-2"
+                  width="20"
+                  height="20"
+                  @click="selectEmoji(sentiment, index)"
+                />
+              </div>
             </div>
           </div>
           <div class="border-b mb-1">
@@ -138,16 +147,15 @@ export default {
       text: "",
       files: [],
       isExpanded: false,
-      selectedEmoji: "😆", // 기본 이모지
-      emotionMap: {
-        "😆": "happy",
-        "😡": "angry",
-        "😬": "anxiety",
-        "🤕": "hurt",
-        "😐": "neutral",
-        "😢": "sad",
-        "😨": "surprise",
-      },
+      sentimentList: [
+        "happy",
+        "angry",
+        "anxiety",
+        "hurt",
+        "neutral",
+        "sad",
+        "surprise",
+      ],
       emotion: "happy",
       board: {
         b_id: null,
@@ -170,7 +178,6 @@ export default {
   },
   computed: {
     imageCount() {
-      // mediaList 배열의 길이를 반환합니다.
       return this.board.mediaList.length;
     },
   },
@@ -185,14 +192,6 @@ export default {
     getImageUrl(media) {
       // md_path와 md_name을 결합하여 이미지의 전체 경로를 반환합니다.
       return `http://localhost:8083/${media.md_path}${media.md_name}`;
-    },
-    sentimentEmoji() {
-      // 감정에 해당하는 이모지를 반환합니다.
-      return (
-        Object.keys(this.emotionMap).find(
-          (key) => this.emotionMap[key] === this.board.b_sentiment
-        ) || ""
-      );
     },
     getUserImageUrl() {
       return `http://localhost:8083/${this.user.m_img_path}${this.user.m_img_name}`;
@@ -213,7 +212,7 @@ export default {
         this.board = response.data;
         this.text = this.board.b_content;
         this.emotion = this.board.b_sentiment;
-        this.selectedEmoji = this.sentimentEmoji();
+        // this.selectedEmoji = this.sentimentEmoji();
         this.getUserInfo();
         console.log("----board--mediaList--", this.board.mediaList);
         this.loadMediaList(); // 기존 미디어 파일을 불러옵니다.
@@ -256,9 +255,10 @@ export default {
       this.$refs.fileInput.click();
     },
 
-    selectEmoji(emoji) {
-      this.selectedEmoji = emoji;
-      this.emotion = this.emotionMap[emoji];
+    selectEmoji(sentiment, index) {
+      this.selectedEmoji = sentiment;
+      console.log(this.sentimentList[index]);
+      this.emotion = this.sentimentList[index];
       this.isExpanded = false;
     },
 

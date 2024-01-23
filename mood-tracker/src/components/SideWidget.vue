@@ -10,6 +10,7 @@
         <!--맑음-->
         <div v-if="skystatus === 1">
           <svg
+            v-if="isDayTime"
             fill="#525252"
             width="100px"
             height="100px"
@@ -55,11 +56,41 @@
               <g id="sun"></g>
             </g>
           </svg>
+          <svg
+            v-else
+            fill="#525252"
+            width="100px"
+            height="100px"
+            viewBox="0 0 64 64"
+            version="1.1"
+            xml:space="preserve"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            stroke="#525252"
+            class="animate-pulse"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <g id="sun">
+                <g>
+                  <path
+                    d="M33.9,61C18,61,5,48,5,32S18,3,33.9,3c10.2,0,19.8,5.5,25,14.4c0.3,0.4,0.1,1-0.3,1.3c-0.4,0.3-1,0.3-1.3-0.1 C53.7,15,49,13,43.9,13c-10.4,0-18.9,8.5-18.9,19s8.5,19,18.9,19c5.1,0,9.9-2,13.4-5.6c0.4-0.4,0.9-0.4,1.3-0.1 c0.4,0.3,0.5,0.9,0.3,1.3C53.7,55.5,44.1,61,33.9,61z M33.9,5C19.1,5,7,17.1,7,32s12.1,27,26.9,27c7.3,0,14.3-3,19.3-8.2 c-2.8,1.4-6,2.2-9.3,2.2c-11.5,0-20.9-9.4-20.9-21s9.4-21,20.9-21c3.3,0,6.4,0.8,9.3,2.2C48.2,8,41.2,5,33.9,5z"
+                  ></path>
+                </g>
+              </g>
+            </g>
+          </svg>
         </div>
 
         <!--구름 많음-->
         <div v-else-if="skystatus === 3">
           <svg
+            v-if="isDayTime"
             fill="#525252"
             width="100px"
             height="100px"
@@ -108,6 +139,33 @@
                     d="M22.3,15.7c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3c0.4-0.4,0.4-1,0-1.4l-0.6-0.6c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4 L22.3,15.7z"
                   ></path>
                 </g>
+              </g>
+            </g>
+          </svg>
+          <svg
+            v-else
+            fill="#525252"
+            width="100px"
+            height="100px"
+            viewBox="0 0 64 64"
+            version="1.1"
+            xml:space="preserve"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            stroke="#525252"
+            class="animate-pulse"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <g id="cloudy_night">
+                <path
+                  d="M61,29c0-1.6-0.2-3.2-0.6-4.8c-0.1-0.4-0.5-0.7-0.9-0.8c-0.5,0-0.8,0.3-1,0.7C57.1,28.2,53.3,31,49,31c-5.5,0-10-4.5-10-10 c0-4.3,2.8-8.1,6.9-9.5c0.4-0.1,0.7-0.5,0.7-1c0-0.4-0.3-0.8-0.8-0.9C44.2,9.2,42.6,9,41,9c-10.1,0-18.6,7.5-19.8,17.5 c-2.7,1.4-4.9,3.9-6,6.9c-0.5-0.1-0.9-0.1-1.4-0.1C7.9,33.2,3,38.1,3,44.1S7.9,55,13.9,55h27.9c4.9,0,8.9-3.8,9.2-8.7 C57.2,42.8,61,36.2,61,29z M41.8,53H13.9C9,53,5,49,5,44.1s4-8.9,8.9-8.9c0.6,0,1.2,0.1,1.9,0.2c0.5,0.1,1-0.2,1.2-0.7 C18.1,30.2,22.3,27,27,27c5.8,0,10.5,4.7,10.5,10.5c0,0.6,0.4,1,1,1h3.3c4,0,7.2,3.2,7.2,7.2S45.8,53,41.8,53z M50.8,44.1 c-0.8-4.3-4.6-7.5-9.1-7.5h-2.3C39,30.1,33.6,25,27,25c-1.3,0-2.5,0.2-3.7,0.6C24.9,17.2,32.3,11,41,11c0.4,0,0.9,0,1.3,0 C39,13.2,37,16.9,37,21c0,6.6,5.4,12,12,12c4.1,0,7.8-2,10-5.3c0,0.4,0,0.9,0,1.3C59,35.1,55.9,40.8,50.8,44.1z"
+                ></path>
               </g>
             </g>
           </svg>
@@ -173,6 +231,7 @@ export default {
         4: 4,
       },
       location: null,
+      isDayTime: false,
     };
   },
   methods: {
@@ -325,9 +384,17 @@ export default {
           console.log("카카오api안됨", err);
         });
     },
+    getTime() {
+      const currentHour = new Date().getHours();
+      if (currentHour >= 7 && currentHour <= 17) {
+        this.isDayTime = true;
+      }
+    },
   },
+
   created() {
     this.getPosition();
+    this.getTime();
   },
 };
 </script>

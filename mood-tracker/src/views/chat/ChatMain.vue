@@ -24,14 +24,26 @@
             :key="room.roomId"
             class="flex rounded-lg bg-gray-100 p-2 m-1 items-center hover:bg-gray-300"
           >
-            <div class="flex flex-col items-start w-4/5 my-2 " @click="loadMessages(room.roomId, room.otherMemberName, room.otherMemberId)">
+            <div
+              class="flex flex-col items-start w-4/5 my-2"
+              @click="
+                loadMessages(
+                  room.roomId,
+                  room.otherMemberName,
+                  room.otherMemberId
+                )
+              "
+            >
               <!-- <img class="rounded-full h-14 mr-2" :src="``" alt="profileImg" /> -->
               <div class="font-bold text-base">{{ room.otherMemberName }}</div>
               <div class="text-base">{{ room.message }}</div>
             </div>
             <div class="flex w-1/5">
               <div class="flex-col ml-auto">
-                <button class="align-top" @click.stop="toggleMenu(index, $event)">
+                <button
+                  class="align-top"
+                  @click.stop="toggleMenu(index, $event)"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -55,8 +67,16 @@
                     left: `${menuPosition.left}px`,
                   }"
                 >
-                  <li><button @click="deleteChatRoom(room.roomId)" type="button">대화삭제</button></li>
-                  <li><button @click="reportChatRoom" type="button">신고하기</button></li>
+                  <li>
+                    <button @click="deleteChatRoom(room.roomId)" type="button">
+                      대화삭제
+                    </button>
+                  </li>
+                  <li>
+                    <button @click="reportChatRoom" type="button">
+                      신고하기
+                    </button>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -136,7 +156,7 @@ import { jwtDecode } from "jwt-decode";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import apiClient from "@/utils/apiClient";
-import NewChat from "@/components/chat/NewChat";
+import NewChat from "@/views/chat/components/NewChat";
 
 export default {
   name: "ChatMain",
@@ -163,7 +183,7 @@ export default {
       showModal: false,
       members: [],
       subscriptionId: null,
-      chattingMember: {"name": "", "id": ""},
+      chattingMember: { name: "", id: "" },
     };
   },
   async created() {
@@ -196,7 +216,7 @@ export default {
       const parseMessage = JSON.parse(payload.body);
       console.log(parseMessage);
       const roomId = parseMessage.roomId;
-      
+
       // 현재 채팅방 목록에 해당 채팅방이 존재하는지 확인
       // 존재하면 해당 채팅방의 메시지를 업데이트
       const foundRoom = this.rooms.findIndex((room) => room.roomId === roomId);
@@ -212,13 +232,12 @@ export default {
           newMessage: true,
         };
         this.rooms.splice(0, 0, newRoom);
-      }
-      else {
+      } else {
         // 현재 채팅방 목록에 존재하면 해당 채팅방의 메시지를 업데이트
         this.rooms[foundRoom] = reactive({
           ...this.rooms[foundRoom],
-          "message": parseMessage.message,
-          "newMessage": true,
+          message: parseMessage.message,
+          newMessage: true,
         });
       }
       // 현재 보고있는 방인지 확인
@@ -227,7 +246,7 @@ export default {
         // 내 메시지와 다른 사람의 메시지 구분을 위해 isMine 값 추가
         this.rooms[foundRoom] = reactive({
           ...this.rooms[foundRoom],
-          "newMessage": false,
+          newMessage: false,
         });
         if (parseMessage.memberId === this.memberId) parseMessage.isMine = true;
         else parseMessage.isMine = false;
@@ -239,7 +258,7 @@ export default {
         this.messages.push(parseMessage);
       }
     },
-    subscribe () {
+    subscribe() {
       this.stompClient.subscribe(
         `/topic/chat/${this.memberId}`,
         this.onMessageReceived
@@ -263,14 +282,13 @@ export default {
       // 서버로 메시지 전송
       apiClient
         .post(`/send`, chatMessage)
-        .then(response => {
+        .then((response) => {
           console.log(response.data);
           this.message = "";
         })
         .catch((error) => {
           console.log(error);
         });
-
     },
     autoExpand(event) {
       event.target.style.height = "auto";
@@ -305,11 +323,13 @@ export default {
     },
     deleteChatRoom(roomId) {
       apiClient
-        .post(`/rooms/exit`, { "roomId": roomId })
+        .post(`/rooms/exit`, { roomId: roomId })
         .then((response) => {
           const deletedRoomId = response.data;
           // 채팅방 목록에서 해당 채팅방 삭제
-          const indexToRemove = this.rooms.findIndex(room => room.roomId === deletedRoomId);
+          const indexToRemove = this.rooms.findIndex(
+            (room) => room.roomId === deletedRoomId
+          );
           if (indexToRemove !== -1) {
             // rooms 배열에서 해당 인덱스의 요소를 제거
             this.rooms.splice(indexToRemove, 1);
@@ -396,7 +416,7 @@ export default {
     startNewChat(eventData) {
       const newChatMemberId = eventData.memberId;
       const newChatMemberName = eventData.memberName;
-      
+
       const foundRoom = this.rooms.find(
         (room) => room.otherMemberId === newChatMemberId
       );
@@ -406,8 +426,7 @@ export default {
         this.loadMessages(foundRoom.roomId, newChatMemberName, newChatMemberId);
         this.showModal = false;
         return;
-      }
-      else {
+      } else {
         const user = {
           myMemberId: this.memberId,
           otherMemberId: newChatMemberId,
@@ -433,7 +452,7 @@ export default {
             // this.createNewSubscribe(res.roomId);
             // 나갔다가 들어온 경우 아무 메시지도 없으므로 this.messages 초기화
             this.messages = [];
-          this.showModal = false;
+            this.showModal = false;
           })
           .catch((error) => {
             console.log(error);
