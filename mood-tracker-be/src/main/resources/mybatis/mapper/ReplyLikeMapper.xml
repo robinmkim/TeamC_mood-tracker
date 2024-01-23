@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teamc.moodtracker.dao.ReplyLikeDao">
+
+    <select id="isMyLikeReply" parameterType="rlvo" resultType="boolean">
+        select count(relike_id) from reply_like where re_id=#{re_id} and m_id=#{m_id}
+    </select>
+
+    <select id="replyLikeCount" parameterType="Integer" resultType="Integer">
+        select count(relike_id) from reply_like where re_id = #{re_id}
+    </select>
+
+    <select id="getRelike_id" parameterType="rlvo" resultType="Integer">
+        select relike_id from reply_like where re_id=#{re_id} and m_id=#{m_id}
+    </select>
+
+    <select id="getRelike_idAll" parameterType="Integer" resultType="Integer">
+        select relike_id from reply_like where re_id=#{re_id}
+    </select>
+
+    <delete id="delReplyLike" parameterType="Integer">
+        delete from reply_like where relike_id = #{relike_id}
+    </delete>
+
+    <insert id="addReplyLike" parameterType="rlvo">
+        insert into reply_like values (reply_like_seq.nextval, #{m_id}, #{re_id})
+    </insert>
+
+
+
+</mapper>

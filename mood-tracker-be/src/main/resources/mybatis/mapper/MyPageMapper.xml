@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.teamc.moodtracker.dao.MyPageDao">
+    <!-- 감정 & 감정 수-->
+    <select id="getSentiment" resultType="map"> select b_sentiment, count(*) as cnt from board where
+        m_id=#{mid} group by b_sentiment
+    </select>
+
+    <select id="getMainSentiment" parameterType="map" resultType="java.lang.String"> SELECT * FROM (
+        SELECT b_sentiment, COUNT(*) AS cnt FROM board WHERE m_id = #{mid} AND TRUNC(regdate, 'mm')
+        = TRUNC(SYSDATE, 'mm') GROUP BY b_sentiment ORDER BY cnt DESC ) WHERE ROWNUM = 1
+    </select>
+
+    <!--내
+    게시글 리스트-->
+    <select id="getMyBoardList" parameterType="map" resultType="java.lang.Integer"> SELECT b.b_id
+        FROM board b WHERE b.m_id = #{mid} and (SELECT COUNT(*) FROM board WHERE m_id=#{mid} and
+        b_id > b.b_id) BETWEEN #{lastRowNum} AND (#{lastRowNum} + 4) ORDER BY b.regdate DESC
+    </select>
+
+    <!--내가
+    좋아요 한 게시글 리스트-->
+    <select id="getLikedBoardList" parameterType="map" resultType="java.lang.Integer"> select b.b_id
+        from board b join board_like l on b.b_id = l.b_id where l.m_id = #{mid} and ( select
+        count(*) from board_like l join board bb on l.b_id = bb.b_id where l.m_id=#{mid} and bb.b_id
+        > b.b_id) between #{lastRowNum} and (#{lastRowNum} + 4) order by b.regdate desc
+    </select>
+
+    <!-- 날짜를 기준으로 게시글 디테일-->
+    <select id="getListByDate" parameterType="map" resultType="java.lang.Integer">
+        SELECT b_id FROM board WHERE m_id=#{mid} AND TRUNC(regdate) = TO_DATE(#{regdate}, 'YYYYMMDD') ORDER BY b_id DESC
+    </select>
+
+    <!--    연속 날짜-->
+    <select id="getConsecPostsCnt" parameterType="map" resultType="java.lang.Integer"> SELECT
+        MAX(consec_post) FROM ( SELECT COUNT(DISTINCT b.regdate) AS consec_post FROM member m LEFT
+        JOIN board b ON m.m_id = b.m_id WHERE m.m_id = #{mid} AND TRUNC(b.regdate) BETWEEN
+        TRUNC(m.regdate) AND TRUNC(SYSDATE) GROUP BY TRUNC(b.regdate) - ROWNUM )
+    </select>
+
+    <select id="getThisMonthPosts" parameterType="map" resultType="java.lang.Integer"> select
+        count(*) as postCount from board where m_id=#{mid} and trunc(regdate, 'mm') = trunc(sysdate,
+        'mm')
+    </select>
+
+    <select id="SearchBoard" parameterType="map" resultType="java.lang.Integer"> SELECT * FROM board
+        WHERE b_content LIKE '%' || #{b_content } || '%'
+    </select>
+
+    <select id="getTopSentiment" parameterType="map" resultType="String">
+        SELECT b_sentiment
+        FROM (
+        SELECT b_sentiment
+        FROM board
+        WHERE TRUNC(regdate) = TO_DATE(#{regdate}, 'YYYYMMDD') AND m_id = #{m_id}
+        GROUP BY b_sentiment
+        ORDER BY COUNT(b_sentiment) DESC
+        )
+        WHERE ROWNUM = 1
+    </select>
+
+</mapper>
