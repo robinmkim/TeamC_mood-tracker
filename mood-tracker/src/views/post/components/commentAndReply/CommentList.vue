@@ -205,7 +205,7 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
-import ReplyList from "@/components/post/commentAndReply/ReplyList";
+import ReplyList from "@/views/post/components/commentAndReply/ReplyList";
 import { jwtDecode } from "jwt-decode";
 
 export default {
