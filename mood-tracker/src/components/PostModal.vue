@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isOpen"
-    class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center"
+    class="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50"
     @click="closeModal"
   >
     <div class="lg:w-3/5 h-2/3 flex flex-col">
@@ -20,28 +20,52 @@
           />
         </svg>
       </div>
-      <div
-        class="h-5/6 bg-white rounded shadow-lg flex overflow-hidden"
-        @click.stop=""
-      >
+      <div class="w-full h-full bg-white rounded shadow-lg flex" @click.stop="">
         <!-- PostList -->
-        <div class="w-2/5 flex flex-col min-h-5/6 overflow-auto">
-          <div class="flex h-14 border-b justify-center items-center">
+        <div class="w-1/3 flex flex-col min-h-5/6 bg-red-200">
+          <div class="flex border-b justify-center items-center h-1/6">
             {{ this.month }}월 {{ day }}일
           </div>
-          <div class="flex flex-col" v-if="ByDateList.length > 0">
+          <div
+            class="flex flex-col overflow-y-auto"
+            v-if="ByDateList.length > 0"
+          >
             <PostList
               v-for="bId in ByDateList"
-              @postSelected="onPostSelected"
               :key="bId"
               :b_id="bId"
+              @postSelected="handlePostSelected"
             />
           </div>
           <div v-else>데이터가 없습니다.</div>
         </div>
         <!-- postDetail -->
-        <div class="border-x flex flex-grow w-3/5">
-          <PostDetailPage :b_id="b_id" />
+        <div class="border-x flex flex-grow w-2/3 overflow-y-auto">
+          <div v-if="this.selectedPostId === null">아무것도 안 불러옴!</div>
+          <div v-else class="w-full">
+            <div class="shadow">
+              <postDetail
+                :b_id="selectedPostId"
+                :isDropdownOpen="openCm_id === cm_id"
+                :on-board-data-loaded="getCm_idList"
+                customClass="w-full"
+                @toggle-dropdown="toggleDropdown"
+              ></postDetail>
+            </div>
+
+            <div>
+              <CommentList
+                v-for="cm_id in commentList"
+                :key="cm_id"
+                :cm_id="cm_id"
+                :isDropdownOpen="openCm_id === cm_id"
+                @toggle-dropdown="toggleDropdown"
+                class="mx-6"
+              />
+            </div>
+
+            <!-- <PostDetailPage :bb_id="selectedPostId" /> -->
+          </div>
         </div>
       </div>
     </div>
@@ -49,16 +73,26 @@
 </template>
 
 <script>
+import apiClient from "@/utils/apiClient";
 import { number } from "yup";
 // import PostDetail from "./post/PostDetail";
-import PostList from "./post/PostList";
-import PostDetailPage from "@/views/post/PostDetailPage.vue";
+import PostList from "@/views/post/components/PostList";
+import PostDetail from "@/views/post/components/PostDetail";
+import CommentList from "@/views/post/components/commentAndReply/CommentList";
+
 export default {
+  data() {
+    return {
+      selectedPostId: null,
+      commentList: [],
+    };
+  },
   name: "PostModal",
   components: {
     // PostDetail,
     PostList,
-    PostDetailPage,
+    PostDetail,
+    CommentList,
   },
   props: {
     isOpen: {
@@ -97,12 +131,23 @@ export default {
     document.body.classList.remove("overflow-hidden");
   },
   methods: {
-    onPostSelected(b_id) {
-      // PostList에서 전달받은 b_id를 사용하여 처리
-      this.b_id = b_id;
+    getCm_idList() {
+      apiClient
+        .get(`/jh_comment/getCm_idList?b_id=${this.selectedPostId}`)
+        .then((response) => {
+          this.commentList = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+    },
+    handlePostSelected(b_id) {
+      this.selectedPostId = b_id;
     },
     closeModal() {
       this.$emit("close");
+      this.selectedPostId = null;
+      this.getCm_idList();
     },
   },
 };

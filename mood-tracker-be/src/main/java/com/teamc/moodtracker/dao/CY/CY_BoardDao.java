@@ -26,4 +26,7 @@ public interface CY_BoardDao {
 
     // 개시물 검색을 위해서 추가
     public List<CY_BoardDto> SearchBoard(Map<String, Object> params);
+
+    // 달력 감정 데이터
+    public String getTopSentiment(Map<String, Object> params);
 }

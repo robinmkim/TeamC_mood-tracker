@@ -189,11 +189,11 @@
   </div>
 </template>
 <script>
-import faqInsert from "@/components/admin/FaqInsert";
+import FaqInsert from "@/views/admin/components/FaqInsert.vue";
 import apiClient from "@/utils/apiClient";
 
 export default {
-  components: { faqInsert },
+  components: { FaqInsert },
   data() {
     return {
       editor: null,

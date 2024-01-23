@@ -1,11 +1,13 @@
 package com.teamc.moodtracker.controller;
 
+import com.teamc.moodtracker.dto.Alert;
 import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.dto.NotificationDto;
 import com.teamc.moodtracker.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +31,11 @@ public class NotificationController {
     private final String imageDirectory = "src/main/resources/static/images/";
 
 
+    private final SimpMessagingTemplate messagingTemplate;
+
+
     @GetMapping("/select/all") // DB에 저장된 알림들을 불러옴
-    public Map  selectMyNotificationAll(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
-        Map<String, Object> ret = new HashMap<String, Object>();
+    public List<NotificationDto>  selectMyNotificationAll(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
         List<NotificationDto> noticeList =notificationService.selectMyNotificationAll(memberDto.getM_id());
         for(NotificationDto bean : noticeList){
             String encodedString = new String();
@@ -47,13 +51,11 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ret.put("noticeList",noticeList ) ;
-        return  ret;
+        return  noticeList;
     }
 
     @GetMapping("/select/follow")
-    public Map  selectMyNotificationFollow(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
-        Map<String, Object> ret = new HashMap<String, Object>();
+    public List<NotificationDto>  selectMyNotificationFollow(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
         List<NotificationDto> noticeList =notificationService.selectMyNotificationFollow(memberDto.getM_id());
         for(NotificationDto bean : noticeList){
             String encodedString = new String();
@@ -69,13 +71,11 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ret.put("noticeList",noticeList ) ;
-        return  ret;
+        return  noticeList;
     }
 
     @GetMapping("/select/comment")
-    public Map  selectMyNotificationComment(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
-        Map<String, Object> ret = new HashMap<String, Object>();
+    public List<NotificationDto>  selectMyNotificationComment(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
         List<NotificationDto> noticeList =notificationService.selectMyNotificationComment(memberDto.getM_id());
         for(NotificationDto bean : noticeList){
             String encodedString = new String();
@@ -91,13 +91,11 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ret.put("noticeList",noticeList ) ;
-        return  ret;
+        return  noticeList;
     }
 
     @GetMapping("/select/like")
-    public Map  selectMyNotificationLike(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
-        Map<String, Object> ret = new HashMap<String, Object>();
+    public List<NotificationDto>  selectMyNotificationLike(@AuthenticationPrincipal MemberDto memberDto) throws IOException {
         List<NotificationDto> noticeList =notificationService.selectMyNotificationLike(memberDto.getM_id());
         for(NotificationDto bean : noticeList){
             String encodedString = new String();
@@ -113,13 +111,12 @@ public class NotificationController {
                 System.out.println("File Not exists");
             }
         }
-        ret.put("noticeList",noticeList ) ;
-        return  ret;
+        return  noticeList;
     }
 
     @GetMapping("/select/unread")
-    public int selectUnreadNumber(int n_user){
-        return notificationService.selectUnreadNumber(n_user);
+    public int selectUnreadNumber(@AuthenticationPrincipal MemberDto memberDto){
+        return notificationService.selectUnreadNumber(memberDto.getM_id());
     }
 
     @PatchMapping("/read")
@@ -145,20 +142,5 @@ public class NotificationController {
             return 0;
         }
     }
-
-
-
-    //    @GetMapping("/select/follow")
-//    public List<NotificationDto> selectMyNotificationFollow(@AuthenticationPrincipal MemberDto memberDto){
-//        return  notificationService.selectMyNotificationFollow(memberDto.getM_id());
-//    }
-//    @GetMapping("/select/comment")
-//    public List<NotificationDto> selectMyNotificationComment(@AuthenticationPrincipal MemberDto memberDto){
-//        return  notificationService.selectMyNotificationComment(memberDto.getM_id());
-//    }
-//    @GetMapping("/select/like")
-//    public List<NotificationDto> selectMyNotificationLike(@AuthenticationPrincipal MemberDto memberDto){
-//        return  notificationService.selectMyNotificationLike(memberDto.getM_id());
-//    }
 
 }

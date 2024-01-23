@@ -7,6 +7,7 @@
         to_date(#{m_bdate},'YYYY-MM-DD'), sysdate, #{m_gender}, #{m_img_name}, #{m_img_path},
         #{m_bio}, #{m_role}) </insert>
     <select id="getMemberByMEmail" resultType="mvo"> SELECT * FROM member WHERE m_email = #{m_email} </select>
+
     <select id="checkEmailExists" parameterType="String" resultType="int"> SELECT COUNT(*) FROM
         member WHERE m_email = #{email} </select>
 
@@ -15,8 +16,10 @@
 
     <select id="getMemberName" parameterType="int" resultType="String"> SELECT m_name FROM member
         WHERE m_id = #{m_id} </select>
-    <select id="SearchMember" resultType="mvo"> SELECT m_id, m_name, m_email, m_bio, m_img_name FROM
-        member WHERE m_name LIKE '%' || #{m_name} || '%' </select>
+    <select id="SearchMember" resultType="mvo"> SELECT m_id, m_name, m_email, m_bio, m_img_name,
+        m_handle FROM member WHERE m_name LIKE '%' || #{m_name} || '%' </select>
 
+    <select id="checkHandleExist" parameterType="String" resultType="int"> SELECT COUNT(*) FROM
+        member WHERE m_handle = #{handle} </select>
 
 </mapper>

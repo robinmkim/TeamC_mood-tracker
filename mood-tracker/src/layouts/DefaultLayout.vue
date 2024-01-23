@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="flex justify-center mt-16">
+  <div class="flex justify-center mt-14 min-h-full">
     <!-- 왼쪽 side menu -->
     <side-bar />
 

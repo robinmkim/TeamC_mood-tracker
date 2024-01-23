@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 public class ResponseMessage {
     private int roomId;
     private int memberId;
+    private String memberName;
     private String message;
     private LocalDateTime sendTime;
+    private String status;
 }

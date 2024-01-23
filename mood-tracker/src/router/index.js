@@ -18,6 +18,11 @@ import EmptyLayout from "@/layouts/EmptyLayout.vue";
 import LogIn from "@/views/auth/LogIn";
 import SignupEmail from "@/views/auth/SignupEmail";
 import AdminPage from "@/views/admin/AdminPage";
+import apiClient from "@/utils/apiClient";
+import ErrorPage from "@/views/error/ErrorPage";
+import chatbotRouter from "./routers/chatbotRouter";
+import introduction from "/src/views/introduction/IntroductionPage.vue";
+
 
 const routes = [
   {
@@ -29,6 +34,37 @@ const routes = [
         components: {
           default: MypageMain,
           widget: SideWidget,
+        },
+      },
+      {
+        path: "/error",
+        components: {
+          default: ErrorPage,
+          widget: SideWidget,
+        },
+      },
+      {
+        path: "/:memberId",
+        components: {
+          default: MypageMain,
+          widget: SideWidget,
+        },
+        beforeEnter: (to, from, next) => {
+          apiClient
+          .get(`/member/info/${to.params.memberId}`)
+          .then((res) => {
+            if (res.data !== "") {
+              next();
+            } else {
+              next("/error");
+              // next();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            next("/error");
+          }
+          );
         },
       },
       {
@@ -51,6 +87,7 @@ const routes = [
       ...faceRouter,
       ...postDetailRouter,
       ...questionRouter,
+      ...chatbotRouter, 
     ],
   },
   {
@@ -84,6 +121,18 @@ const routes = [
       ...authRouter,
     ],
   },
+  {
+    path: "/introduction",
+    component: EmptyLayout,
+    children: [
+        {
+          path: "",
+          components: {
+            default: introduction,
+          },
+        },
+    ]
+  },
 ];
 
 const router = createRouter({
@@ -91,15 +140,16 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   const publicPages = ["/login"];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem("jwtToken");
+router.beforeEach((to, from, next) => {
+  const publicPages = ["/login", "/signup" ,"/password", "/username","/birth","/profileImg","/success"];
 
-//   if (authRequired && !loggedIn) {
-//     return next("/login");
-//   }
-//   next();
-// });
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem("jwtToken");
+
+  if (authRequired && !loggedIn) {
+    return next("/login");
+  }
+  next();
+});
 
 export default router;

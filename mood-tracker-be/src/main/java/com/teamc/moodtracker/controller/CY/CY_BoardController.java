@@ -1,5 +1,7 @@
 package com.teamc.moodtracker.controller.CY;
 
+import com.teamc.moodtracker.dto.JH.JH_BoardDto;
+import com.teamc.moodtracker.dto.JH.JH_DayDto;
 import com.teamc.moodtracker.dto.MemberDto;
 import com.teamc.moodtracker.dto.CY.CY_BoardDto;
 import com.teamc.moodtracker.service.CY.CY_BoardService;
@@ -9,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,10 +38,7 @@ public class CY_BoardController {
 
     @GetMapping("/mylist")
     public List<Integer> getMyBoardList(@RequestParam(value = "lastRowNum") int lastRowNum,
-            @AuthenticationPrincipal MemberDto memberDto) {
-        int mid = memberDto.getM_id();
-        System.out.println("-------controller get boardlist-----");
-        System.out.println("rownum:" + lastRowNum + "mid:" + mid);
+            @RequestParam(value = "mid") int mid) {
         return cboardService.getMyBoardList(lastRowNum, mid);
     }
 
@@ -84,4 +86,29 @@ public class CY_BoardController {
         return searchBoard;
     }
 
+    // 달력 감정
+    @GetMapping("/getTopSentiment")
+    public List<String> getTopSentiment(@ModelAttribute JH_DayDto dto, @RequestParam(value = "m_id") int m_id) {
+        List<String> list = new ArrayList<String>();
+        int i = 0;
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDate = currentDate.format(formatter);
+        int toDay= Integer.parseInt(formattedDate);
+            for (i = dto.getFirstDay(); i <= dto.getLastDate(); i++) {
+                String regdate = String.format("%04d%02d%02d", dto.getYear(), dto.getMonth(), i);
+                int intReg = Integer.parseInt(regdate);
+                String sent = cboardService.getTopSentiment(regdate, m_id);
+                if (sent == null) {
+                    if (intReg <= toDay) {
+                        list.add("nullPostDayImage");
+                    } else {
+                        list.add(null);
+                    }
+                } else {
+                    list.add("Calendar_"+sent);
+                }
+            }
+        return list;
+    }
 }

@@ -1,13 +1,10 @@
 <template>
   <div class="relative flex">
-    <!-- 사이드바-->
-    <!-- <side-bar /> -->
-
     <!-- 본문 -->
-    <div class="border-x md:w-[900px] sm:w-[300px]" ref="postScrollContainer">
+    <div class="border-x md:w-[800px] sm:w-[300px]" ref="postScrollContainer">
       <div class="">
-        <div class="w-full h-40 bg-slate-200"></div>
-        <div class="flex h-28">
+        <div class="w-full h-20 bg-slate-200"></div>
+        <div class="flex h-32">
           <div class="relative flex">
             <div
               class="border-4 absolute top-[-40px] left-8 flex border-white bg-gray-300 w-32 h-32 rounded-full overflow-hidden"
@@ -15,15 +12,48 @@
               <img :src="getPrfileImgUrl()" alt="profile_img" />
             </div>
           </div>
-          <div class="flex ml-48 mt-2 w-full items-center">
-            <div class="flex flex-col mr-5">
-              <span class="text-3xl font-bold">{{ userInfo.m_name }}</span>
-              <p class="text-xl">{{ userInfo.m_handle }}</p>
+          <div class="flex-grow flex-col ml-48 mt-2 justify-start items-center">
+            <div class="flex flex-col border-b-2 border-slate-200 w-full">
+
+              <div class="flex my-2">
+                <div>
+                  <span class="text-3xl font-bold mr-3">{{
+                    userInfo.m_name
+                  }}</span>
+                </div>
+                <span class="mt-2 text-lg text-slate-400">
+                  {{ userInfo.m_handle }}
+                </span>
+              </div>
+              <div class="flex items-center w-full">
+                <span class="text-lg mr-3">
+                  팔로워 {{ followerCnt }}
+                </span>
+                <span class="text-lg">
+                  팔로잉 {{ followingCnt }}
+                </span>
+                <span v-if="isVisible">
+                  <button @click="follow" class="m-2 h-[30px] w-[80px] rounded-lg bg-blue-500 hover:bg-blue-700 items-center justify-center text-white font-bold">
+                    팔로우
+                  </button>
+                </span>
+              </div>
             </div>
-            <div class="user-stats">
-              <span class="text-lg">팔로워 12</span> |
-              <span class="text-lg">팔로잉 26</span>
+            <div class="flex w-full mt-2 mr-auto">
+              <div>
+                <span class="mr-auto">{{ userInfo.m_bio }}</span>
+              </div>
             </div>
+          </div>
+          <div class="flex" v-if="isVisible===false">
+            <router-link
+              to="/mypage/edit"
+              class="m-2 h-[30px] w-[100px] border-2 rounded-lg border-slate-500 items-center justify-center"
+            >
+              <div class="text-slate-500">
+                프로필 편집
+              </div>
+            </router-link>
           </div>
         </div>
 
@@ -61,7 +91,7 @@
               <!--달력-->
               <MoodCalander v-else-if="tab.id === 'calander'" />
               <!--좋아요 목록-->
-              <MyLike v-else-if="tab.id === 'like'"> </MyLike>
+              <MyLike v-else-if="tab.id === 'like'" />
             </div>
           </div>
         </div>
@@ -80,6 +110,7 @@ import MyMood from "./Components/MyMood.vue";
 import MoodCalander from "./Components/MoodCalander.vue";
 import MyPost from "./Components/MyPost.vue";
 import MyLike from "./Components/MyLike.vue";
+import { jwtDecode } from "jwt-decode";
 
 export default {
   name: "MypageMain",
@@ -104,25 +135,31 @@ export default {
         surprise: "😨",
       },
       currentTab: 0,
-      tabs: [
-        { name: "나의 Mood", id: "mood" },
-        { name: "게시물", id: "post" },
-        { name: "Mood 달력", id: "calander" },
-        { name: "좋아요", id: "like" },
-      ],
+      tabs: [],
       isBoardToggleDropdownOpen: false,
+      followerCnt: 0,
+      followingCnt: 0,
+      isVisible: false,
     };
   },
 
   methods: {
     // 유저 정보
     getMemberInfo() {
+      let memberId = this.$route.path.replace("/", "");
+      // 파라미터로 받은 memberId가 비어있으면 내 정보를 가져옴
+
+      if (memberId === "") {
+        const token = localStorage.getItem("jwtToken");
+        const decoded = jwtDecode(token);
+        memberId = decoded.m_id;
+      }
+
       apiClient
-        .get(`/member/myInfo`)
-        .then((info) => {
-          console.log("유저 정보를 불러옵니다");
-          info.data.m_handle = "@" + info.data.m_handle;
-          this.userInfo = info.data;
+        .get(`/member/info/${memberId}`)
+        .then((res) => {
+          res.data.m_handle = "@" + res.data.m_handle;
+          this.userInfo = res.data;
         })
         .catch((err) => {
           console.log(err, "유저 정보 못불러옴");
@@ -131,9 +168,50 @@ export default {
     getPrfileImgUrl() {
       return `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
     },
+    checkMemberId() {
+      const pathMemberId = Number(this.$route.path.replace("/", ""));
+      // 파라미터로 받은 memberId가 비어있으면 내 정보를 가져옴
+      const token = localStorage.getItem("jwtToken");
+      const decoded = jwtDecode(token);
+      const loginMemberId = decoded.m_id;
 
-    // 내가 좋아요를 누른 게시글 불러오기
+      if (pathMemberId === loginMemberId || pathMemberId === 0) {
+        this.tabs = [
+          { name: "기분", id: "mood" },
+          { name: "게시글", id: "post" },
+          { name: "달력", id: "calander" },
+          { name: "좋아요", id: "like" },
 
+        ];
+      } else {
+        this.tabs = [
+          { name: "기분", id: "mood" },
+          { name: "게시글", id: "post" },
+          { name: "달력", id: "calander" },
+        ];
+        this.isVisible = true;
+      }
+    },
+    getFollowCnt() {
+      let memberId = this.$route.path.replace("/", "");
+      // 파라미터로 받은 memberId가 비어있으면 내 정보를 가져옴
+
+      if (memberId === "") {
+        const token = localStorage.getItem("jwtToken");
+        const decoded = jwtDecode(token);
+        memberId = decoded.m_id;
+      }
+
+      apiClient
+        .get(`/follow/followcnt/${memberId}`)
+        .then((res) => {
+          this.followingCnt = res.data.followedCnt;
+          this.followerCnt = res.data.followerCnt;
+        })
+        .catch((err) => {
+          console.log(err, "팔로워 수 못불러옴");
+        });
+    },
     changeTab(index, tabId) {
       this.currentTab = index;
       // 탭이 변경되면
@@ -145,15 +223,33 @@ export default {
         console.log(`현재 탭의 id: ${tabId}`);
       }
     },
+    follow() {
+      const followInfo = {
+        followedId: this.userInfo.m_id,
+      };
+      apiClient
+        .post('/follow', followInfo)
+        .then((res) => {
+          if (res.data === "Follow Success") {
+            this.followerCnt = this.followerCnt + 1;
+          } else {
+            this.followerCnt = this.followerCnt - 1;
+          }
+
+        })
+        .catch((err) => {
+          console.log("팔로우 실패", err);
+        });
+    },
   },
-
   created() {
-    // 데이터에 접근이 가능한 첫 번째 라이프 사이클
-
     this.getMemberInfo();
     this.getPrfileImgUrl();
+    this.checkMemberId();
+    this.getFollowCnt();
   },
 };
 </script>
 
 <style scoped="scoped"></style>
+ 

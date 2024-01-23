@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full w-full">
+  <div class="flex h-full" @scroll="handleScroll">
     <div class="flex-1 border-x flex h-full">
       <div
         class="flex-1 flex flex-col border-r h-full relative overflow-y-auto"
@@ -57,11 +57,11 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
-import PostDetail from "@/components/post/PostDetail";
-// import postComment from "@/components/post/PostComment";
+import PostDetail from "@/views/post/components/PostDetail";
 import { jwtDecode } from "jwt-decode";
 
-import CommentList from "@/components/post/commentAndReply/CommentList";
+import CommentList from "@/views/post/components/commentAndReply/CommentList";
+// import { number } from "yup";
 
 export default {
   data() {
@@ -105,7 +105,8 @@ export default {
         .then((res) => {
           console.log("res" + res);
           if (res.data === 1) {
-            window.location.reload();
+            this.getCm_idList();
+            this.content = null;
           }
         })
         .catch((error) => {
@@ -151,9 +152,6 @@ export default {
     this.getCommentCount();
     this.getLoginUser();
     this.getCm_idList();
-    console.log("openCm_id ");
-    console.log(this.openCm_id);
-    console.log("openCm_id ");
   },
 };
 </script>

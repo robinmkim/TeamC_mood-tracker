@@ -1,6 +1,6 @@
 <template>
-  <div class="flex h-full" @scroll="handleScroll" :class="childClass">
-    <div class="flex-1 border-l border-l-slate-300">
+  <div class="flex" :class="childClass">
+    <div class="flex-1 border-t border-l-slate-300">
       <div class="p-3 pb-0 border-b border-t-slate-300">
         <div class="postHerder flex flex-row">
           <div class="h-14 w-14 overflow-hidden relative rounded-full">
@@ -8,8 +8,8 @@
               class="postDetailUserImg object-contain rounded-full"
               :src="
                 getUserImageUrl(
-                  comment.member.m_img_path,
-                  comment.member.m_img_name
+                  reply.member.m_img_path,
+                  reply.member.m_img_name
                 )
               "
               alt="user icon"
@@ -17,17 +17,17 @@
           </div>
           <div class="flex flex-row items-center mx-3">
             <div class="notiUserName font-bold text-lg">
-              {{ comment.member.m_name }}
+              {{ reply.member.m_name }}
             </div>
             <div class="userHandle text-sm text-slate-500 ml-1">
-              {{ comment.member.m_handle }}
+              {{ reply.member.m_handle }}
             </div>
             <div class="text-slate-400 text-sm ml-2">
-              {{ formatTime(comment.regdate) }}
+              {{ formatTime(reply.regdate) }}
             </div>
           </div>
           <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
-            <button @click="toggleDropdown()" class="commentDropdown">
+            <button @click="toggleDropdown" class="replyDropdown">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -44,23 +44,24 @@
               </svg>
             </button>
             <div
-              v-show="isDropdownOpen"
-              class="commentDropdown absolute flex flex-col bg-white shadow-md mt-2 rounded-md py-2 w-32 top-4 right-[1px] z-10"
+              v-if="isOpen"
+              class="replyDropdown absolute flex flex-col bg-white shadow-md mt-2 top-4 rounded-md py-2 w-32 right-[1px] z-10"
             >
               <span class="border-b" @click="addReport()">신고하기</span>
-              <span class="border-b" @click="updateData()">리플달기</span>
-              <span class="border-b" v-if="isMain" @click="delComment()"
+
+              <span class="border-b" v-if="isMain" @click="delReply()"
                 >삭제하기</span
               >
+              <div @click.stop="preventClose"></div>
             </div>
           </div>
         </div>
         <div class="text-left ml-6 mt-3 mb-3">
-          {{ comment.cm_content }}
+          {{ reply.re_content }}
         </div>
         <div class="flex flex-row ml-2">
           <div class="flex items-center">
-            <div v-if="!comment.myLike" @click="likeThis()">
+            <div v-if="!reply.myLike" @click="likeThis()">
               <svg
                 id="likeButton"
                 xmlns="http://www.w3.org/2000/svg"
@@ -98,26 +99,16 @@
                 />
               </svg>
             </div>
-            <span class="text-sm ml-1 mr-1">{{ this.comment.likeCount }}</span>
-          </div>
-        </div>
-        <div v-if="comment.reply_count > 0" class="flex flex-col ml-2">
-          <div class="flex flex-col">
-            <div
-              class="text-sm text-slate-400 cursor-pointer text-left mt-1"
-              @click="moreReply()"
-            >
-              댓글 {{ comment.reply_count }}개 더보기...
-            </div>
+            <span class="text-sm ml-1 mr-1">{{ this.reply.likeCount }}</span>
           </div>
         </div>
 
         <div
           class="flex border-t items-center justify-center p-2"
-          v-show="comment.showAddReply"
+          v-show="reply.showAddReply"
         >
           <textarea
-            class="text-sm border-b border-slate-200 w-[90%] h-6 resize-none focus:outline-slate-400"
+            class="text-sm border-b border-slate-200 w-[95%] h-6 resize-none focus:outline-slate-400"
             placeholder=" 답글입력"
             v-model="content"
           ></textarea>
@@ -134,18 +125,6 @@
             </div>
           </div>
         </div>
-
-        <div v-if="comment.reply_count > 0" class="flex flex-col ml-2">
-          <div v-if="showReplyList" class="flex-col bg-slate-100">
-            <ReplyList
-              v-for="re_id in replyList"
-              :key="re_id"
-              :re_id="re_id"
-              :isDropdownOpen="openRm_id === re_id"
-              @toggle-dropdown="toggleDropdownReply"
-            />
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -153,55 +132,42 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
-import ReplyList from "@/components/post/commentAndReply/ReplyList";
 import { jwtDecode } from "jwt-decode";
-
 export default {
-  name: "commentList",
-  components: { ReplyList },
+  name: "replyList",
+  components: {},
   props: {
     // Step 1: Props 정의
-    cm_id: {
+    re_id: {
       type: Number,
-      required: true,
-    },
-    isDropdownOpen: {
-      type: Boolean,
       required: true,
     },
   },
   data() {
     return {
-      comment: {
+      reply: {
         cm_id: null,
         m_id: null,
-        cm_content: "",
+        re_content: "",
         regdate: "",
         member: {},
-        reply_count: null,
         isMyLike: false,
         likeCount: null,
-        showDrop: this.isDropdownOpen,
       },
-      replyList: [],
-      openRm_id: null,
-      showReplyList: false,
       isMain: false,
+      isOpen: false,
     };
   },
   created() {
-    this.getCommentDetail();
-    this.getRe_idList();
+    this.getReplyDetail();
   },
   methods: {
-    toggleDropdownReply(re_id) {
-      // 클릭한 댓글 ID와 현재 열린 드롭다운의 댓글 ID를 비교하여 상태를 토글
-      this.openRm_id = this.openRm_id === re_id ? null : re_id;
-    },
+    addReport() {},
+
     addReply() {
       const currentContent = this.content;
       const formData = new FormData();
-      formData.append("cm_id", this.comment.cm_id);
+      formData.append("cm_id", this.reply.cm_id);
       formData.append("re_content", `${currentContent}`);
 
       for (let [key, value] of formData.entries()) {
@@ -215,9 +181,7 @@ export default {
         })
         .then((res) => {
           if (res.data === 1) {
-            // 응답 값이 1이면 페이지를 새로고침
-            // window.location.reload();
-            this.getCommentDetail();
+            this.getReplyDetail();
           }
         })
         .catch((error) => {
@@ -226,78 +190,74 @@ export default {
           console.log(error);
         });
     },
-    moreReply() {
-      // showReplyList
-      // 해당 댓글의 showReplies 상태를 토글
-      // this.getReplyList();
-
-      this.showReplyList = !this.showReplyList;
-    },
 
     likeThis() {
       apiClient
-        .get(`/jh_CommentLike/addCommentLike?cm_id=${this.comment.cm_id}`)
+        .get(`/jh_ReplyLike/addReplyLike?re_id=${this.re_id}`)
         .then(() => {
-          this.getCommentDetail();
+          this.getReplyDetail();
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
         });
     },
-    updateData() {
-      this.comment.showAddReply = !this.comment.showAddReply;
-    },
+
     delLike() {
       apiClient
-        .get(`/jh_CommentLike/delCommentLike?cm_id=${this.comment.cm_id}`)
+        .get(`/jh_ReplyLike/delReplyLike?re_id=${this.re_id}`)
         .then(() => {
-          this.getCommentDetail();
+          this.getReplyDetail();
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
         });
     },
-    delComment() {
+    delReply() {
       apiClient
-        .get(`/jh_comment/delComment?cm_id=${this.cm_id}`)
+        .get(`/jh_reply/delReply?re_id=${this.re_id}`)
         .then(() => {
-          this.getCommentDetail();
+          this.getReplyDetail();
         })
         .catch((error) => {
           console.log(error);
         });
     },
     toggleDropdown() {
-      this.$emit("toggle-dropdown", this.cm_id);
-      // 부모로부터 전달된 isDropdownOpen 값을 내부 상태에 할당
-      this.comment.showDrop = this.isDropdownOpen;
-      // 내부 상태를 이용해 드롭다운을 토글
-      this.comment.showDrop = !this.comment.showDrop;
-    },
-    handleDocumentClick(event) {
-      // 클릭된 엘리먼트가 드롭다운 영역인지 확인
-      const isDropdown = event.target.closest(".commentDropdown") !== null;
-      // 만약 드롭다운 영역이 아니면 드롭다운을 닫기
-      if (!isDropdown) {
-        this.$emit("toggle-dropdown", this.cm_id);
-        this.comment.showDrop = false;
+      this.isOpen = !this.isOpen;
+      if (this.isOpen) {
+        // 다른 드롭다운 닫기 이벤트 등록
+        window.addEventListener("click", this.closeDropdowns);
+      } else {
+        // 다른 드롭다운 닫기 이벤트 제거
+        window.removeEventListener("click", this.closeDropdowns);
       }
+    },
+    closeDropdowns(event) {
+      // 다른 드롭다운 닫기
+      if (!this.$el.contains(event.target)) {
+        this.isOpen = false;
+      }
+    },
+    preventClose(event) {
+      // 클릭 이벤트 전파 방지
+      event.stopPropagation();
+    },
+    beforeDestroy() {
+      // 컴포넌트 파괴 시 이벤트 제거
+      window.removeEventListener("click", this.closeDropdowns);
     },
 
     getUserImageUrl(m_img_path, m_img_name) {
       return "http://localhost:8083/" + m_img_path + m_img_name;
     },
-    getCommentDetail() {
+    getReplyDetail() {
       apiClient
-        .get(`/jh_comment/getCommentDetail?cm_id=${this.cm_id}`)
+        .get(`/jh_reply/getReplyDetail?re_id=${this.re_id}`)
         .then((response) => {
-          this.comment = response.data;
-
-          // jwtToken을 decode해서 m_id를 추출한다.
+          this.reply = response.data;
           const token = localStorage.getItem("jwtToken");
           const decoded = jwtDecode(token);
-          this.isMain =
-            this.comment.member.m_id === decoded.m_id ? true : false;
+          this.isMain = this.reply.member.m_id === decoded.m_id ? true : false;
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
@@ -323,25 +283,8 @@ export default {
 
       return postDate.toLocaleDateString("ko-KR");
     },
-    handleScroll() {
-      this.$emit("post-comment-scroll");
-    },
-    getRe_idList() {
-      apiClient
-        .get(`/jh_reply/getRe_idList?cm_id=${this.cm_id}`)
-        .then((response) => {
-          this.replyList = response.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching the board data:", error);
-        });
-    },
   },
-  mounted() {
-    document.addEventListener("click", this.handleDocumentClick);
-  },
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleDocumentClick);
-  },
+  mounted() {},
+  beforeUnmount() {},
 };
 </script>

@@ -1,23 +1,27 @@
 <template>
   <div class="h-full w-48">
+    <!-- 슬라이드 바 -->
     <div class="relative flex flex-col">
-      <!-- 슬라이드 바 -->
       <div
         :class="{
           'translate-x-0': showSidebar,
           '-translate-x-full': !showSidebar,
         }"
-        class="real-sidebar rounded-br-lg rounded-tr-lg bg-[#67d1e9] text-white transition-transform duration-300 z-20 fixed top-0 left-0 w-[400px] h-full"
+        class="real-sidebar rounded-br-lg rounded-tr-lg bg-gradient-to-b from-[#4bc9c0] to-white text-white transition-transform duration-300 z-20 fixed top-0 left-0 w-[400px] h-full overflow-y-auto shadow-2xl"
       >
+        <div class="h-10"></div>
         <!-- 검색 창 -->
         <div class="flex search-container p-4 mt-5">
           <input
+            v-model="searchQuery"
+            @input="onSearchInputChange($event)"
+            @keyup.space="onSearchInputChange"
             type="text"
             placeholder="검색"
-            class="w-full border-b border-white text-sm focus:outline-none text-black bg-transparent"
+            class="w-full border-b border-white text-sm focus:outline-none text-white bg-transparent"
           />
           <button
-            @click="toggleSidebar"
+            @click="fetchData()"
             class="text-white rounded-full hover:bg-blue-600 focus:outline-none"
           >
             <svg
@@ -37,107 +41,141 @@
           </button>
         </div>
         <div class="border-b border-gray-500 h-3 w-full"></div>
-        <div class="relative p-1 gap-4">
-          <!-- 첫 번째 div (최근 검색 항목) -->
-          <div>최근 검색 항목</div>
-          <!-- 두 번째 div (모두 지우기) -->
+
+        <div v-if="searchResults.length >= 1">
+          -------------------유저 이름--------------------
         </div>
 
-        <div class="flex relative p-1 mt-2">
-          <div class="flex-grow"></div>
-          <div class="text-[#f74141] px-1 text-sm">모두 지우기</div>
-        </div>
-
+        <!-- 유저의 정보가 검색되는 부분 -->
         <div class="mt-3">
-          <div class="flex hover:bg-blue-600 rounded-lg">
-            <div class="h-10 w-10 mb-1 ml-2 overflow-hidden relative">
-              <img
-                class="postDetailUserImg object-contain rounded-full"
-                src="..\assets\notiProfileImage01.jpg"
-                alt="user icon"
-              />
-            </div>
-            <div class="flex flex-row items-center w-2/3">
-              <div class="text-sm ml-3">UserName</div>
-            </div>
-            <div class="flex items-center ml-auto cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-4 h-4 mr-3"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M6 18 18 6M6 6l12 12"
+          <div
+            v-for="(bean, index) in searchResults.slice(0, 2)"
+            :key="index"
+            :id="bean.n_id"
+          >
+            <!-- 인물 들어갈 자리  -->
+            <div
+              class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200 hover:bg-[#dad9d9] focus:outline-none rounded-md"
+            >
+              <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
+                <img
+                  class="object-contain rounded-full"
+                  :src="bean.m_img_name"
+                  alt="프로필 이미지"
                 />
-              </svg>
-            </div>
-          </div>
+              </div>
+              <div class="notiItemContent flex-1 flex h-14">
+                <div
+                  class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
+                >
+                  <span class="notiItemContentTime font-bold text-lg">{{
+                    bean.m_name
+                  }}</span>
+                  <div
+                    class="notiItemContentMain w-auto flex items-center cursor-pointer"
+                  >
+                    <span class="notiUserName text-sm text-slate-400">
+                      @{{ bean.m_handle }}
+                    </span>
+                  </div>
+                </div>
 
-          <div class="flex hover:bg-blue-600 rounded-lg">
-            <div class="h-10 w-10 mb-1 ml-2 overflow-hidden relative">
-              <img
-                class="postDetailUserImg object-contain rounded-full"
-                src="..\assets\notiProfileImage01.jpg"
-                alt="user icon"
-              />
-            </div>
-            <div class="flex flex-row items-center w-2/3">
-              <div class="text-sm ml-3">우진</div>
-            </div>
-            <div class="flex items-center ml-auto cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-4 h-4 mr-3"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M6 18 18 6M6 6l12 12"
-                />
-              </svg>
+                <div
+                  class="notiItemContentButton flex w-1/4 justify-center items-center"
+                ></div>
+              </div>
             </div>
           </div>
         </div>
+
+        <div
+          v-if="searchResults.length > 2"
+          @click="showAll = !showAll"
+          style="cursor: pointer"
+          class="mb-10 mt-5"
+        >
+          <router-link
+            :to="{
+              path: '/search',
+              query: { searchQuery: searchQuery, searchType: 'userSearch' },
+            }"
+            class="text-lg text-stone-900"
+            @click="toggleSidebar()"
+            >모두보기</router-link
+          >
+        </div>
+
+        <!-- 유저의 정보가 검색되는 부분 끝 -->
+        <div v-if="searchResultsBoard.length >= 1">
+          -------------------게시글 내용-------------------
+        </div>
+
+        <!-- 게시글이 나오는 페이지 -->
+        <div
+          v-for="(bean, index) in searchResultsBoard"
+          :key="index"
+          :id="bean.n_id"
+        >
+          <div v-if="index == 1">
+            <PostList
+              v-for="bId in searchResultsBoard.slice(0, 5)"
+              :key="bId"
+              :b_id="bId"
+            />
+
+            <div
+              v-if="searchResultsBoard.length > 5"
+              @click="showAll = !showAll"
+              style="cursor: pointer"
+              class="mb-10 mt-5"
+            >
+              <router-link
+                :to="{
+                  path: '/search',
+                  query: { searchQuery: searchQuery, searchType: 'postSearch' },
+                }"
+                class="text-lg text-stone-900"
+                @click="toggleSidebar()"
+                >모두보기</router-link
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- 게시글이 나오는 페이지 끝 -->
       </div>
     </div>
 
-    <!-- relative 추가하여 프로필과 메뉴와 묶어준다 -->
-    <div class="  " @click="toggleSidebarOutside">
-      <div class="rounded-lg shadow-lg mx-2 mt-2 bg-[#FFF5ED] p-4">
-        <!-- 사용자 정보 및 이미지 시작 -->
-        <div class="mb-12">
-          <!-- 사용자 정보 좌우에 여백 추가 -->
-          <div class="h-24 rounded-t-lg mb-4"></div>
-          <img
-            src=""
-            height="100"
-            width="100"
-            class="rounded-full -mt-12 border-4 border-white mx-auto"
-            alt=""
-            style="aspect-ratio: 100/100; object-fit: cover"
-          />
+    <!-- relative 추가하여 프로필과 메뉴를 묶어준다 -->
+    <!-- 사용자 정보 및 이미지 시작 -->
+    <div v-if="isMyPage">
+      <div class="rounded-lg shadow-lg mx-2 mt-2 bg-[#D9F3C1] p-4">
+        <!-- 사용자 정보 좌우에 여백 추가 -->
+        <div class="my-4">
+          <div
+            class="flex w-32 h-32 rounded-full overflow-hidden border-4 border-white mx-auto bg-slate-200 items-center justify-center"
+          >
+            <img
+              :src="getPrfileImgUrl()"
+              alt="profile img"
+              style="aspect-ratio: 100/100; object-fit: cover"
+            />
+          </div>
+        </div>
+        <router-link to="/">
           <div class="text-center mt-2 mb-6">
-            <h2 class="text-lg font-bold">SOP</h2>
-            <p class="text-slate-500">기분?</p>
+            <h2 class="text-lg font-bold">{{ userInfo.m_name }}</h2>
+            <p class="text-slate-500">{{ userInfo.m_handle }}</p>
           </div>
-        </div>
-        <!-- 사용자 정보 및 이미지 끝 -->
+        </router-link>
       </div>
     </div>
+    <!-- 사용자 정보 및 이미지 끝 -->
 
     <!-- 메뉴 시작 -->
     <nav class="p-4 text-left">
-      <router-link to="/" class="text-lg">
-        <div class="flex px-2 py-1">
+      <router-link to="/timeline" class="text-lg">
+        <div class="flex px-2 hover:bg-[#F67D73]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -156,7 +194,7 @@
         </div>
       </router-link>
       <router-link to="/postwrite" class="text-lg">
-        <div class="flex px-2 py-1">
+        <div class="flex px-2 hover:bg-[#FFDDE4]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -176,7 +214,7 @@
         </div>
       </router-link>
       <router-link to="/faceanalyze" class="text-lg">
-        <div class="flex px-2 py-1">
+        <div class="flex px-2 hover:bg-[#FFE778]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -194,27 +232,9 @@
           <span class="ml-2">감정 분석</span>
         </div>
       </router-link>
-      <router-link to="/chat" class="text-lg">
-        <div class="flex px-2 py-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2.5"
-            stroke="currentColor"
-            class="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
-            />
-          </svg>
-          <span class="ml-2">채팅</span>
-        </div>
-      </router-link>
+
       <router-link to="/musicrecommand" class="text-lg">
-        <div class="flex px-2 py-1">
+        <div class="flex px-2 hover:bg-[#D9F3C1]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -232,9 +252,28 @@
           <span class="ml-2">음악 추천</span>
         </div>
       </router-link>
+      <router-link to="/chat" class="text-lg">
+        <div class="flex px-2 hover:bg-[#597F61]/50 rounded-lg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+            />
+          </svg>
+          <span class="ml-2">채팅</span>
+        </div>
+      </router-link>
       <div class="text-lg">
         <div
-          class="searchbaricon px-2 flex cursor-pointer hover:bg-[#E0F2F6] rounded-lg"
+          class="searchbaricon px-2 flex cursor-pointer hover:bg-[#A4BED3]/50 rounded-lg"
           @click="toggleSidebar"
         >
           <svg
@@ -255,7 +294,7 @@
         </div>
       </div>
       <router-link to="/admin" class="text-lg">
-        <div class="flex px-2 py-1">
+        <div class="flex px-2 hover:bg-[#C9BCE8]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -279,17 +318,85 @@
 </template>
 
 <script>
+import apiClient from "@/utils/apiClient";
+import PostList from "@/views/post/components/PostList";
+import { jwtDecode } from "jwt-decode";
+
 export default {
   name: "SideBar",
   data() {
     return {
       showSidebar: true,
+      memberId: "",
+      userInfo: {},
+      searchQuery: "", // 사용자의 검색어를 담을 변수
+      searchResults: [], // API로부터 받아온 결과를 담을 변수
+      searchResultsBoard: [],
     };
   },
+  components: {
+    PostList,
+  },
   methods: {
+    onSearchInputChange() {
+      // 검색어 입력이 변경될 때마다 수행할 로직 추가
+      console.log("검색어 입력 변경:", this.searchQuery);
+
+      this.fetchData();
+    },
+    // 일단킵
+
+    fetchData() {
+      // 검색어가 비어있을 때는 API 호출을 하지 않음
+      if (this.searchQuery.trim() === "") {
+        this.searchResults = [];
+        this.searchResultsBoard = [];
+        return;
+      }
+
+      apiClient
+        .get(`/member/search?memberName=${this.searchQuery}`)
+        .then((res) => {
+          this.searchResults = res.data;
+        })
+        .catch((err) => {
+          console.error("err : ", err);
+        });
+
+      apiClient
+        .get(`/mypage/search?boardContent=${this.searchQuery}`)
+        .then((res) => {
+          this.searchResultsBoard = res.data;
+          console.log("searchResults : " + this.searchResults);
+        })
+        .catch((err) => {
+          console.error("err : ", err);
+        });
+    },
+
+    // 유저 정보
+    getMemberInfo() {
+      const token = localStorage.getItem("jwtToken");
+      const decoded = jwtDecode(token);
+      this.memberId = decoded.m_id;
+      apiClient
+        .get(`/member/info/${this.memberId}`)
+        .then((info) => {
+          console.log("유저 정보를 불러옵니다");
+          this.userInfo = info.data;
+        })
+        .catch((err) => {
+          console.log(err, "유저 정보 못불러옴");
+        });
+    },
+    getPrfileImgUrl() {
+      return `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
+    },
     toggleSidebar() {
       this.showSidebar = !this.showSidebar;
       this.outsideShowSidebar = false;
+      this.searchQuery = "";
+      this.fetchData();
     },
     toggleSidebarOutside(event) {
       // 검색창 외 다른 것을 클릭하면 사이트 바가 사라짐
@@ -302,6 +409,22 @@ export default {
       }
     },
   },
+  computed: {
+    isMyPage() {
+      // 현재 경로가 / 이거나 /mypage로 시작할 때 true
+
+      const mypage =
+        this.$route.path.startsWith("/mypage") ||
+        /^\/(\d+)$/.test(this.$route.path) ||
+        this.$route.path === "/";
+
+      return !mypage;
+    },
+  },
+  created() {
+    this.getMemberInfo();
+    this.getPrfileImgUrl();
+  },
   mounted() {
     // Add a global click event listener to close the search bar when clicking outside
     document.addEventListener("click", this.toggleSidebarOutside);
@@ -312,7 +435,7 @@ export default {
 <style>
 /* 슬라이드 바 스타일링 */
 .sidebar {
-  width: 30%;
+  width: 25%;
   height: 100%;
 }
 

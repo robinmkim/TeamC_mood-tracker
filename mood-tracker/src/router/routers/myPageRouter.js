@@ -1,5 +1,5 @@
 import EditProfile from "/src/views/mypage/EditProfile.vue";
-import PostDetail from "/src/components/post/PostDetail.vue";
+import PostDetail from "@/views/post/components/PostDetail";
 import SideWidget from "/src/components/SideWidget.vue";
 
 export default [

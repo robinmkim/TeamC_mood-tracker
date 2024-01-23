@@ -1,9 +1,6 @@
 <template>
   <div class="flex">
-    <div class="w-1/5 border-r h-full">
-      <side-bar />
-    </div>
-    <div class="w-5/6" ref="postScrollContainer">
+    <div class="w-full" ref="postScrollContainer">
       <div class="flex search-container p-4 mt-5">
         <input
           v-model="searchQuery"
@@ -126,8 +123,7 @@
 
 <script>
 import apiClient from "./../../utils/apiClient";
-import SideBar from "@/components/SideBar";
-import PostDetail from "@/components/post/PostDetail.vue";
+import PostDetail from "@/views/post/components/PostDetail";
 // import axios from "axios";
 
 export default {
@@ -139,7 +135,7 @@ export default {
         { name: "게시물 검색", id: "postSearch" },
       ],
       showList: null,
-      searchQuery: "", // 사용자의 검색어를 담을 변수
+      searchQuery: this.$route.query.searchQuery || "", // 사용자의 검색어를 담을 변수
       searchResults: [], // API로부터 받아온 결과를 담을 변수
       MylastRowNum: 0,
     };
@@ -201,8 +197,16 @@ export default {
   },
   name: "NotiPage",
   components: {
-    SideBar,
     PostDetail,
+  },
+  mounted() {
+    this.searchQuery = this.$route.query.searchQuery || "";
+
+    // 현재 탭 설정
+    this.currentTab = this.$route.query.searchType === "postSearch" ? 1 : 0;
+
+    // 초기 데이터 로딩
+    this.fetchData(this.$route.query.searchType);
   },
 };
 </script>

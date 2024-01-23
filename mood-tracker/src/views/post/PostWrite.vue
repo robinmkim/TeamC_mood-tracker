@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="h-full overflow-y-auto">
     <form @submit.prevent="submitForm">
       <div class="flex flex-col">
         <div
@@ -7,23 +7,36 @@
           @drop.prevent="handleFileDrop"
           @dragover.prevent
         >
-          <div class="flex items-center border-b">
-            <div class="w-10 rounded-full overflow-hidden">
-              <img src="@/assets/logo.png" />
+          <div class="flex items-center border-b h-10">
+            <div class="w-9 h-9 rounded-full overflow-hidden">
+              <img
+                class="object-contain rounded-full"
+                :src="getUserImageUrl()"
+                alt="user icon"
+                style="aspect-ratio: 100/100; object-fit: cover"
+              />
             </div>
-            <span class="ml-2">ickhigh</span>
-            <div class="cursor-pointer ml-2" @click="isExpanded = !isExpanded">
-              {{ selectedEmoji }}
-            </div>
-            <div v-if="isExpanded" class="cursor-pointer">
-              <span
-                v-for="(emotion, emoji) in emotionMap"
-                :key="emoji"
-                @click="selectEmoji(emoji)"
-                class="ml-1"
-              >
-                {{ emoji }}
-              </span>
+            <span class="ml-2">{{ memberHandle }}</span>
+            <img
+              class="cursor-pointer ml-2"
+              @click="isExpanded = !isExpanded"
+              :src="`http://localhost:8083/images/${selectedEmoji}.png`"
+              width="25"
+              height="25"
+            />
+            <div v-if="isExpanded" class="cursor-pointer flex flex-col my-1">
+              <div class="flex">
+                <img
+                  v-for="(sentiment, index) in sentimentList"
+                  :key="index"
+                  :src="`http://localhost:8083/images/${sentiment}.png`"
+                  alt="sentiment"
+                  class="inline-block ml-2"
+                  width="20"
+                  height="20"
+                  @click="selectEmoji(sentiment, index)"
+                />
+              </div>
             </div>
           </div>
           <div class="border-b mb-1">
@@ -76,22 +89,24 @@
 </template>
 <script>
 import apiClient from "@/utils/apiClient";
+import { jwtDecode } from "jwt-decode";
 export default {
   data() {
     return {
+      memberHandle: "",
       text: "",
       files: [],
       isExpanded: false,
-      selectedEmoji: "😆", // 기본 이모지
-      emotionMap: {
-        "😆": "happy",
-        "😡": "angry",
-        "😬": "anxiety",
-        "🤕": "hurt",
-        "😐": "neutral",
-        "😢": "sad",
-        "😨": "surprise",
-      },
+      selectedEmoji: "happy", // 기본 이모지
+      sentimentList: [
+        "happy",
+        "angry",
+        "anxiety",
+        "hurt",
+        "neutral",
+        "sad",
+        "surprise",
+      ],
       emotion: "happy",
       user: {
         m_name: null,
@@ -102,7 +117,38 @@ export default {
     };
   },
   name: "PostWrite",
+  mounted() {
+    // 회원이름(m_handle)을 가져옵니다.
+    apiClient.get("/member/userInfo/memberHandle").then((res) => {
+      this.memberHandle = res.data;
+    });
+  },
+  created() {
+    this.getUsetInfo();
+  },
   methods: {
+    getUsetInfo() {
+      // jwtToken을 decode해서 m_id를 추출한다.
+      const token = localStorage.getItem("jwtToken");
+      const decoded = jwtDecode(token);
+      const m_id = decoded.m_id;
+      apiClient
+        .get(`/member/userInfo/${m_id}`)
+        .then((response) => {
+          this.user = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
+    },
+    getUserImageUrl() {
+      if (this.user && this.user.m_img_path) {
+        return `http://localhost:8083/${this.user.m_img_path}${this.user.m_img_name}`;
+      } else {
+        // 여기에 기본 이미지 URL 또는 다른 처리를 추가하세요.
+        return "http://images/Logo.png";
+      }
+    },
     adjustHeight(e) {
       // textarea높이 자동 조절
       const element = e.target;
@@ -144,9 +190,10 @@ export default {
       this.$refs.fileInput.click();
     },
 
-    selectEmoji(emoji) {
-      this.selectedEmoji = emoji;
-      this.emotion = this.emotionMap[emoji];
+    selectEmoji(sentiment, index) {
+      this.selectedEmoji = sentiment;
+      console.log(this.sentimentList[index]);
+      this.emotion = this.sentimentList[index];
       this.isExpanded = false;
     },
 
@@ -170,6 +217,7 @@ export default {
         })
         .then(() => {
           console.log("success");
+          this.$emit("update-parent-data");
         })
         .catch((error) => {
           console.log("formData" + formData);

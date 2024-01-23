@@ -1,5 +1,5 @@
 <template>
-  <div class="m-4 border-b" @scroll="handleScroll">
+  <div class="m-4 border-b" @scroll="handleScroll" :class="customClass">
     <!-- 게시글 헤더 영역 -->
     <div class="postHerder flex flex-row mb-3">
       <div class="h-[45px] w-[45px] overflow-hidden relative rounded-full">
@@ -7,6 +7,7 @@
           class="postDetailUserImg object-contain rounded-full"
           :src="getUserImageUrl()"
           alt="user icon"
+          style="aspect-ratio: 100/100; object-fit: cover"
         />
         <!-- src="../../assets/notiProfileImage01.jpg" -->
       </div>
@@ -23,7 +24,7 @@
       </div>
       <div class="icon ml-auto -mr-3 mt-3 relative inline-block">
         <!-- 미트볼 아이콘 -->
-        <button @click="BoardToggleDropdown()" class="commentDropdown">
+        <button @click="toggleDropdown" class="commentDropdown">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -40,7 +41,7 @@
           </svg>
         </button>
         <div
-          v-show="isDropdownOpen"
+          v-if="isOpen"
           class="absolute flex flex-col bg-white shadow-md mt-2 rounded-md py-2 w-32 right-[1px] top-4 z-10"
         >
           <router-link
@@ -51,6 +52,66 @@
             >삭제하기</span
           >
           <span class="border-b" @click="addReport()">신고하기</span>
+          <!-- 신고하기 모달창 -->
+          <div
+            v-if="reportModal"
+            class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center"
+            @click="closeReportModal"
+          >
+            <!-- 모달 내용 -->
+            <div class="bg-white rounded-lg max-w-screen-sm w-1/3">
+              <span
+                class="close absolute top-4 right-4 cursor-pointer"
+                @click="closeReportModal"
+              ></span>
+              <p class="border-b py-2">신고 사유를 선택하세요:</p>
+              <ul>
+                <li
+                  @click="submitReport('스팸')"
+                  class="cursor-pointer border-b py-2"
+                >
+                  스팸
+                </li>
+                <li
+                  @click="submitReport('나체 이미지 또는 성적 행위')"
+                  class="cursor-pointer border-b py-2"
+                >
+                  나체 이미지 또는 성적 행위
+                </li>
+                <li
+                  @click="submitReport('혐오 발언 또는 상징')"
+                  class="cursor-pointer border-b py-2"
+                >
+                  혐오 발언 또는 상징
+                </li>
+                <li
+                  @click="submitReport('폭력 또는 위험 단체')"
+                  class="cursor-pointer border-b py-2"
+                >
+                  폭력 또는 위험 단체
+                </li>
+                <li
+                  @click="submitReport('불법 또는 규제 상품 판매')"
+                  class="cursor-pointer border-b py-2"
+                >
+                  불법 또는 규제 상품 판매
+                </li>
+                <li
+                  @click="submitReport('따돌림 또는 괴롭힘')"
+                  class="cursor-pointer border-b py-2"
+                >
+                  따돌림 또는 괴롭힘
+                </li>
+                <li
+                  @click="submitReport('지식 재산권 침해')"
+                  class="cursor-pointer border-b py-2"
+                >
+                  지식 재산권 침해
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div @click.stop="preventClose"></div>
         </div>
       </div>
     </div>
@@ -95,7 +156,7 @@
             </button>
           </span>
         </div>
-        <div v-else>
+        <div v-else class="whitespace-pre">
           {{ board.b_content }}
         </div>
       </div>
@@ -166,7 +227,30 @@
             }}</span>
           </a>
 
-          <span class="ml-2">{{ sentimentEmoji }}</span>
+          <img
+            class="cursor-pointer ml-2"
+            :src="`http://localhost:8083/images/${board.b_sentiment}.png`"
+            width="20"
+            height="20"
+          />
+          <!-- 자연어처리 부분 -->
+          <div class="ml-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              @click="evaluatePositivity"
+            >
+              <path
+                d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm2.5 8.5c-.98 0-1.865.404-2.502 1.054-.634-.649-1.519-1.054-2.498-1.054-1.933 0-3.5 1.567-3.5 3.5s1.567 3.5 3.5 3.5c.979 0 1.864-.404 2.498-1.054.637.649 1.522 1.054 2.502 1.054 1.933 0 3.5-1.566 3.5-3.5s-1.567-3.5-3.5-3.5zm0 6c-1.378 0-2.5-1.122-2.5-2.5s1.122-2.5 2.5-2.5c1.379 0 2.5 1.122 2.5 2.5s-1.121 2.5-2.5 2.5z"
+              />
+            </svg>
+          </div>
+          <!-- 값이 있으면 보여주고 싶은 부분 -->
+          <div v-if="processedText !== ''" class="ml-2">
+            <p>{{ processedText }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -175,6 +259,7 @@
 <script>
 import apiClient from "@/utils/apiClient";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 export default {
   props: {
@@ -185,7 +270,16 @@ export default {
     },
     isDropdownOpen: {
       type: Boolean,
-      required: true,
+      required: false,
+    },
+    onBoardDataLoaded: {
+      type: Function,
+      required: false,
+    },
+  },
+  watch: {
+    b_id(newBId) {
+      this.loadBoardData(newBId);
     },
   },
   data() {
@@ -206,16 +300,17 @@ export default {
         countComments: 0,
         myLike: false,
         showDrop: this.isDropdownOpen,
+        processedText: "",
       },
-      emotionMap: {
-        "😆": "happy",
-        "😡": "angry",
-        "😬": "anxiety",
-        "🤕": "hurt",
-        "😐": "neutral",
-        "😢": "sad",
-        "😨": "surprise",
-      },
+      sentimentList: [
+        "happy",
+        "angry",
+        "anxiety",
+        "hurt",
+        "neutral",
+        "sad",
+        "surprise",
+      ],
       user: {
         m_name: null,
         m_hanble: null,
@@ -224,6 +319,8 @@ export default {
       },
       commentCount: 0,
       isMain: false,
+      isOpen: false,
+      reportModal: false,
     };
   },
   computed: {
@@ -231,30 +328,92 @@ export default {
       // 본문의 일부만 보여주되, 본문이 존재하는 경우에만 작업을 수행합니다.
       return this.board.b_content ? this.board.b_content.slice(0, 20) : "";
     },
-    sentimentEmoji() {
-      // 감정에 해당하는 이모지를 반환합니다.
-      return (
-        Object.keys(this.emotionMap).find(
-          (key) => this.emotionMap[key] === this.board.b_sentiment
-        ) || ""
-      );
-    },
+    // sentimentEmoji() {
+    //   // 감정에 해당하는 이모지를 반환합니다.
+    //   return (
+    //     Object.keys(this.emotionMap).find(
+    //       (key) => this.emotionMap[key] === this.board.b_sentiment
+    //     ) || ""
+    //   );
+    // },
     imageCount() {
       // mediaList 배열의 길이를 반환합니다.
       return this.board.mediaList.length;
     },
   },
   methods: {
-    addReport() {},
+    closeReportModal() {
+      this.reportModal = false;
+    },
+    // 신고하기
+    addReport() {
+      // 모달 열기 등의 동작 추가
+      this.reportModal = true;
+    },
+    submitReport(reportType) {
+      const reportData = {
+        b_c_id: this.board.b_id,
+        report_type: reportType,
+        regdate: this.getCurrentDate(),
+        r_type: 0,
+      };
+      console.log("reportData : ", reportData);
+
+      apiClient
+        .post("/report/add", reportData)
+        .then((res) => {
+          // 보냈을때
+          alert("신고를 하였습니다.");
+          console.log("신고 전송", res);
+        })
+        .catch((err) => {
+          console.log("then으로 들어가지 못하고 여기로 옴");
+          console.log(reportData);
+          console.error("전송에 오류가 있습니다.", err);
+        });
+    },
+
+    getCurrentDate() {
+      // 현재 날짜를 가져오기
+      const currentDate = new Date();
+      return currentDate.toLocaleString();
+    },
+
+    // 장고로 자연어처리 보내기 부분
+    async evaluatePositivity() {
+      console.log("b_content 확인: ", this.board.b_content);
+
+      // 추가 데이터 가능하게
+      // const requestData = {
+      //   b_content: this.board.b_content,
+      // };
+      const requestData = new FormData();
+      requestData.append("b_content", this.board.b_content);
+      //
+      try {
+        // 장고로 보내기
+        const res = await axios.post(
+          "http://localhost:9000/emotion/evaluatePositivity",
+          requestData
+        );
+        // 장고에서 받아온데이터 확인하기
+        // const serverResponse = res.data;
+        const serverResponse = JSON.stringify(res.data);
+        console.log("데이터 확인 : " + serverResponse);
+
+        this.processedText = res.data.additional_message;
+        console.log("데이터 확인2 : " + this.processedText);
+        this.$forceUpdate();
+      } catch (error) {
+        console.error("서버 오류 : ", error);
+      }
+    },
 
     likeThis() {
       apiClient
         .get(`/jh_postLike/addBoardLike?b_id=${this.b_id}`)
-        .then((response) => {
-          // this.isMylike = response.data;
-          console.log("likeThis!: " + response.data);
-          this.loadBoardData();
-          // console.log("isMylike: " + this.isMylike);
+        .then(() => {
+          this.loadBoardData(this.b_id);
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
@@ -264,11 +423,7 @@ export default {
       apiClient
         .get(`/jh_postLike/delBoardLike?b_id=${this.b_id}`)
         .then(() => {
-          // this.isMylike = response.data;
-          console.log("delLike! 성공!");
-          this.loadBoardData();
-
-          // console.log("isMylike: " + this.isMylike);
+          this.loadBoardData(this.b_id);
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
@@ -283,7 +438,6 @@ export default {
             this.$router.push("/timeline");
           })
           .catch((error) => {
-            console.log("--------------!!");
             console.error("Error fetching the board data:", error);
           });
       }
@@ -291,33 +445,8 @@ export default {
     handleScroll() {
       this.$emit("post-detail-scroll");
     },
-    // getCommentCount() {
-    //   apiClient
-    //     .get(`/jh_comment/allCommentCount?b_id=${this.b_id}`)
-    //     .then((response) => {
-    //       console.log("--------------" + response);
-    //       this.commentCount = response.data;
-    //     })
-    //     .catch((error) => {
-    //       console.log("--------------!!");
-    //       console.error("Error fetching the board data:", error);
-    //     });
-    // },
-    // getUserInfo() {
-    //   apiClient
-    //     .get(`/member/userInfo/${this.board.m_id}`)
-    //     .then((response) => {
-    //       this.user = response.data;
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error fetching the board data:", error);
-    //     });
-    // },
     getUserImageUrl() {
       if (this.board.member && this.board.member.m_img_path) {
-        console.log(
-          `${this.board.member.m_img_path}${this.board.member.m_img_name}`
-        );
         return `http://localhost:8083/${this.board.member.m_img_path}${this.board.member.m_img_name}`;
       } else {
         // 여기에 기본 이미지 URL 또는 다른 처리를 추가하세요.
@@ -350,37 +479,25 @@ export default {
       // 게시글 전문을 보여줍니다.
       this.showMoreText = true;
     },
-    loadBoardData() {
+    loadBoardData(bId) {
       // 게시글 데이터를 로드합니다.
       apiClient
-        .get(`/jh_post/get/${this.b_id}`)
+        .get(`/jh_post/get/${bId}`)
         .then((response) => {
           this.board = response.data;
-          console.log(this.board);
-          console.log(this.board.myLike);
-          console.log("loadBoardData: " + this.board.member.m_id);
 
           // jwtToken을 decode해서 m_id를 추출한다.
           const token = localStorage.getItem("jwtToken");
           const decoded = jwtDecode(token);
           this.isMain = this.board.member.m_id === decoded.m_id ? true : false;
+
+          this.onBoardDataLoaded();
+          this.processedText = "";
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
         });
     },
-    // isMylikeMethod() {
-    //   apiClient
-    //     .get(`/jh_postLike/isMylike?b_id=${this.b_id}`)
-    //     .then((response) => {
-    //       this.isMylike = response.data;
-    //       console.log("isMylike!: " + this.isMylike);
-    //       // console.log("isMylike: " + this.isMylike);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error fetching the board data:", error);
-    //     });
-    // },
     formatTime(dateString) {
       const now = new Date();
       const postDate = new Date(dateString);
@@ -401,12 +518,29 @@ export default {
 
       return postDate.toLocaleDateString("ko-KR");
     },
-    BoardToggleDropdown() {
-      this.$emit("toggle-dropdown", this.b_id);
-      // 부모로부터 전달된 isDropdownOpen 값을 내부 상태에 할당
-      this.board.showDrop = this.isDropdownOpen;
-      // 내부 상태를 이용해 드롭다운을 토글
-      this.board.showDrop = !this.board.showDrop;
+    toggleDropdown() {
+      this.isOpen = !this.isOpen;
+      if (this.isOpen) {
+        // 다른 드롭다운 닫기 이벤트 등록
+        window.addEventListener("click", this.closeDropdowns);
+      } else {
+        // 다른 드롭다운 닫기 이벤트 제거
+        window.removeEventListener("click", this.closeDropdowns);
+      }
+    },
+    closeDropdowns(event) {
+      // 다른 드롭다운 닫기
+      if (!this.$el.contains(event.target)) {
+        this.isOpen = false;
+      }
+    },
+    preventClose(event) {
+      // 클릭 이벤트 전파 방지
+      event.stopPropagation();
+    },
+    beforeDestroy() {
+      // 컴포넌트 파괴 시 이벤트 제거
+      window.removeEventListener("click", this.closeDropdowns);
     },
     handleDocumentClick(event) {
       // 클릭된 엘리먼트가 드롭다운 영역인지 확인
@@ -418,16 +552,10 @@ export default {
     },
   },
   created() {
-    // this.getUserInfo();
-    this.loadBoardData();
-    // this.getCommentCount();
+    this.loadBoardData(this.b_id);
   },
-  mounted() {
-    document.addEventListener("click", this.handleDocumentClick);
-  },
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleDocumentClick);
-  },
+  mounted() {},
+  beforeUnmount() {},
 };
 </script>
 

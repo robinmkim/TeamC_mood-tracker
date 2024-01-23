@@ -27,4 +27,9 @@ public class MemberService {
         return dao.SearchMember(m_name);
     }
 
+    public int checkHandleExist(String handle) {
+        System.out.println("checkHandleExist Service: " +  handle);
+        System.out.println("checkHandleExist Service: " +  dao.checkHandleExist(handle));
+        return dao.checkHandleExist(handle);
+    }
 }
