@@ -20,7 +20,7 @@
               {{ reply.member.m_name }}
             </div>
             <div class="userHandle text-sm text-slate-500 ml-1">
-              {{ reply.member.m_handle }}
+              @{{ reply.member.m_handle }}
             </div>
             <div class="text-slate-400 text-sm ml-2">
               {{ formatTime(reply.regdate) }}
@@ -216,7 +216,7 @@ export default {
       apiClient
         .get(`/jh_reply/delReply?re_id=${this.re_id}`)
         .then(() => {
-          this.getReplyDetail();
+          this.$emit("delReply");
         })
         .catch((error) => {
           console.log(error);

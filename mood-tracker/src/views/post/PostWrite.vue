@@ -133,7 +133,7 @@ export default {
       const decoded = jwtDecode(token);
       const m_id = decoded.m_id;
       apiClient
-        .get(`/member/userInfo/${m_id}`)
+        .get(`/member/info/${m_id}`)
         .then((response) => {
           this.user = response.data;
         })

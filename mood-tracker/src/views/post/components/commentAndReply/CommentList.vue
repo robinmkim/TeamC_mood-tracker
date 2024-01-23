@@ -20,7 +20,7 @@
               {{ comment.member.m_name }}
             </div>
             <div class="userHandle text-sm text-slate-500 ml-1">
-              {{ comment.member.m_handle }}
+              @{{ comment.member.m_handle }}
             </div>
             <div class="text-slate-400 text-sm ml-2">
               {{ formatTime(comment.regdate) }}
@@ -195,7 +195,12 @@
         </div>
         <div v-if="comment.reply_count > 0" class="flex flex-col ml-2">
           <div v-if="showReplyList" class="flex-col bg-slate-100">
-            <ReplyList v-for="re_id in replyList" :key="re_id" :re_id="re_id" />
+            <ReplyList
+              v-for="re_id in replyList"
+              :key="re_id"
+              :re_id="re_id"
+              @delReply="getRe_idList"
+            />
           </div>
         </div>
       </div>
@@ -346,7 +351,7 @@ export default {
       apiClient
         .get(`/jh_comment/delComment?cm_id=${this.cm_id}`)
         .then(() => {
-          this.getCommentDetail(this.cm_id);
+          this.$emit("delComment");
         })
         .catch((error) => {
           console.log(error);

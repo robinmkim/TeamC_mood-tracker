@@ -1,4 +1,5 @@
 <template>
+  햐쇼
   <div
     class="flex flex-col items-center justify-center h-full p-6 mt-[170px] w-96"
   >

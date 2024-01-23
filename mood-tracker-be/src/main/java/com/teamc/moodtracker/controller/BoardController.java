@@ -47,11 +47,12 @@ public class BoardController {
     String imageDirectory = "src/main/resources/static/images/";
 
     @PostMapping("/add")
-    public int addBoardContent(@ModelAttribute BoardDetailDto dto,
+    public int addBoardContent(@AuthenticationPrincipal MemberDto memberDto,
+                               @ModelAttribute BoardDetailDto dto,
                                @RequestParam(value = "mediaList", required = false) List<MultipartFile> mediaList) {
         List<MediaDto> mediaDtos = new ArrayList<>();
-        System.out.print(dto);
-        if (mediaList != null) {
+        dto.setM_id(memberDto.getM_id());
+        if(mediaList != null) {
             for (MultipartFile multipartFile : mediaList) {
                 MediaDto mediaDto = new MediaDto();
                 mediaDto.setMd_name(multipartFile.getOriginalFilename());
@@ -59,7 +60,6 @@ public class BoardController {
                 mediaDto.setMd_type(multipartFile.getContentType());
                 mediaDtos.add(mediaDto);
                 String filePath = imageDirectory + multipartFile.getOriginalFilename();
-                System.out.println(filePath);
                 uploadFile(multipartFile, filePath);
             }
         }
@@ -92,6 +92,7 @@ public class BoardController {
         dto.setM_id(memberDto.getM_id());
         dto.setB_id(b_id);
         boolean isMyLike = likeService.isMyLike(dto);
+
         board.setIsMyLike(isMyLike);
         return board;
     }
@@ -106,13 +107,8 @@ public class BoardController {
     public int updateBoardContent(@AuthenticationPrincipal MemberDto memberDto, @ModelAttribute BoardDetailDto dto,
                                   @RequestParam(value = "mediaList", required = false) List<MultipartFile> newMedias,
                                   @RequestParam(value = "mb_idList", required = false) String mb_idList) {
-        System.out.println("update");
-        System.out.println("mb_idList: "+ mb_idList);
         dto.setM_id(memberDto.getM_id());
-        System.out.println("b_id: " + dto.getB_id());
-        System.out.println("m_id: " + dto.getM_id());
-        System.out.println("b_content: " + dto.getB_content());
-        System.out.println("b_sentiment: " + dto.getB_sentiment());
+
         if (mb_idList.equals("isNull")) {
 
             String[] split_md_id = mb_idList.split(",");
@@ -158,7 +154,6 @@ public class BoardController {
     @Transactional
     @GetMapping("/delPost")
     public void delPost(@RequestParam(value = "b_id") int b_id) {
-        System.out.println("delPost");
         List<Integer> commentList = commentService.getCm_idList(b_id);
         for (int comment : commentList){
             List<Integer> replyList = replyService.getRe_idList(comment);

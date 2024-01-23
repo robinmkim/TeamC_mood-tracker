@@ -16,7 +16,7 @@
           {{ this.board.member ? this.board.member.m_name : "No Name" }}
         </div>
         <div class="userHandle text-sm text-slate-500 ml-1">
-          {{ this.board.member ? this.board.member.m_handle : "No Handle" }}
+          @{{ this.board.member ? this.board.member.m_handle : "No Handle" }}
         </div>
         <div class="text-slate-400 text-sm ml-2">
           {{ formatTime(board.regdate) }}
@@ -266,7 +266,7 @@ export default {
     // Step 1: Props 정의
     b_id: {
       type: Number,
-      required: true,
+      required: false,
     },
     isDropdownOpen: {
       type: Boolean,
@@ -328,14 +328,6 @@ export default {
       // 본문의 일부만 보여주되, 본문이 존재하는 경우에만 작업을 수행합니다.
       return this.board.b_content ? this.board.b_content.slice(0, 20) : "";
     },
-    // sentimentEmoji() {
-    //   // 감정에 해당하는 이모지를 반환합니다.
-    //   return (
-    //     Object.keys(this.emotionMap).find(
-    //       (key) => this.emotionMap[key] === this.board.b_sentiment
-    //     ) || ""
-    //   );
-    // },
     imageCount() {
       // mediaList 배열의 길이를 반환합니다.
       return this.board.mediaList.length;
@@ -482,9 +474,10 @@ export default {
     loadBoardData(bId) {
       // 게시글 데이터를 로드합니다.
       apiClient
-        .get(`/jh_post/get/${bId}`)
+        .get(`/post/get/${bId}`)
         .then((response) => {
           this.board = response.data;
+          console.log("!" + this.board.b_id);
 
           // jwtToken을 decode해서 m_id를 추출한다.
           const token = localStorage.getItem("jwtToken");

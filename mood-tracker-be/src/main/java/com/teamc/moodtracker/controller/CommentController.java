@@ -52,11 +52,7 @@ public class CommentController {
     @GetMapping("/getCommentListDetail")
     public List<CommentDto> getCommentListDetail(@AuthenticationPrincipal MemberDto memberDto,
             @RequestParam("b_id") int b_id) {
-        System.out.println("getCommentListDetail");
-        System.out.println("b_id::::::::::::::::" + b_id);
-
         List<CommentDto> comments = commentService.getCommentListDetail(b_id);
-
         CommentLikeDto dto = new CommentLikeDto();
         dto.setM_id(memberDto.getM_id());
         boolean isMyLike = false;
@@ -71,15 +67,10 @@ public class CommentController {
     @PostMapping("/addComment")
     public int addComment(@AuthenticationPrincipal MemberDto memberDto,
             @ModelAttribute CommentDto dto) {
-        System.out.println("addComment!!!!!!!!");
         // JH_CommentDto dto = new JH_CommentDto();
         dto.setM_id(memberDto.getM_id());
         // dto.setB_id(b_id);
         // dto.setCm_content(cm_content);
-        System.out.println("m_id: " + dto.getM_id());
-        System.out.println("b_id: " + dto.getB_id());
-        System.out.println(dto.getCm_content());
-        System.out.println(dto);
 
         commentService.addComment(dto);
 
@@ -90,11 +81,9 @@ public class CommentController {
     @Transactional
     @GetMapping("/delComment")
     public void delComment(@RequestParam(value = "cm_id") int cm_id) {
-        System.out.println("delComment");
 
         List<Integer> replyList = replyService.getRe_idList(cm_id);
         for (int reply : replyList) {
-            System.out.println("re_id: " + reply);
             replyService.delReply(reply);
         }
         // if (likeService.commentLikeCount(cm_id) > 0) {
