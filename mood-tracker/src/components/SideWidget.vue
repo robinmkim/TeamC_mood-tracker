@@ -384,17 +384,17 @@ export default {
           console.log("카카오api안됨", err);
         });
     },
-    getTime() {},
-  },
-  computed: {
-    // skystatus와 현재 시간을 기반으로 낮인지 여부를 계산하는 computed property 추가
-    isDaytime() {
+    getTime() {
       const currentHour = new Date().getHours();
-      return currentHour >= 7 && currentHour < 17;
+      if (currentHour >= 7 && currentHour <= 17) {
+        this.isDayTime = true;
+      }
     },
   },
+
   created() {
     this.getPosition();
+    this.getTime();
   },
 };
 </script>

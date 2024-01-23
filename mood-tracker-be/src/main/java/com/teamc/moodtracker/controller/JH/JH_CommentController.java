@@ -35,7 +35,7 @@ public class JH_CommentController {
 
     @Autowired
     private JH_ReplyService replyService;
-    private NotificationService notificationService; // 윤영호
+//    private NotificationService notificationService; // 윤영호
 
     @GetMapping("/allCommentCount")
     public int allCommentCount(@RequestParam(value = "b_id") int b_id) {
