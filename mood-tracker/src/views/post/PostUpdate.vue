@@ -8,14 +8,18 @@
           @dragover.prevent
         >
           <div class="flex items-center border-b h-10">
-            <div class="w-10 roickhighunded-full overflow-hidden">
+            <div class="w-9 h-9 roickhighunded-full overflow-hidden">
               <img
                 class="postDetailUserImg object-contain rounded-full"
                 :src="getUserImageUrl()"
                 alt="user icon"
+                style="aspect-ratio: 100/100; object-fit: cover"
               />
             </div>
-            <span class="ml-2 text-lg">{{ user.m_name }}</span>
+            <div class="userHandle ml-2 text-lg text-slate-500">
+              @{{ this.user ? this.user.m_handle : "No Handle" }}
+            </div>
+            <!-- <span class="ml-2 text-lg">{{ user.m_name }}</span> -->
             <img
               class="cursor-pointer ml-2"
               @click="isExpanded = !isExpanded"
@@ -197,7 +201,7 @@ export default {
     },
     getUserInfo() {
       apiClient
-        .get(`/member/userInfo/${this.board.m_id}`)
+        .get(`/member/info/${this.board.m_id}`)
         .then((response) => {
           this.user = response.data;
         })
@@ -287,7 +291,7 @@ export default {
       }
 
       apiClient
-        .post("/jh_post/update", formData, {
+        .post("/post/update", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

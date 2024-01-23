@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-full p-6">
+  <div
+    class="flex flex-col items-center justify-center h-full p-6 mt-[170px] w-96"
+  >
     <div class="bg-white rounded-lg p-8 h-100 shadow-md w-full max-w-sm">
       <div class="flex flex-col items-center mb-6">
         <!-- 로고나 아이콘을 넣을 수 있는 공간 -->
@@ -88,7 +90,6 @@ export default {
 
     onMounted(() => {
       const state = history.state;
-      console.log(state.userInfo);
       if (state) {
         userInfo.value = state.userInfo;
       }
@@ -125,13 +126,6 @@ export default {
       for (const key in userInfo.value) {
         formData.append(key, userInfo.value[key]);
       }
-      console.log(formData.get("m_profile"));
-      console.log(formData.get("m_bio"));
-      console.log(formData.get("m_name"));
-      console.log(formData.get("m_pwd"));
-      console.log(formData.get("m_handle"));
-      console.log(formData.get("m_bdate"));
-      console.log(formData.get("m_gender"));
 
       apiClient
         .post("/api/auth/signUp", formData, {
@@ -140,11 +134,9 @@ export default {
           },
         })
         .then(() => {
+          alert("회원가입이 완료되었습니다.");
           router.push({
-            name: "SignupSuccess",
-            state: {
-              userInfo: { ...userInfo.value, m_profile: profileImg.value },
-            },
+            path: "/login",
           });
         })
         .catch((error) => {

@@ -24,7 +24,7 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
-import PostDetail from "@/components/post/PostDetail";
+import PostDetail from "@/views/post/components/PostDetail";
 import PostWriteVue from "../post/PostWrite.vue";
 
 export default {

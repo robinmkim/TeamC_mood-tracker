@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-full p-6">
+  <div
+    class="flex flex-col items-center justify-center h-full p-6 mt-[220px] w-[420px]"
+  >
     <div class="bg-white rounded-lg p-8 shadow-md w-full max-w-sm">
       <h2 class="text-center text-2xl font-semibold mb-6">Basic Information</h2>
       <form @submit.prevent="onNextClick" class="space-y-4">
@@ -141,7 +143,6 @@ export default {
     const userInfo = ref({});
     onMounted(() => {
       const state = history.state;
-      console.log(state.userInfo);
       if (state) {
         userInfo.value = state.userInfo;
       }

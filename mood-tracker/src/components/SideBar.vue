@@ -157,8 +157,6 @@
           >
             <img
               :src="getPrfileImgUrl()"
-              height="100"
-              width="100"
               alt="profile img"
               style="aspect-ratio: 100/100; object-fit: cover"
             />
@@ -321,7 +319,7 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
-import PostList from "./post/PostList";
+import PostList from "@/views/post/components/PostList";
 import { jwtDecode } from "jwt-decode";
 
 export default {

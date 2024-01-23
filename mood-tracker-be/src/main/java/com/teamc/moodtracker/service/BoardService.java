@@ -2,13 +2,12 @@ package com.teamc.moodtracker.service;
 
 
 import com.teamc.moodtracker.dao.BoardDao;
-import com.teamc.moodtracker.dto.BoardDto;
+import com.teamc.moodtracker.dto.BoardDetailDto;
 import com.teamc.moodtracker.dto.MediaDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.print.attribute.standard.Media;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +17,11 @@ public class BoardService {
     @Autowired
     private BoardDao dao;
 
+    @Autowired
+    private BoardLikeService boardLikeService;
+
     @Transactional
-    public void addBoardContent(BoardDto dto, List<MediaDto> mediaList) {
+    public void addBoardContent(BoardDetailDto dto, List<MediaDto> mediaList) {
         dao.addBoard(dto);
         for (MediaDto mediaDto : mediaList) {
             mediaDto.setB_id(dto.getB_id());
@@ -27,7 +29,7 @@ public class BoardService {
         }
     }
 
-    public BoardDto getBoardDetail(int b_id) {
+    public BoardDetailDto getBoardDetail(int b_id) {
         return dao.getBoardDetail(b_id);
     }
 
@@ -37,5 +39,33 @@ public class BoardService {
         return dao.getBoardList(params);
     }
 
+    @Transactional
+    public void updateBoardContent(BoardDetailDto dto, List<MediaDto> mediaList) {
+        dao.updateBoard(dto);
 
+        // 후에 기존 file은 삭제하는 로직 추가하기
+        // 1. dto.getB_id를 이용해서 list 뽑고
+        // 2. 삭제
+
+        for (MediaDto mediaDto : mediaList) {
+            mediaDto.setB_id(dto.getB_id());
+            dao.addMedia(mediaDto);
+        }
+    }
+
+    public List<MediaDto> getMediaList(int b_id) {
+        return dao.getMediaList(b_id);
+    };
+    public void delMedia(int md_id) {
+        dao.delMedia(md_id);
+    };
+
+    @Transactional
+    public void delPost (int b_id) {
+        System.out.println("delPost");
+        if(boardLikeService.boardLikeCount(b_id) > 0){
+            boardLikeService.delBoardLikeAll(b_id);
+        }
+        dao.delBoard(b_id);
+    }
 }

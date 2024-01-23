@@ -1,5 +1,8 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-full p-6">
+  햐쇼
+  <div
+    class="flex flex-col items-center justify-center h-full p-6 mt-[170px] w-96"
+  >
     <div class="bg-white rounded-lg p-8 h-[450px] shadow-md w-full max-w-sm">
       <div class="flex flex-col items-center mb-6">
         <!-- 로고나 아이콘을 넣을 수 있는 공간 -->
@@ -27,16 +30,11 @@
               id="dupcheck"
               type="button"
               @click="checkHandle"
-              class="border-2 rounded-md ml-2 h-[44px] w-[75px] text-slate-500 border-[#64CCC5]"
+              class="border-2 rounded-md ml-2 h-[44px] w-[75px] text-slate-500 border-[#64CCC5] text-sm"
             >
               중복확인
             </button>
           </div>
-          <!--
-          <span class="text-sm h-3 text-left text-red-500"
-            >중복확인문구넣을자리</span
-          >
-          -->
           <span class="text-sm h-3 text-left text-red-500">{{
             errors.username
           }}</span>
@@ -78,7 +76,6 @@ export default {
     const userInfo = ref({});
     onMounted(() => {
       const state = history.state;
-      console.log(state.userInfo);
       if (state) {
         userInfo.value = state.userInfo;
       }
@@ -87,8 +84,7 @@ export default {
     const { handleSubmit, errors } = useForm({ validationSchema });
     const { value: username } = useField("username");
 
-    const onNextClick = handleSubmit((values) => {
-      console.log(values);
+    const onNextClick = handleSubmit(() => {
       goToNextStep();
     });
 
@@ -106,9 +102,7 @@ export default {
     const checkHandle = () => {
       apiClient
         .post(`api/auth/checkHandle`, { handle: username.value })
-        // .post(`api/auth/checkHandle?handle=${username.value}`)
-        .then((res) => {
-          console.log(res.data);
+        .then(() => {
           alert("사용가능한 닉네임입니다.");
         })
         .catch((err) => {

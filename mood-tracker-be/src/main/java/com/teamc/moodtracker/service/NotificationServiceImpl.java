@@ -1,13 +1,10 @@
 package com.teamc.moodtracker.service;
 
 import com.teamc.moodtracker.dao.BoardDao;
-import com.teamc.moodtracker.dao.JH.JH_CommentDao;
-import com.teamc.moodtracker.dao.JH.JH_ReplyLikeDao;
+import com.teamc.moodtracker.dao.CommentDao;
 import com.teamc.moodtracker.dao.NotificationDao;
 import com.teamc.moodtracker.dto.*;
-import com.teamc.moodtracker.dto.JH.JH_CommentDto;
-import com.teamc.moodtracker.dto.JH.JH_ReplyDto;
-import com.teamc.moodtracker.dto.chat.SaveChat;
+import com.teamc.moodtracker.dto.ReplyDto;
 import com.teamc.moodtracker.dto.chat.SendChat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +26,7 @@ public class NotificationServiceImpl implements NotificationService{
     @Autowired
     private BoardDao boardDao;
     @Autowired
-    private JH_CommentDao jh_commentDao;
+    private CommentDao jh_commentDao;
 
     private final SimpMessagingTemplate messagingTemplate;
 
@@ -71,10 +68,10 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void addComment_SaveNotificationAndSendAlert(JH_CommentDto commentDto) { // 댓글 작성
+    public void addComment_SaveNotificationAndSendAlert(CommentDto commentDto) { // 댓글 작성
         int m_id_from = commentDto.getM_id();
         int b_id = commentDto.getB_id();
-        BoardDto bdto = boardDao.getBoardDetail(b_id);
+        BoardDetailDto bdto = boardDao.getBoardDetail(b_id);
         int m_id_to = bdto.getM_id();
         String cm_content = commentDto.getCm_content(); // 작성한 댓글 내용
         if(cm_content.length() > 20){
@@ -100,10 +97,10 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void addCommentLike_SaveNotificationAndSendAlert(Comment_LikeDto commentLikeDto) { // 댓글 좋아요
+    public void addCommentLike_SaveNotificationAndSendAlert(CommentLikeDto commentLikeDto) { // 댓글 좋아요
         int m_id_from = commentLikeDto.getM_id();
         int cm_id = commentLikeDto.getCm_id(); // 대상 댓글 ID -> comments테이블에서 m_id 획득
-        JH_CommentDto cmdto = jh_commentDao.getCommentDetail(cm_id);
+        CommentDto cmdto = jh_commentDao.getCommentDetail(cm_id);
         int m_id_to = cmdto.getMember().getM_id();
         int b_id = cmdto.getB_id();
         String cm_content = cmdto.getCm_content(); // 대상 댓글 내용
@@ -130,10 +127,10 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void addBoardLike_SaveNotificationAndSendAlert(Board_LikeDto boardLikeDto) { // 게시글 좋아요
+    public void addBoardLike_SaveNotificationAndSendAlert(BoardLikeDto boardLikeDto) { // 게시글 좋아요
         int m_id_from = boardLikeDto.getM_id();  //알림 보낸 사람
         int b_id = boardLikeDto.getB_id();
-        BoardDto bdto = boardDao.getBoardDetail(b_id); // 알림 받을 사람
+        BoardDetailDto bdto = boardDao.getBoardDetail(b_id); // 알림 받을 사람
         int m_id_to = bdto.getM_id();
         String b_content = bdto.getB_content();
         if(b_content.length() > 20){
@@ -159,10 +156,10 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void addReply_SaveNotificationAndSendAlert(JH_ReplyDto dto) { // 대댓글 작성
+    public void addReply_SaveNotificationAndSendAlert(ReplyDto dto) { // 대댓글 작성
         int m_id_from = dto.getM_id(); // 알림 보낸 사람(대댓글 작성자)
         int cm_id = dto.getCm_id(); // -> 대상 댓글 ID
-        JH_CommentDto cdto = jh_commentDao.getCommentDetail(cm_id); //
+        CommentDto cdto = jh_commentDao.getCommentDetail(cm_id); //
         int m_id_to = cdto.getMember().getM_id(); // 알림 받을 사람
         int b_id = cdto.getB_id();  // 대댓글이 달린 게시물id(-> url)
         String re_content = dto.getRe_content(); // 작성한 대댓글 내용
@@ -189,12 +186,12 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void addReplyLike_SaveNotificationAndSendAlert(Reply_LikeDto replyLikeDto) { // 대댓글 좋아요
+    public void addReplyLike_SaveNotificationAndSendAlert(ReplyLikeDto replyLikeDto) { // 대댓글 좋아요
         int m_id_from = replyLikeDto.getM_id(); // 알림 보낸 사람
         int re_id = replyLikeDto.getRe_id(); // 대상 대댓글 id -> reply테이블에서 m_id, re_content조회
-        JH_ReplyDto rldto = notificationDao.getReplyDetail(re_id);
+        ReplyDto rldto = notificationDao.getReplyDetail(re_id);
         int cm_id = rldto.getCm_id(); // 댓글 id
-        JH_CommentDto cdto = jh_commentDao.getCommentDetail(cm_id); // comments테이블에서 b_id 조회
+        CommentDto cdto = jh_commentDao.getCommentDetail(cm_id); // comments테이블에서 b_id 조회
         int b_id = cdto.getB_id();
         int m_id_to = rldto.getM_id();
         String re_content = rldto.getRe_content(); // 대상 대댓글 내용

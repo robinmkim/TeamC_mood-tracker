@@ -8,11 +8,12 @@
           @dragover.prevent
         >
           <div class="flex items-center border-b h-10">
-            <div class="w-10 rounded-full overflow-hidden">
+            <div class="w-9 h-9 rounded-full overflow-hidden">
               <img
                 class="object-contain rounded-full"
                 :src="getUserImageUrl()"
                 alt="user icon"
+                style="aspect-ratio: 100/100; object-fit: cover"
               />
             </div>
             <span class="ml-2">{{ memberHandle }}</span>
@@ -119,9 +120,11 @@ export default {
   mounted() {
     // 회원이름(m_handle)을 가져옵니다.
     apiClient.get("/member/userInfo/memberHandle").then((res) => {
-      console.log("memberHandle = ", res.data);
       this.memberHandle = res.data;
     });
+  },
+  created() {
+    this.getUsetInfo();
   },
   methods: {
     getUsetInfo() {
@@ -130,7 +133,7 @@ export default {
       const decoded = jwtDecode(token);
       const m_id = decoded.m_id;
       apiClient
-        .get(`/member/userInfo/${m_id}`)
+        .get(`/member/info/${m_id}`)
         .then((response) => {
           this.user = response.data;
         })

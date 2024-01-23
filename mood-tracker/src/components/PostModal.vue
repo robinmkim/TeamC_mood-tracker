@@ -76,9 +76,9 @@
 import apiClient from "@/utils/apiClient";
 import { number } from "yup";
 // import PostDetail from "./post/PostDetail";
-import PostList from "./post/PostList";
-import PostDetail from "@/components/post/PostDetail";
-import CommentList from "@/components/post/commentAndReply/CommentList";
+import PostList from "@/views/post/components/PostList";
+import PostDetail from "@/views/post/components/PostDetail";
+import CommentList from "@/views/post/components/commentAndReply/CommentList";
 
 export default {
   data() {

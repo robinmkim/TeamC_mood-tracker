@@ -1,26 +1,24 @@
 package com.teamc.moodtracker.controller;
 
-import com.teamc.moodtracker.dto.BoardDto;
-import com.teamc.moodtracker.dto.MediaDto;
-import com.teamc.moodtracker.dto.MemberDto;
+import com.teamc.moodtracker.dto.*;
+import com.teamc.moodtracker.service.BoardLikeService;
 import com.teamc.moodtracker.service.BoardService;
+import com.teamc.moodtracker.service.CommentService;
+import com.teamc.moodtracker.service.ReplyService;
 import com.teamc.moodtracker.util.JwtTokenProvider;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.attribute.standard.Media;
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,11 +32,23 @@ public class BoardController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    private CommentController commentController;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private ReplyService replyService;
+
+    @Autowired
+    private BoardLikeService likeService;
+
     String imageDirectory = "src/main/resources/static/images/";
 
     @PostMapping("/add")
     public int addBoardContent(@AuthenticationPrincipal MemberDto memberDto,
-                               @ModelAttribute BoardDto dto,
+                               @ModelAttribute BoardDetailDto dto,
                                @RequestParam(value = "mediaList", required = false) List<MultipartFile> mediaList) {
         List<MediaDto> mediaDtos = new ArrayList<>();
         dto.setM_id(memberDto.getM_id());
@@ -50,7 +60,6 @@ public class BoardController {
                 mediaDto.setMd_type(multipartFile.getContentType());
                 mediaDtos.add(mediaDto);
                 String filePath = imageDirectory + multipartFile.getOriginalFilename();
-                System.out.println(filePath);
                 uploadFile(multipartFile, filePath);
             }
         }
@@ -76,12 +85,84 @@ public class BoardController {
     }
 
     @GetMapping("/get/{b_id}")
-    public BoardDto getBoardDetail(@PathVariable int b_id) {
-        return service.getBoardDetail(b_id);
+    public BoardDetailDto getBoardDetail(@AuthenticationPrincipal MemberDto memberDto,@PathVariable int b_id) {
+        BoardDetailDto board = service.getBoardDetail(b_id);
+        board.setCountComments(commentController.allCommentCount(b_id));
+        BoardLikeDto dto = new BoardLikeDto();
+        dto.setM_id(memberDto.getM_id());
+        dto.setB_id(b_id);
+        boolean isMyLike = likeService.isMyLike(dto);
+
+        board.setIsMyLike(isMyLike);
+        return board;
     }
 
     @GetMapping("/list")
     public List<Integer> getBoardList(@RequestParam(value = "lastRowNum") int lastRowNum) {
         return service.getBoardList(lastRowNum);
     }
+
+    @Transactional
+    @PostMapping(value = "/update", consumes = "multipart/form-data")
+    public int updateBoardContent(@AuthenticationPrincipal MemberDto memberDto, @ModelAttribute BoardDetailDto dto,
+                                  @RequestParam(value = "mediaList", required = false) List<MultipartFile> newMedias,
+                                  @RequestParam(value = "mb_idList", required = false) String mb_idList) {
+        dto.setM_id(memberDto.getM_id());
+
+        if (mb_idList.equals("isNull")) {
+
+            String[] split_md_id = mb_idList.split(",");
+            int[] md_ids = new int[split_md_id.length];
+            for (int i = 0; i < split_md_id.length; i++) {
+                md_ids[i] = Integer.parseInt(split_md_id[i]);
+            }
+            List<Integer> mediaIds = Arrays.stream(md_ids)
+                    .boxed()
+                    .collect(Collectors.toList());
+            for (int i = 0; i < split_md_id.length; i++) {
+                md_ids[i] = Integer.parseInt(split_md_id[i]);
+            }
+            List<MediaDto> oldMediaList = service.getMediaList(dto.getB_id());
+            List<Integer> differentMediaIds = new ArrayList<>();
+            for (MediaDto old : oldMediaList) {
+                if (!mediaIds.contains(old.getMd_id())) {
+                    differentMediaIds.add(old.getMd_id());
+                }
+            }
+            if (differentMediaIds != null) {
+                for (int md_id : differentMediaIds){
+                    service.delMedia(md_id);
+                }
+            }
+        }
+        List<MediaDto> mediaDtos = new ArrayList<>();
+        if (newMedias != null) {
+//            oldMedias = service.getMediaList(dto.getB_id());
+            for (MultipartFile multipartFile : newMedias) {
+                MediaDto mediaDto = new MediaDto();
+                mediaDto.setMd_name(multipartFile.getOriginalFilename());
+                mediaDto.setMd_path("images/");
+                mediaDto.setMd_type(multipartFile.getContentType());
+                mediaDtos.add(mediaDto);
+                String filePath = imageDirectory + multipartFile.getOriginalFilename();
+                uploadFile(multipartFile, filePath);
+            }
+        }
+        service.updateBoardContent(dto, mediaDtos);
+        return 1;
+    }
+    @Transactional
+    @GetMapping("/delPost")
+    public void delPost(@RequestParam(value = "b_id") int b_id) {
+        List<Integer> commentList = commentService.getCm_idList(b_id);
+        for (int comment : commentList){
+            List<Integer> replyList = replyService.getRe_idList(comment);
+            for (int reply : replyList) {
+                replyService.delReply(reply);
+            }
+            commentService.delComment(comment);
+        }
+        service.delPost(b_id);
+    }
+
 }

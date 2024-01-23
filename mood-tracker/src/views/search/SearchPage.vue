@@ -123,7 +123,7 @@
 
 <script>
 import apiClient from "./../../utils/apiClient";
-import PostDetail from "@/components/post/PostDetail.vue";
+import PostDetail from "@/views/post/components/PostDetail";
 // import axios from "axios";
 
 export default {

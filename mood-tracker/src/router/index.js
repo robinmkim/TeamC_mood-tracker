@@ -21,6 +21,8 @@ import AdminPage from "@/views/admin/AdminPage";
 import apiClient from "@/utils/apiClient";
 import ErrorPage from "@/views/error/ErrorPage";
 import chatbotRouter from "./routers/chatbotRouter";
+import introduction from "/src/views/introduction/IntroductionPage.vue";
+
 
 const routes = [
   {
@@ -85,7 +87,7 @@ const routes = [
       ...faceRouter,
       ...postDetailRouter,
       ...questionRouter,
-      ...chatbotRouter,
+      ...chatbotRouter, 
     ],
   },
   {
@@ -119,6 +121,18 @@ const routes = [
       ...authRouter,
     ],
   },
+  {
+    path: "/introduction",
+    component: EmptyLayout,
+    children: [
+        {
+          path: "",
+          components: {
+            default: introduction,
+          },
+        },
+    ]
+  },
 ];
 
 const router = createRouter({
@@ -127,7 +141,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/login"];
+  const publicPages = ["/login", "/signup" ,"/password", "/username","/birth","/profileImg","/success"];
+
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("jwtToken");
 

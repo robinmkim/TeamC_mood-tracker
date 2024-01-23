@@ -1,23 +1,26 @@
 <template>
-  <div class="flex h-full items-center border-b p-3" @click="selectPost">
-    <div class="flex ml-3" style="justify-content: flex-start">
+  <div
+    @click="selectPost"
+    class="flex h-16 pl-4 items-center justify-start border-b"
+  >
+    <div class="flex justify-start">
       <img :src="getImageUrl()" alt="postEmotion" class="w-8 h-8" />
     </div>
-    <div class="flex ml-3 from-neutral-800">{{ getShortenedContent() }}</div>
+    <div class="flex justify-start ml-3">{{ board.b_content }}</div>
   </div>
 </template>
 
 <script>
 import apiClient from "@/utils/apiClient";
+
 export default {
-  name: "PostList",
   props: {
-    // Step 1: Props 정의
     b_id: {
       type: Number,
       required: true,
     },
   },
+  name: "PostList",
   components: {},
   data() {
     return {
@@ -35,8 +38,36 @@ export default {
         myLike: false,
         showDrop: this.isDropdownOpen,
       },
-      maxContentLength: 20,
+      emotionMap: {
+        "😆": "happy",
+        "😡": "angry",
+        "😬": "anxiety",
+        "🤕": "hurt",
+        "😐": "neutral",
+        "😢": "sad",
+        "😨": "surprise",
+      },
+      user: {
+        m_name: null,
+        m_hanble: null,
+        m_img_name: "",
+        m_img_path: "",
+      },
     };
+  },
+  computed: {
+    shotText() {
+      // 본문의 일부만 보여주되, 본문이 존재하는 경우에만 작업을 수행합니다.
+      return this.board.b_content ? this.board.b_content.slice(0, 20) : "";
+    },
+    sentimentEmoji() {
+      // 감정에 해당하는 이모지를 반환합니다.
+      return (
+        Object.keys(this.emotionMap).find(
+          (key) => this.emotionMap[key] === this.board.b_sentiment
+        ) || ""
+      );
+    },
   },
   created() {
     this.loadBoardData();
@@ -45,27 +76,29 @@ export default {
     selectPost() {
       this.$emit("postSelected", this.b_id);
     },
-    loadBoardData() {
-      apiClient
-        .get(`/jh_post/get/${this.b_id}`)
-        .then((response) => {
-          this.board = response.data;
-          console.log(this.board.b_sentiment);
-        })
-        .catch((error) => {
-          console.error("Error fetching the board data:", error);
-        });
-    },
     getImageUrl() {
       // md_path와 md_name을 결합하여 이미지의 전체 경로를 반환합니다.
       return `http://localhost:8083/images/${this.board.b_sentiment}.png`;
     },
-    getShortenedContent() {
-      if (this.board.b_content.length > this.maxContentLength) {
-        return this.board.b_content.slice(0, this.maxContentLength) + "  ...";
-      } else {
-        return this.board.b_content;
-      }
+    loadBoardData() {
+      // 게시글 데이터를 로드합니다.
+      apiClient
+        .get(`/jh_post/get/${this.b_id}`)
+        .then((response) => {
+          this.board = response.data;
+          console.log(this.board);
+          // console.log(this.board);
+          // console.log(this.board.myLike);
+          // console.log("loadBoardData: " + this.board.member.m_id);
+
+          // jwtToken을 decode해서 m_id를 추출한다.
+          // const token = localStorage.getItem("jwtToken");
+          // const decoded = jwtDecode(token);
+          // this.isMain = this.board.member.m_id === decoded.m_id ? true : false;
+        })
+        .catch((error) => {
+          console.error("Error fetching the board data:", error);
+        });
     },
   },
   mounted() {},

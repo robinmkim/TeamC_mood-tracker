@@ -23,6 +23,7 @@
               :cm_id="cm_id"
               :isDropdownOpen="openCm_id === cm_id"
               @toggle-dropdown="toggleDropdown"
+              @delComment="delComment"
             />
           </div>
         </div>
@@ -57,10 +58,10 @@
 
 <script>
 import apiClient from "@/utils/apiClient";
-import PostDetail from "@/components/post/PostDetail";
+import PostDetail from "@/views/post/components/PostDetail";
 import { jwtDecode } from "jwt-decode";
 
-import CommentList from "@/components/post/commentAndReply/CommentList";
+import CommentList from "@/views/post/components/commentAndReply/CommentList";
 // import { number } from "yup";
 
 export default {
@@ -75,6 +76,11 @@ export default {
     };
   },
   methods: {
+    delComment() {
+      this.getCm_idList();
+      this.getCommentCount();
+      // location.reload();
+    },
     toggleDropdown(cm_id) {
       // 클릭한 댓글 ID와 현재 열린 드롭다운의 댓글 ID를 비교하여 상태를 토글
       this.openCm_id = this.openCm_id === cm_id ? null : cm_id;
@@ -106,6 +112,7 @@ export default {
           console.log("res" + res);
           if (res.data === 1) {
             this.getCm_idList();
+            this.getCommentCount();
             this.content = null;
           }
         })
@@ -134,7 +141,6 @@ export default {
         .get(`/jh_comment/allCommentCount?b_id=${this.b_id}`)
         .then((response) => {
           this.commentCount = response.data;
-          console.log("==>" + this.commentCount);
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);

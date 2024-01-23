@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col items-center justify-center h-full p-6">
+  <div
+    class="flex flex-col items-center justify-center h-full p-6 w-[450px] mt-36"
+  >
     <div class="bg-white rounded-lg p-8 shadow-md w-full max-w-sm">
       <div class="flex flex-col items-center mb-6">
         <!-- 로고나 아이콘을 넣을 수 있는 공간 -->
