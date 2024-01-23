@@ -22,6 +22,7 @@ import apiClient from "@/utils/apiClient";
 import ErrorPage from "@/views/error/ErrorPage";
 import chatbotRouter from "./routers/chatbotRouter";
 
+
 const routes = [
   {
     path: "/",
@@ -86,6 +87,7 @@ const routes = [
       ...postDetailRouter,
       ...questionRouter,
       ...chatbotRouter,
+
     ],
   },
   {
@@ -127,7 +129,8 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/login"];
+  const publicPages = ["/login", "/signup" ,"/password", "/username","/birth","/profileImg","/success"];
+
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("jwtToken");
 

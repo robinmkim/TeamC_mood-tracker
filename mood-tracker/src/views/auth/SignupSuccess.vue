@@ -58,7 +58,7 @@ export default {
     });
     const goToLogin = () => {
       router.push({
-        name: "LogIn",
+        path: "/login",
       });
     };
     return { userInfo, goToLogin };
