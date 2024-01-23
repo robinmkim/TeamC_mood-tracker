@@ -12,7 +12,9 @@ public interface NotificationService {
     public List<NotificationDto> selectMyNotificationAll(int m_id);
 
     public List<NotificationDto> selectMyNotificationFollow(int m_id);
+
     public List<NotificationDto> selectMyNotificationComment(int m_id);
+
     public List<NotificationDto> selectMyNotificationLike(int m_id);
 
     public int selectUnreadNumber(int m_id_to);
@@ -34,5 +36,11 @@ public interface NotificationService {
 
     public void sendChat_SendAlert(SendChat sendRequest);
 
-//    public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO); // 팔로우 부분 pull 한 다음 맞게 수정할 것
+    <<<<<<<HEAD
+    // public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto
+    // followRequestDTO); // 팔로우 부분 pull 한 다음 맞게 수정할 것
+    =======
+    // public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto
+    // followRequestDTO); // 팔로우 부분 pull 한 다음 맞게 수정할 것
+    >>>>>>>08b1e34 (🚚 boot 프로젝트 디렉토리 수정 및 파일 이름 재지정)
 }

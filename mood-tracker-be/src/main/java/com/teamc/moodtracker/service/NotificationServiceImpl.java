@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class NotificationServiceImpl implements NotificationService{
+public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     private NotificationDao notificationDao;
@@ -29,7 +29,6 @@ public class NotificationServiceImpl implements NotificationService{
     private CommentDao jh_commentDao;
 
     private final SimpMessagingTemplate messagingTemplate;
-
 
     @Override
     public List<NotificationDto> selectMyNotificationAll(int m_id_to) {
@@ -74,25 +73,25 @@ public class NotificationServiceImpl implements NotificationService{
         BoardDetailDto bdto = boardDao.getBoardDetail(b_id);
         int m_id_to = bdto.getM_id();
         String cm_content = commentDto.getCm_content(); // 작성한 댓글 내용
-        if(cm_content.length() > 20){
-            cm_content = cm_content.substring(0,20) + "...";
+        if (cm_content.length() > 20) {
+            cm_content = cm_content.substring(0, 20) + "...";
         }
-        if(m_id_from != m_id_to){ // 본인의 게시물에 상호작용한 내용은 알림을 보내지 않습니다.
+        if (m_id_from != m_id_to) { // 본인의 게시물에 상호작용한 내용은 알림을 보내지 않습니다.
             // Notice 테이블에 저장
             NotificationDto notificationDto = new NotificationDto();
             notificationDto.setM_id_to(m_id_to);
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("comment");
             notificationDto.setN_content(cm_content);
-            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id=" + b_id);
             notificationDao.insertNotice(notificationDto);
-            //알림 전송
+            // 알림 전송
             Alert alert = Alert.builder()
                     .type("comment")
                     .m_id_to(m_id_to)
                     .m_id_from(m_id_from)
                     .m_content(cm_content).build();
-            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+            messagingTemplate.convertAndSend("/topic/notiChat/" + m_id_to, alert);
         }
     }
 
@@ -104,46 +103,46 @@ public class NotificationServiceImpl implements NotificationService{
         int m_id_to = cmdto.getMember().getM_id();
         int b_id = cmdto.getB_id();
         String cm_content = cmdto.getCm_content(); // 대상 댓글 내용
-        if(cm_content.length() > 20){
-            cm_content = cm_content.substring(0,20) + "...";
+        if (cm_content.length() > 20) {
+            cm_content = cm_content.substring(0, 20) + "...";
         }
-        if(m_id_from != m_id_to){ // 본인의 게시물에 상호작용한 내용은 알림을 보내지 않습니다.
-            //DB 저장
+        if (m_id_from != m_id_to) { // 본인의 게시물에 상호작용한 내용은 알림을 보내지 않습니다.
+            // DB 저장
             NotificationDto notificationDto = new NotificationDto();
             notificationDto.setM_id_to(m_id_to);
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("commentlike");
             notificationDto.setN_content(cm_content);
-            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id=" + b_id);
             notificationDao.insertNotice(notificationDto);
-            //알림 전송
+            // 알림 전송
             Alert alert = Alert.builder()
                     .type("commentlike")
                     .m_id_to(m_id_to)
                     .m_id_from(m_id_from)
                     .m_content(cm_content).build();
-            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+            messagingTemplate.convertAndSend("/topic/notiChat/" + m_id_to, alert);
         }
     }
 
     @Override
     public void addBoardLike_SaveNotificationAndSendAlert(BoardLikeDto boardLikeDto) { // 게시글 좋아요
-        int m_id_from = boardLikeDto.getM_id();  //알림 보낸 사람
+        int m_id_from = boardLikeDto.getM_id(); // 알림 보낸 사람
         int b_id = boardLikeDto.getB_id();
         BoardDetailDto bdto = boardDao.getBoardDetail(b_id); // 알림 받을 사람
         int m_id_to = bdto.getM_id();
         String b_content = bdto.getB_content();
-        if(b_content.length() > 20){
-            b_content = b_content.substring(0,20) + "...";
+        if (b_content.length() > 20) {
+            b_content = b_content.substring(0, 20) + "...";
         }
-        if(m_id_from != m_id_to){ // 본인의 게시물에 상호작용한 내용은 알림을 보내지 않습니다.
+        if (m_id_from != m_id_to) { // 본인의 게시물에 상호작용한 내용은 알림을 보내지 않습니다.
             // DB 저장
             NotificationDto notificationDto = new NotificationDto();
             notificationDto.setM_id_to(m_id_to);
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("boardlike");
             notificationDto.setN_content(b_content);
-            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id=" + b_id);
             notificationDao.insertNotice(notificationDto);
             // 알림 전송
             Alert alert = Alert.builder()
@@ -151,7 +150,7 @@ public class NotificationServiceImpl implements NotificationService{
                     .m_id_to(m_id_to)
                     .m_id_from(m_id_from)
                     .m_content(b_content).build();
-            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+            messagingTemplate.convertAndSend("/topic/notiChat/" + m_id_to, alert);
         }
     }
 
@@ -161,19 +160,19 @@ public class NotificationServiceImpl implements NotificationService{
         int cm_id = dto.getCm_id(); // -> 대상 댓글 ID
         CommentDto cdto = jh_commentDao.getCommentDetail(cm_id); //
         int m_id_to = cdto.getMember().getM_id(); // 알림 받을 사람
-        int b_id = cdto.getB_id();  // 대댓글이 달린 게시물id(-> url)
+        int b_id = cdto.getB_id(); // 대댓글이 달린 게시물id(-> url)
         String re_content = dto.getRe_content(); // 작성한 대댓글 내용
-        if(re_content.length() > 20){
-            re_content = re_content.substring(0,20) + "...";
+        if (re_content.length() > 20) {
+            re_content = re_content.substring(0, 20) + "...";
         }
-        if(m_id_from != m_id_to){
+        if (m_id_from != m_id_to) {
             // DB 저장
             NotificationDto notificationDto = new NotificationDto();
             notificationDto.setM_id_to(m_id_to);
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("reply");
             notificationDto.setN_content(re_content);
-            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id=" + b_id);
             notificationDao.insertNotice(notificationDto);
             // 알림 전송
             Alert alert = Alert.builder()
@@ -181,7 +180,7 @@ public class NotificationServiceImpl implements NotificationService{
                     .m_id_to(m_id_to)
                     .m_id_from(m_id_from)
                     .m_content(re_content).build();
-            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+            messagingTemplate.convertAndSend("/topic/notiChat/" + m_id_to, alert);
         }
     }
 
@@ -195,17 +194,17 @@ public class NotificationServiceImpl implements NotificationService{
         int b_id = cdto.getB_id();
         int m_id_to = rldto.getM_id();
         String re_content = rldto.getRe_content(); // 대상 대댓글 내용
-        if(re_content.length() > 20){
-            re_content = re_content.substring(0,20) + "...";
+        if (re_content.length() > 20) {
+            re_content = re_content.substring(0, 20) + "...";
         }
-        if(m_id_from != m_id_to){
+        if (m_id_from != m_id_to) {
             // DB 저장
             NotificationDto notificationDto = new NotificationDto();
             notificationDto.setM_id_to(m_id_to);
             notificationDto.setM_id_from(m_id_from);
             notificationDto.setN_type("replylike");
             notificationDto.setN_content(re_content);
-            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id="+b_id);
+            notificationDto.setN_url("http://localhost:8081/postDetail/?b_id=" + b_id);
             notificationDao.insertNotice(notificationDto);
             // 알림 전송
             Alert alert = Alert.builder()
@@ -213,7 +212,7 @@ public class NotificationServiceImpl implements NotificationService{
                     .m_id_to(m_id_to)
                     .m_id_from(m_id_from)
                     .m_content(re_content).build();
-            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+            messagingTemplate.convertAndSend("/topic/notiChat/" + m_id_to, alert);
         }
     }
 
@@ -222,10 +221,10 @@ public class NotificationServiceImpl implements NotificationService{
         int m_id_from = sendRequest.getMemberId(); // 알림 보낸 사람( 채팅 보낸 사람 )
         int m_id_to = sendRequest.getOtherMemberId(); // 알림 받을 사람 ( 채팅 받을 사람 )
         String message = sendRequest.getMessage();
-        if(message.length() > 20){
-            message = message.substring(0,20) + "...";
+        if (message.length() > 20) {
+            message = message.substring(0, 20) + "...";
         }
-        if(m_id_from != m_id_to){
+        if (m_id_from != m_id_to) {
             // DB 저장 X :: 채팅은 별도로 Notice테이블에 저장하지 않습니다.
             // 알림 전송
             Alert alert = Alert.builder()
@@ -233,31 +232,32 @@ public class NotificationServiceImpl implements NotificationService{
                     .m_id_to(m_id_to)
                     .m_id_from(m_id_from)
                     .m_content(message).build();
-            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+            messagingTemplate.convertAndSend("/topic/notiChat/" + m_id_to, alert);
         }
     }
 
-//    @Override
-//    public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO) {
-//        int m_id_from = followRequestDTO.getFollower_id(); // 팔로우 하는 사람
-//        int m_id_to = followRequestDTO.getFollowed_id(); // 팔로우 당하는 사람
-//        String fw_content = "";
-//        if(m_id_from != m_id_to){  // 자기자신 팔로우 불가 -> FollowController에서 검사는 함
-//            // DB 저장
-//            NotificationDto notificationDto = new NotificationDto();
-//            notificationDto.setM_id_to(m_id_to);
-//            notificationDto.setM_id_from(m_id_from);
-//            notificationDto.setN_type("follow");
-//            notificationDto.setN_content(fw_content);
-//            notificationDto.setN_url(""); // 팔로우 알림 클릭 시 이동할 페이지.. 팔로우한 사람 회원페이지?
-//            notificationDao.insertNotice(notificationDto);
-//            // 알림 전송
-//            Alert alert = Alert.builder()
-//                    .type("follow")
-//                    .m_id_to(m_id_to)
-//                    .m_id_from(m_id_from)
-//                    .m_content(fw_content).build();
-//            messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
-//        }
-//    }
+    // @Override
+    // public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto
+    // followRequestDTO) {
+    // int m_id_from = followRequestDTO.getFollower_id(); // 팔로우 하는 사람
+    // int m_id_to = followRequestDTO.getFollowed_id(); // 팔로우 당하는 사람
+    // String fw_content = "";
+    // if(m_id_from != m_id_to){ // 자기자신 팔로우 불가 -> FollowController에서 검사는 함
+    // // DB 저장
+    // NotificationDto notificationDto = new NotificationDto();
+    // notificationDto.setM_id_to(m_id_to);
+    // notificationDto.setM_id_from(m_id_from);
+    // notificationDto.setN_type("follow");
+    // notificationDto.setN_content(fw_content);
+    // notificationDto.setN_url(""); // 팔로우 알림 클릭 시 이동할 페이지.. 팔로우한 사람 회원페이지?
+    // notificationDao.insertNotice(notificationDto);
+    // // 알림 전송
+    // Alert alert = Alert.builder()
+    // .type("follow")
+    // .m_id_to(m_id_to)
+    // .m_id_from(m_id_from)
+    // .m_content(fw_content).build();
+    // messagingTemplate.convertAndSend("/topic/notiChat/"+ m_id_to, alert);
+    // }
+    // }
 }
