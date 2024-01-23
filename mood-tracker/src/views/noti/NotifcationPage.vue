@@ -570,7 +570,7 @@ export default {
           if (this.currentTab == 0) {
             // 전체
             apiClient
-              .delete("/notification/deleteAll")
+              .delete("/notification/deleteAll/all")
               .then((res) => {
                 if (res.data == 1) {
                   console.log(" 삭제 완료");

@@ -262,7 +262,7 @@ public class NotificationServiceImpl implements NotificationService{
     public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO) {
         int m_id_from = followRequestDTO.getFollowerId(); // 팔로우 하는 사람
         int m_id_to = followRequestDTO.getFollowedId(); // 팔로우 당하는 사람
-        String fw_content = "";
+        String fw_content = "팔로우";
         if(m_id_from != m_id_to){  // 자기자신 팔로우 불가 -> FollowController에서 검사는 함
             // DB 저장
             NotificationDto notificationDto = new NotificationDto();
