@@ -65,14 +65,14 @@ jobs:
           command: aws s3 cp deploy/vue-project.zip s3://ec2-s3-mybucket/vue-project.zip
       - aws-code-deploy/deploy-bundle:
           application-name: SongtimentBoot
-          deployment-group: SongtimentBootGroup
+          deployment-group: SongtimentBootGroupv2
           deployment-config: CodeDeployDefault.AllAtOnce
           bundle-bucket: ec2-s3-mybucket
           bundle-key: spring-boot-project
           bundle-type: zip
       - aws-code-deploy/deploy-bundle:
           application-name: Songtiment
-          deployment-group: SongtimentDeployGroup
+          deployment-group: SongtimentVue
           deployment-config: CodeDeployDefault.AllAtOnce
           bundle-bucket: ec2-s3-mybucket
           bundle-key: vue-project
