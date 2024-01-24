@@ -27,12 +27,8 @@ public class MyPageController {
 
     @GetMapping("/sentiment")
     @ResponseBody
-    public List<Map<String, Object>> getSentimentData(@AuthenticationPrincipal MemberDto memberDto) {
-        int mid = memberDto.getM_id();
-        System.out.println("-----------controller getSenti-----------");
-        System.out.println(service.getSentiment(mid));
-
-        return service.getSentiment(mid);
+    public List<Map<String, Object>> getSentimentData(@RequestParam("m_id")int m_id) {
+        return service.getSentiment(m_id);
     }
 
     @GetMapping("/mylist")
@@ -43,38 +39,28 @@ public class MyPageController {
 
     @GetMapping("/likelist")
     public List<Integer> getLikedBoardList(@RequestParam(value = "lastRowNum") int lastRowNum,
-            @AuthenticationPrincipal MemberDto memberDto) {
-        int mid = memberDto.getM_id();
-        System.out.println("-------controller get board like list-----");
-        System.out.println("rownum:" + lastRowNum + "mid:" + mid);
-        return service.getLikedBoardList(lastRowNum, mid);
+            @RequestParam("m_id")int m_id) {
+        return service.getLikedBoardList(lastRowNum, m_id);
     }
 
     @GetMapping("/reglist")
-    public List<Integer> getListByDate(@RequestParam(value = "regdate") String regdate,
-            @AuthenticationPrincipal MemberDto memberDto) {
-        int mid = memberDto.getM_id();
-        System.out.println("-------controller get list by regdate-----");
-        System.out.println("regdate:" + regdate + "mid:" + mid);
-        return service.getListByDate(regdate, mid);
+    public List<Integer> getListByDate(@RequestParam(value = "regdate") String regdate, @RequestParam(value = "m_id")int m_id) {
+        return service.getListByDate(regdate, m_id);
     }
 
     @GetMapping("/const")
-    public Integer getConsecPostsCnt(@AuthenticationPrincipal MemberDto memberDto) {
-        int mid = memberDto.getM_id();
-        return service.getConsecPostsCnt(mid);
+    public Integer getConsecPostsCnt(@RequestParam("m_id")int m_id) {
+        return service.getConsecPostsCnt(m_id);
     }
 
     @GetMapping("/postcnt")
-    public Integer getThisMonthPosts(@AuthenticationPrincipal MemberDto memberDto) {
-        int mid = memberDto.getM_id();
-        return service.getThisMonthPosts(mid);
+    public Integer getThisMonthPosts(@RequestParam("m_id")int m_id)  {
+        return service.getThisMonthPosts(m_id);
     }
 
     @GetMapping("/mainsenti")
-    public String getMainSentiment(@AuthenticationPrincipal MemberDto memberDto) {
-        int mid = memberDto.getM_id();
-        return service.getMainSentiment(mid);
+    public String getMainSentiment(@RequestParam("m_id")int m_id) {
+        return service.getMainSentiment(m_id);
     }
 
     // 검색창 검색 기능입니다. 주의하세요

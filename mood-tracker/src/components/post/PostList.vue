@@ -83,18 +83,10 @@ export default {
     loadBoardData() {
       // 게시글 데이터를 로드합니다.
       apiClient
-        .get(`/jh_post/get/${this.b_id}`)
+        .get(`/post/get/${this.b_id}`)
         .then((response) => {
           this.board = response.data;
           console.log(this.board);
-          // console.log(this.board);
-          // console.log(this.board.myLike);
-          // console.log("loadBoardData: " + this.board.member.m_id);
-
-          // jwtToken을 decode해서 m_id를 추출한다.
-          // const token = localStorage.getItem("jwtToken");
-          // const decoded = jwtDecode(token);
-          // this.isMain = this.board.member.m_id === decoded.m_id ? true : false;
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);

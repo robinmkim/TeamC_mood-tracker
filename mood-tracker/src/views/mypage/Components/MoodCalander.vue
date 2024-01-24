@@ -7,6 +7,7 @@
       :month="modalData.mmonth"
       :ByDateList="ByDateList"
       @close="isModalOpen = false"
+      :m_id="m_id"
     />
     <div class="flex-grow">
       <div>
@@ -96,6 +97,12 @@ export default {
   name: "MoodCalander",
   components: {
     PostModal,
+  },
+  props: {
+    m_id: {
+      type: Number,
+      required: false,
+    },
   },
   data() {
     return {
@@ -265,7 +272,7 @@ export default {
 
       apiClient
         .get(
-          `/mypage/getTopSentiment?year=${this.year}&month=${this.month}&firstDay=${firstDay}&lastDate=${lastDate}&m_id=5`
+          `/mypage/getTopSentiment?year=${this.year}&month=${this.month}&firstDay=${firstDay}&lastDate=${lastDate}&m_id=${this.m_id}`
         )
         .then((response) => {
           this.sentimentList = response.data;
@@ -312,7 +319,7 @@ export default {
       }
       this.isLoading = true;
       apiClient
-        .get(`/mypage/reglist?regdate=${formattedDate}`)
+        .get(`/mypage/reglist?regdate=${formattedDate}&m_id=${this.m_id}`)
         .then((res) => {
           console.log("캘린더 포스트 넘어옴");
 
