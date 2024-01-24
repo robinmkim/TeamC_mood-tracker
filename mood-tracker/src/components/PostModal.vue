@@ -40,11 +40,19 @@
               @postSelected="handlePostSelected"
             />
           </div>
-          <div v-else>데이터가 없습니다.</div>
+          <div v-else class="h-full items-center justify-center flex flex-col">
+            <img
+              src="http://localhost:8083/images/nullGIF.gif"
+              width="120"
+              height="120"
+              class="mb-4 -mt-16"
+            />
+            데이터가 없습니다.
+          </div>
         </div>
         <!-- postDetail -->
         <div class="border-x flex flex-grow w-2/3 overflow-y-auto">
-          <div v-if="this.selectedPostId === null">아무것도 안 불러옴!</div>
+          <div v-if="this.selectedPostId === null"></div>
           <div v-else class="w-full">
             <div class="shadow">
               <postDetail

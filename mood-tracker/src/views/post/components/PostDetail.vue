@@ -1,5 +1,15 @@
 <template>
-  <div class="m-4 border-b" @scroll="handleScroll" :class="customClass">
+  <div
+    class="m-1 mb-3 p-4 border bg-white shadow rounded-lg"
+    @scroll="handleScroll"
+    :class="customClass"
+  >
+    <!-- 모달 부분 -->
+    <MediaModal
+      :isOpen="isModalOpen"
+      @close="isModalOpen = false"
+      :mediaList="board.mediaList"
+    />
     <!-- 게시글 헤더 영역 -->
     <div class="postHerder flex flex-row mb-3">
       <div class="h-[45px] w-[45px] overflow-hidden relative rounded-full">
@@ -126,6 +136,7 @@
             :src="getImageUrl(board.mediaList[currentImageIndex - 1])"
             alt="Post image"
             class="items-center rounded-lg"
+            @click="mediaModalOpen"
           />
         </div>
         <a
@@ -265,8 +276,12 @@
 import apiClient from "@/utils/apiClient";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import MediaModal from "@/components/MediaModal.vue";
 
 export default {
+  components: {
+    MediaModal,
+  },
   props: {
     // Step 1: Props 정의
     b_id: {
@@ -330,6 +345,7 @@ export default {
       isMain: false,
       isOpen: false,
       reportModal: false,
+      isModalOpen: false,
     };
   },
   computed: {
@@ -343,6 +359,10 @@ export default {
     },
   },
   methods: {
+    mediaModalOpen() {
+      // alert("!!" + this.board.mediaList[0].md_id);
+      this.isModalOpen = true;
+    },
     closeReportModal() {
       this.reportModal = false;
     },
