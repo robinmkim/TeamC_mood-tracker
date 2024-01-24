@@ -34,7 +34,9 @@ jobs:
       - checkout
       - run:
           name: Grant Permissions to Gradlew
-          command: chmod +x ./gradlew
+          command: |
+          cd mood-tracker-be
+          chmod +x ./gradlew
       - run:
           name: Build with Gradle
           command: ./gradlew build
