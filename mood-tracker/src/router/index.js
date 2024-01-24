@@ -21,7 +21,7 @@ import AdminPage from "@/views/admin/AdminPage";
 import apiClient from "@/utils/apiClient";
 import ErrorPage from "@/views/error/ErrorPage";
 import chatbotRouter from "./routers/chatbotRouter";
-import introduction from "/src/views/Introduction/IntroductionPage.vue";
+import Introduction from "@/views/introduction/IntroductionPage.vue";
 
 const routes = [
   {
@@ -126,7 +126,7 @@ const routes = [
       {
         path: "",
         components: {
-          default: introduction,
+          default: Introduction,
         },
       },
     ],
