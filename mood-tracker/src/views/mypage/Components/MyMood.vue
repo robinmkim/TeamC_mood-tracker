@@ -13,7 +13,7 @@
         </div>
         <!--그래프-->
         <div class="flex flex-col justify-center items-center flex-grow">
-          <BarChart class="w-4/5 flex-grow" />
+          <BarChart class="w-4/5 flex-grow" :m_id="m_id" />
         </div>
       </div>
       <!-- page 2 : 연속일수, 기록수-->
@@ -94,6 +94,12 @@ export default {
   components: {
     BarChart,
   },
+  props: {
+    m_id: {
+      type: Number,
+      required: true,
+    },
+  },
   data: () => ({
     cntPosts: 0,
     consecPosts: 0,
@@ -112,7 +118,7 @@ export default {
     // 연속으로 글 쓴 날짜
     getConsecPost() {
       apiClient
-        .get(`/mypage/const`)
+        .get(`/mypage/const?m_id=${this.m_id}`)
         .then((cnt) => {
           this.consecPosts = cnt.data;
         })
@@ -123,7 +129,7 @@ export default {
     // 이번달에 쓴 게시글 개수
     getThisMonthPosts() {
       apiClient
-        .get(`/mypage/postcnt`)
+        .get(`/mypage/postcnt?m_id=${this.m_id}`)
         .then((cnt) => {
           this.cntPosts = cnt.data;
           console.log("이번달에 쓴 게시글 개수는? ", this.cntPosts);
@@ -135,7 +141,7 @@ export default {
 
     getMainSentiment() {
       apiClient
-        .get(`/mypage/mainsenti`)
+        .get(`/mypage/mainsenti?m_id=${this.m_id}`)
         .then((res) => {
           console.log("이번 달 메인 감정: ", res.data);
           const senti = res.data;

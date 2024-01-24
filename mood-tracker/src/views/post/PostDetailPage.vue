@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full" @scroll="handleScroll">
+  <div class="flex h-full bg-red-100" @scroll="handleScroll">
     <div class="flex-1 border-x flex h-full">
       <div
         class="flex-1 flex flex-col border-r h-full relative overflow-y-auto"

@@ -28,6 +28,12 @@ export default {
       LikedlastRowNum: 0,
     };
   },
+  props: {
+    m_id: {
+      type: Number,
+      required: true,
+    },
+  },
   created() {
     this.getLikedBoardList();
   },
@@ -40,7 +46,9 @@ export default {
       }
       this.isLoading = true;
       apiClient
-        .get(`/mypage/likelist?lastRowNum=${this.LikedlastRowNum}`)
+        .get(
+          `/mypage/likelist?lastRowNum=${this.LikedlastRowNum}&m_id=${this.m_id}`
+        )
         .then((res) => {
           console.log("liked post 넘어옴");
           this.LikedlastRowNum += res.data.length;

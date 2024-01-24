@@ -205,7 +205,7 @@
 
           <span class="text-sm ml-1 mr-1">{{ this.board.countLike }}</span>
           <a
-            :href="'/postDetail/?b_id=' + this.board.b_id"
+            :href="'/postDetail?b_id=' + this.board.b_id"
             class="flex items-center"
           >
             <svg
