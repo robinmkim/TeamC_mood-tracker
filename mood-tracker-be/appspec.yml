@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: / #CodeDeploy에서 전달해 준 파일 전부를 destination으로 전달하겠다
+    destination: /home/ubuntu/deploy
+    overwrite: yes
+
+permissions: #CodeDeploy에서 받은 파일의 권한을 설정한다 (ubuntu는 aws ec2 기본사용자)
+  - object: /
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+
+hooks: #CodeDeploy배포 단계에서 실행할 명령어를 지정합니다.
+  ApplicationStart: #deploy.sh를 ubuntu권한으로 실행합니다.
+    - location: scripts/deploy.sh
+      timeout: 60 #스크립트 실행 60초 이상 수행되면 실패가 됩니다.
+      runas: ubuntu

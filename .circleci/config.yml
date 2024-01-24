@@ -1,0 +1,69 @@
+version: 2.1
+orbs:
+  aws-s3: circleci/aws-s3@x.y.z # 사용하려는 orb 버전
+
+jobs:
+  build_and_deploy_vue:
+    docker:
+      - image: cimg/node:lts # Node 환경 설정
+    steps:
+      - checkout
+      - run:
+          name: Build Vue project
+          command: |
+            cd mood-tracker
+            npm install
+            npm run build
+      - run:
+          name: Package Vue project
+          command: |
+            zip -r vue-project.zip mood-tracker/dist
+      - aws-s3/copy:
+          from: vue-project.zip
+          to: "s3://ec2-s3-mybucket/vue-project.zip"
+          arguments: "--acl public-read"
+
+  build_and_deploy_spring_boot:
+    docker:
+      - image: circleci/openjdk:17-jdk-buster
+    steps:
+      - checkout
+      - run:
+          name: Build Spring Boot project
+          command: |
+            cd mood-tracker-be
+            chmod +x ./gradlew
+            ./gradlew build
+      - run:
+          name: Package Spring Boot project
+          command: |
+            cp mood-tracker-be/build/libs/*.jar spring-boot-project.jar
+      - aws-s3/copy:
+          from: spring-boot-project.jar
+          to: "s3://ec2-s3-mybucket/spring-boot-project.jar"
+          arguments: "--acl public-read"
+
+  deploy:
+    docker:
+      - image: circleci/python:2.7
+    steps:
+      - attach_workspace: # 저장한 폴더 가져오기
+          at: .
+      - aws-s3/copy:
+          from: deploy/* # deploy 폴더 내부의 모든 파일을 aws s3로 보낸다
+          to: "s3://ec2-s3-mybucket" # s3 버킷명
+          aws-region: AWS_DEFAULT_REGION # CircleCI에 설정한 Context의 내용
+      - aws-code-deploy/deploy-bundle:
+          application-name: Songtiment
+          deployment-group: SongtimentDeployGroup
+          deployment-config: CodeDeployDefault.AllAtOnce
+          bundle-bucket: ec2-s3-mybucket
+          bundle-key: back # 보내는 파일 이름
+          bundle-type: zip
+
+workflows:
+  version: 2
+  build_and_deploy_workflow:
+    jobs:
+      - build_and_deploy_vue
+      - build_and_deploy_spring_boot
