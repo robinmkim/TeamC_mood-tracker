@@ -84,6 +84,24 @@
         WHERE re_id = #{re_id}
     </select>
 
+    <delete id="deleteNoticeAll" parameterType="int">
+        DELETE FROM notice
+        WHERE m_id_to = #{m_id_to}
+    </delete>
 
+    <delete id="deleteNoticeAllFollow" parameterType="int">
+        DELETE FROM notice
+        WHERE m_id_to = #{m_id_to} AND n_type = 'follow'
+    </delete>
+
+    <delete id="deleteNoticeAllComment" parameterType="int">
+        DELETE FROM notice
+        WHERE m_id_to = #{m_id_to} AND (n_type = 'comment' OR n_type = 'reply')
+    </delete>
+
+    <delete id="deleteNoticeAllLike" parameterType="int">
+        DELETE FROM notice
+        WHERE m_id_to = #{m_id_to} AND ( n_type = 'boardlike' OR n_type = 'commentlike' OR n_type = 'replylike' )
+    </delete>
 
 </mapper>

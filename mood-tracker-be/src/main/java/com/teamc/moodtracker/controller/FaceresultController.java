@@ -59,7 +59,6 @@ public class FaceresultController {
     }
 
     // 피드백 업데이트
-//    @PostMapping("/feedback/bad")
     @PostMapping(value = "/feedback/bad")
     public void updateFeedbackBad(@AuthenticationPrincipal MemberDto memberDto, @RequestBody Map<String, Integer> requestMap){
         //Map<String, Integer>는 json 형태
