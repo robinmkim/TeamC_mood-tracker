@@ -183,7 +183,7 @@
               viewBox="0 0 24 24"
               stroke-width="2"
               stroke="currentColor"
-              class="w-6 h-6"
+              class="w-6 h-6 cursor-pointer"
               @click="toggleLike"
             >
               <path
@@ -202,7 +202,7 @@
               viewBox="0 0 24 24"
               stroke-width="0"
               stroke="currentColor"
-              class="w-6 h-6"
+              class="w-6 h-6 cursor-pointer"
               @click="toggleLike"
             >
               <path
@@ -256,12 +256,18 @@
               width="24"
               height="24"
               viewBox="0 0 24 24"
+              class="cursor-pointer"
               @click="evaluatePositivity"
             >
               <path
                 d="M12 2c5.514 0 10 4.486 10 10s-4.486 10-10 10-10-4.486-10-10 4.486-10 10-10zm0-2c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm2.5 8.5c-.98 0-1.865.404-2.502 1.054-.634-.649-1.519-1.054-2.498-1.054-1.933 0-3.5 1.567-3.5 3.5s1.567 3.5 3.5 3.5c.979 0 1.864-.404 2.498-1.054.637.649 1.522 1.054 2.502 1.054 1.933 0 3.5-1.566 3.5-3.5s-1.567-3.5-3.5-3.5zm0 6c-1.378 0-2.5-1.122-2.5-2.5s1.122-2.5 2.5-2.5c1.379 0 2.5 1.122 2.5 2.5s-1.121 2.5-2.5 2.5z"
               />
             </svg>
+          </div>
+          <div v-if="isLoading" class="loading-container mr-16">
+            <div class="loading">
+              <Fade-loader />
+            </div>
           </div>
           <!-- 값이 있으면 보여주고 싶은 부분 -->
           <div v-if="processedText !== ''" class="ml-2">
@@ -273,6 +279,7 @@
   </div>
 </template>
 <script>
+import FadeLoader from "vue-spinner/src/FadeLoader.vue";
 import apiClient from "@/utils/apiClient";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
@@ -281,6 +288,7 @@ import MediaModal from "@/components/MediaModal.vue";
 export default {
   components: {
     MediaModal,
+    FadeLoader,
   },
   props: {
     // Step 1: Props 정의
@@ -346,6 +354,7 @@ export default {
       isOpen: false,
       reportModal: false,
       isModalOpen: false,
+      isLoading: false,
     };
   },
   computed: {
@@ -403,6 +412,7 @@ export default {
     // 장고로 자연어처리 보내기 부분
     async evaluatePositivity() {
       console.log("b_content 확인: ", this.board.b_content);
+      this.isLoading = true;
 
       // 추가 데이터 가능하게
       // const requestData = {
@@ -414,9 +424,10 @@ export default {
       try {
         // 장고로 보내기
         const res = await axios.post(
-          "http://localhost:9000/emotion/evaluatePositivity",
+          "http://192.168.0.43:9000/emotion/evaluatePositivity",
           requestData
         );
+        this.isLoading = false;
         // 장고에서 받아온데이터 확인하기
         // const serverResponse = res.data;
         const serverResponse = JSON.stringify(res.data);
@@ -581,4 +592,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.loading {
+  z-index: 2;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 0 0 9999px;
+}
+</style>
