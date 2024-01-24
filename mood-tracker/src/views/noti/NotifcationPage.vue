@@ -413,8 +413,8 @@
 </template>
 
 <script>
-import apiClient from "./../../utils/apiClient";
-import { EventBus } from "./../../utils/EventBus.js";
+import apiClient from "@/utils/apiClient";
+import { EventBus } from "@/utils/EventBus.js";
 import { watch, ref } from "vue";
 // import axios from "axios";
 
@@ -434,40 +434,37 @@ export default {
       { name: "좋아요", id: "notiTabsLike", showAlert: false },
     ]);
 
-    watch(
-      () => EventBus.newAlertNoticeEvent,
-      (newValue) => {
-        if (newValue) {
-          // Header로 부터 새 알림이 왔다고 전달받으면 -> 탭 부분에 알림 아이콘을 표시한다.
-          const alertType = newValue.parseMessage.type;
+    watch(EventBus.newAlertNoticeEvent, (newValue) => {
+      if (newValue) {
+        // Header로 부터 새 알림이 왔다고 전달받으면 -> 탭 부분에 알림 아이콘을 표시한다.
+        const alertType = newValue.parseMessage.type;
 
-          // 팔로우 알림 -> 전체탭, 팔로우탭이 아니면 아이콘 표시
-          if (alertType == "follow") {
-            if (currentTab.value != 0 && currentTab.value != 1) {
-              tabs.value[1].showAlert = true;
-            }
+        // 팔로우 알림 -> 전체탭, 팔로우탭이 아니면 아이콘 표시
+        if (alertType == "follow") {
+          if (currentTab.value != 0 && currentTab.value != 1) {
+            tabs.value[1].showAlert = true;
           }
-          // 답글 알림 -> 전체탭, 답글탭이 아니면 아이콘 표시
-          else if (alertType == "comment" || alertType == "reply") {
-            if (currentTab.value != 0 && currentTab.value != 2) {
-              tabs.value[2].showAlert = true;
-            }
-          }
-          // 좋아요 알림 -> 전체탭, 좋아요탭이 아니면 아이콘 표시
-          else if (
-            alertType == "boardlike" ||
-            alertType == "commentlike" ||
-            alertType == "replylike"
-          ) {
-            if (currentTab.value != 0 && currentTab.value != 3) {
-              tabs.value[3].showAlert = true;
-            }
-          }
-          // 알림 리스트를 리로딩
-          loadNoticeList();
         }
+        // 답글 알림 -> 전체탭, 답글탭이 아니면 아이콘 표시
+        else if (alertType == "comment" || alertType == "reply") {
+          if (currentTab.value != 0 && currentTab.value != 2) {
+            tabs.value[2].showAlert = true;
+          }
+        }
+        // 좋아요 알림 -> 전체탭, 좋아요탭이 아니면 아이콘 표시
+        else if (
+          alertType == "boardlike" ||
+          alertType == "commentlike" ||
+          alertType == "replylike"
+        ) {
+          if (currentTab.value != 0 && currentTab.value != 3) {
+            tabs.value[3].showAlert = true;
+          }
+        }
+        // 알림 리스트를 리로딩
+        loadNoticeList();
       }
-    );
+    });
     function loadNoticeList() {
       if (currentTab.value == 0) {
         loadNoticeListAll();

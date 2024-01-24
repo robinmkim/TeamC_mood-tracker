@@ -86,7 +86,7 @@
 import FadeLoader from "vue-spinner/src/FadeLoader.vue";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import apiClient from "./../../utils/apiClient";
+import apiClient from "@/utils/apiClient";
 export default {
   name: "FaceAnalyze",
   components: {
