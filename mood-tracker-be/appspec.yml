@@ -16,9 +16,9 @@ hooks: #CodeDeploy배포 단계에서 실행할 명령어를 지정합니다.
     - location: scripts/stop.sh
       timeout: 60
       runas: ubuntu
-      command: chmod +x /home/ubuntu/app/scripts/stop.sh
+      command: sudo chmod +x /home/ubuntu/app/scripts/stop.sh
   ApplicationStart:
     - location: scripts/start.sh
       timeout: 60
       runas: ubuntu
-      command: chmod +x /home/ubuntu/app/scripts/start.sh
+      command: sudo chmod +x /home/ubuntu/app/scripts/start.sh
