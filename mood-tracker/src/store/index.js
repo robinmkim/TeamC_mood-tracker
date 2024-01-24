@@ -11,14 +11,14 @@ function loadState() {
     return {
       alertNewChat: parsedState.alertNewChat,
       alertNewNotice: parsedState.alertNewNotice,
-      totalCommentCount : parsedState.totalCommentCount,
+      totalCommentCount: parsedState.totalCommentCount,
       userInfo: null,
     };
   }
   return {
     alertNewChat: false,
     alertNewNotice: false,
-    totalCommentCount : 0,
+    totalCommentCount: 0,
     userInfo: null,
   };
 }
@@ -64,7 +64,7 @@ export const store = new Vuex.Store({
     },
     initializeUserInfo(state, userInfo) {
       state.userInfo = userInfo;
-    }
+    },
   },
   actions: {
     initializeStore({ commit }) {
@@ -89,74 +89,74 @@ export const store = new Vuex.Store({
       }
     },
     async updateUserName({ commit, state }, newName) {
-      try{
+      try {
         const response = await apiClient.put(`/member/profile/name`, {
           m_name: newName,
         });
-  
-        const updateUserInfo = {...state.userInfo, m_name: newName};
+
+        const updateUserInfo = { ...state.userInfo, m_name: newName };
         commit("updateUserInfo", updateUserInfo);
-  
+
         console.log(response);
-      } catch(error) {
+      } catch (error) {
         console.log(error);
       }
     },
     async updateUserHandle({ commit, state }, newHandle) {
-      try{
+      try {
         const response = await apiClient.put(`/member/profile/handle`, {
           m_handle: newHandle,
         });
-  
-        const updateUserInfo = {...state.userInfo, m_handle: newHandle};
+
+        const updateUserInfo = { ...state.userInfo, m_handle: newHandle };
         commit("updateUserInfo", updateUserInfo);
-  
+
         console.log(response);
-      } catch(error) {
+      } catch (error) {
         console.log(error);
       }
     },
     async updateUserBio({ commit, state }, newBio) {
-      try{
+      try {
         const response = await apiClient.put(`/member/profile/bio`, {
           m_bio: newBio,
         });
-  
-        const updateUserInfo = {...state.userInfo, m_bio: newBio};
+
+        const updateUserInfo = { ...state.userInfo, m_bio: newBio };
         commit("updateUserInfo", updateUserInfo);
-  
+
         console.log(response);
-      } catch(error) {
+      } catch (error) {
         console.log(error);
       }
     },
     async updateUserGender({ commit, state }, newGender) {
-      try{
+      try {
         const response = await apiClient.put(`/member/profile/gender`, {
           m_gender: newGender,
         });
-  
-        const updateUserInfo = {...state.userInfo, m_gender: newGender};
+
+        const updateUserInfo = { ...state.userInfo, m_gender: newGender };
         commit("updateUserInfo", updateUserInfo);
-  
+
         console.log(response);
-      } catch(error) {
+      } catch (error) {
         console.log(error);
       }
     },
     async updateUserProfileImage({ commit, state }, newImageName) {
-      try{
+      try {
         const response = await apiClient.put(`/member/profile/image`, {
           m_img_name: newImageName,
         });
-  
-        const updateUserInfo = {...state.userInfo, m_img_name: newImageName};
+
+        const updateUserInfo = { ...state.userInfo, m_img_name: newImageName };
         commit("updateUserInfo", updateUserInfo);
-  
+
         console.log(response);
-      } catch(error) {
+      } catch (error) {
         console.log(error);
       }
-    }
+    },
   },
 });
