@@ -4,8 +4,3 @@ files:
   - source: /dist
     destination: /home/ubuntu/app/src/main/resources/static
     overwrite: yes
-hooks:
-  ApplicationStop:
-    - location: ../scripts/stop_vue.sh
-      timeout: 60
-      runas: root
