@@ -54,6 +54,7 @@ jobs:
     docker:
       - image: cimg/python:3.8.4
     steps:
+      - aws-cli/setup
       - attach_workspace: # 저장한 폴더 가져오기
           at: .
       - aws-s3/copy:
