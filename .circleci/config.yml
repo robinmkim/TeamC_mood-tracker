@@ -64,11 +64,18 @@ jobs:
           name: Copy Vue project to S3
           command: aws s3 cp deploy/vue-project.zip s3://ec2-s3-mybucket/vue-project.zip
       - aws-code-deploy/deploy-bundle:
-          application-name: Songtiment
-          deployment-group: SongtimentDeployGroup
+          application-name: SongtimentSpringBoot
+          deployment-group: SpringBootDeployGroup
           deployment-config: CodeDeployDefault.AllAtOnce
           bundle-bucket: ec2-s3-mybucket
-          bundle-key: back # 보내는 파일 이름
+          bundle-key: spring-boot-project.zip
+          bundle-type: zip
+      - aws-code-deploy/deploy-bundle:
+          application-name: SongtimentVue
+          deployment-group: VueDeployGroup
+          deployment-config: CodeDeployDefault.AllAtOnce
+          bundle-bucket: ec2-s3-mybucket
+          bundle-key: vue-project.zip
           bundle-type: zip
 
 workflows:
