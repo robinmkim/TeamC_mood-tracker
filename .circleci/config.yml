@@ -52,7 +52,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/python:2.7
+      - image: cimg/python:3.8.4
     steps:
       - attach_workspace: # 저장한 폴더 가져오기
           at: .
@@ -74,3 +74,10 @@ workflows:
     jobs:
       - build_and_deploy_vue
       - build_and_deploy_spring_boot
+      - deploy:
+          requires:
+            - build_and_deploy_vue
+            - build_and_deploy_spring_boot
+          filters:
+            branches:
+              only: main
