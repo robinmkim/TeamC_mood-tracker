@@ -6,22 +6,20 @@
             </div>
             <div class="border-b-2"></div>
             <div class="relative">
-                <div>
-                    <!-- 검색창 -->
-                    <input type="text" class="bg-gray-50 border-b-2 text-gray-900 text-sm rounded-lg w-full p-2.5">
+                <!-- 검색버튼 -->
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3" @click="findMember">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    </svg>
                 </div>
-                <div>
-                    <!-- 검색버튼 -->
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                        </svg>
-                    </div>
+                <div class="ml-8">
+                    <!-- 검색창 -->
+                    <input @keyup.enter="findMember" type="text" ref="search" class="border-b-2 text-gray-900 text-sm w-full p-2.5 outline-none">
                 </div>
             </div>
             <div>
                 <!-- 대화상태 리스트 -->
-                <div v-for="member in members" :key="member.mem_num" class="flex justify-between border-b-2">
+                <div v-for="member in searchMembers" :key="member.mem_num" class="flex justify-between border-b-2">
                     <div class="my-2 mx-3">
                         <!-- 상대 이름 -->
                         {{ member.m_name }}
@@ -41,6 +39,19 @@
 <script>
 export default {
     props: ['show', 'members'],
+    data() {
+        return {
+            searchMembers: "",
+        };
+    },
+    watch: {
+        members: {
+            immediate: true,
+            handler() {
+                this.searchMembers = this.members;
+            },
+        },
+    },
     methods: {
         closeModal() {
             this.$emit('close');
@@ -51,7 +62,17 @@ export default {
                 memberName: memberName,
             };
             this.$emit('start-chat', eventData);
-        }
+        },
+        findMember() {
+            const searchValue = this.$refs.search.value;
+            if (searchValue === "") {
+                this.searchMembers = this.members;
+                return;
+            }
+            this.searchMembers = this.members.filter((member) => {
+                return member.m_name.includes(searchValue);
+            });
+        },
     },
 };
 </script>
