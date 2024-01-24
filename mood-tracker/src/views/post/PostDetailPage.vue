@@ -11,6 +11,7 @@
           @post-detail-scroll="handlePostDetailScroll"
           :isDropdownOpen="openCm_id === cm_id"
           @toggle-dropdown="toggleDropdown"
+          :caller="callerComponent"
         ></postDetail>
       </div>
       <div class="flex-1 flex flex-col h-full relative overflow-y-auto">
@@ -24,6 +25,7 @@
               :isDropdownOpen="openCm_id === cm_id"
               @toggle-dropdown="toggleDropdown"
               @delComment="delComment"
+              @updateReply="updateReply"
             />
           </div>
         </div>
@@ -73,9 +75,13 @@ export default {
       content: "",
       commentList: [],
       openCm_id: null,
+      callerComponent: "postDetailPage",
     };
   },
   methods: {
+    updateReply() {
+      this.getCommentCount();
+    },
     delComment() {
       this.getCm_idList();
       this.getCommentCount();
@@ -140,6 +146,7 @@ export default {
       apiClient
         .get(`/jh_comment/allCommentCount?b_id=${this.b_id}`)
         .then((response) => {
+          this.$store.commit("setTotalCommentCount", response.data);
           this.commentCount = response.data;
         })
         .catch((error) => {

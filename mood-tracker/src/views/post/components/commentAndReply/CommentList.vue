@@ -110,7 +110,7 @@
                   </ul>
                 </div>
               </div>
-              <!-- <div @click.stop="preventClose"></div> -->
+              <div @click.stop="preventClose"></div>
             </div>
           </div>
         </div>
@@ -220,10 +220,6 @@ export default {
     // Step 1: Props 정의
     cm_id: {
       type: Number,
-      required: true,
-    },
-    isDropdownOpen: {
-      type: Boolean,
       required: true,
     },
   },
@@ -429,6 +425,7 @@ export default {
         .get(`/jh_reply/getRe_idList?cm_id=${this.cm_id}`)
         .then((response) => {
           this.replyList = response.data;
+          this.$emit("updateReply");
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
