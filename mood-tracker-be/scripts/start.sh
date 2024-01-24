@@ -7,6 +7,10 @@ APP_LOG="$PROJECT_ROOT/application.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
 DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
+#!/bin/bash
+java -cp "/home/ubuntu/ojdbc11.jar:/home/ubuntu/app/build/libs/mood-tracker-be-0.0.1-SNAPSHOT.jar" com.teamc.moodtrackerbe
+
+
 TIME_NOW=$(date +%c)
 
 # build 파일 복사
