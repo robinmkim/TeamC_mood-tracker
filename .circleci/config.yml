@@ -5,28 +5,6 @@ orbs:
   aws-cli: circleci/aws-cli@4.1.2
 
 jobs:
-  build_and_deploy_vue:
-    docker:
-      - image: cimg/node:lts # Node 환경 설정
-    steps:
-      - checkout
-      - run:
-          name: Build Vue project
-          command: |
-            cd mood-tracker
-            npm install
-            npm run build
-      - run:
-          name: Package Vue project
-          command: |
-            mkdir -p deploy
-            zip -r deploy/vue-project.zip mood-tracker/dist
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - deploy
-
   build_and_deploy_spring_boot:
     docker:
       - image: circleci/openjdk:17-jdk-buster
@@ -42,9 +20,37 @@ jobs:
           name: Package Spring Boot project
           command: |
             mkdir -p deploy
-            zip back.zip -r ./*
-            mv back.zip deploy/spring-boot-project.zip
+            cd ~/repo/mood-tracker-be
+            zip -r ../deploy/spring-boot-project.zip build/libs appspec.yml scripts
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - deploy
+
+  build_and_deploy_vue:
+    docker:
+      - image: cimg/node:lts # Node 환경 설정
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-live-{{ checksum "package.json" }}
+      - run:
+          name: Build Vue project
+          command: |
+            cd mood-tracker
+            npm install
+            npm run build
+      - save_cache:
+          key: dependency-cache-live-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Package Vue project
+          command: |
+            mkdir -p deploy
+            cd ~/repo/mood-tracker
+            zip -r ../deploy/vue-project.zip build/libs
       - persist_to_workspace:
           root: .
           paths:
