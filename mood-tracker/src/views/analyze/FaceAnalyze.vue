@@ -6,7 +6,7 @@
   </div>
 
   <div class="flex h-screen">
-    <div class="flex-1 w-full border-r border-l border-gray-200">
+    <div class="flex-1 w-full border-x">
       <!-- 여기서부터 ~~~ -->
       <div class="flex flex-col items-center justify-center">
         <div class="p-5 mt-5 w-[700px] bg-slate-200">
@@ -86,7 +86,7 @@
 import FadeLoader from "vue-spinner/src/FadeLoader.vue";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import apiClient from "./../../utils/apiClient";
+import apiClient from "@/utils/apiClient";
 export default {
   name: "FaceAnalyze",
   components: {

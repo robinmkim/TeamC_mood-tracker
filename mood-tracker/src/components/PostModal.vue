@@ -5,7 +5,7 @@
     @click="closeModal"
   >
     <div class="lg:w-3/5 h-2/3 flex flex-col">
-      <div class="ml-auto cursor-pointer mb-1" @click="closeModal">
+      <div class="ml-auto cursor-pointer mb-1 max-h-full" @click="closeModal">
         <!--x버튼-->
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -20,10 +20,13 @@
           />
         </svg>
       </div>
-      <div class="w-full h-full bg-white rounded shadow-lg flex" @click.stop="">
+      <div
+        class="w-full min-h-full bg-white rounded shadow-lg flex"
+        @click.stop=""
+      >
         <!-- PostList -->
-        <div class="w-1/3 flex flex-col min-h-5/6 bg-red-200">
-          <div class="flex border-b justify-center items-center h-1/6">
+        <div class="w-1/3 flex flex-col h-full">
+          <div class="flex border-b justify-center items-center h-6 p-6">
             {{ this.month }}월 {{ day }}일
           </div>
           <div
@@ -109,6 +112,10 @@ export default {
     },
     month: {
       type: number,
+      required: true,
+    },
+    m_id: {
+      type: Number,
       required: true,
     },
   },

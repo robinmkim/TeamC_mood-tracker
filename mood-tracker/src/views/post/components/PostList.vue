@@ -47,7 +47,7 @@ export default {
     },
     loadBoardData() {
       apiClient
-        .get(`/jh_post/get/${this.b_id}`)
+        .get(`/post/get/${this.b_id}`)
         .then((response) => {
           this.board = response.data;
           console.log(this.board.b_sentiment);

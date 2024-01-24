@@ -1,21 +1,13 @@
 <template>
-  <div class="flex h-fit">
-    <div class="flex-1 border-x-2">
+  <div class="flex h-full">
+    <div class="w-full border-x">
       <div
-        class="notiHeader bg-white-500 px-4 flex items-center justify-start"
-        style="flex: 1; height: 45px"
+        class="notiHeader bg-white-500 px-4 flex items-center justify-start h-12"
       >
         <h1 class="notiHeaderMessage text-black font-bold text-2xl">알림</h1>
-        <div
-          class="ml-auto cursor-pointer pr-1.5 pl-1.5 text-sm text-center rounded-md border-2 border-teal-400"
-          typeof="button"
-          @click="deleteAllNotice"
-        >
-          모두 삭제
-        </div>
       </div>
 
-      <div class="">
+      <div class="border-b border-gray-200">
         <!-- [ST] 탭리스트 -->
         <nav class="flex" role="tablist">
           <div
@@ -23,7 +15,6 @@
             :key="index"
             class="text-base h-10 flex-1 flex justify-center items-center border-b-4 relative"
             :class="{
-              // 'border-[#64CCC5]': currentTab === index,
               'hover:border-[#e0e0e0] border-transparent': currentTab !== index,
             }"
             @click="changeTab(index, tab.id), (tab.showAlert = false)"
@@ -48,7 +39,7 @@
         <!-- [ED] 탭리스트 -->
         <div class="flex border-t border-gray-200">
           <div
-            class="cursor-pointer pr-1.5 pl-1.5 ml-auto mr-2 text-sm text-center rounded-md border-2 border-teal-400"
+            class="cursor-pointer pr-1.5 pl-1.5 ml-auto mt-1 mb-1 mr-1 text-sm text-center rounded-md border-2 border-teal-400"
             typeof="button"
             @click="deleteAllNotice"
           >
@@ -57,14 +48,12 @@
         </div>
 
         <!-- [ST] 알림 리스트 -->
-        <div class="mt-3 overflow-auto">
+        <div class="overflow-auto">
           <div v-for="(bean, index) in showList" :key="index" :id="bean.n_id">
             <div class="hover:bg-gray-100 border-t border-gray-200">
               <!-- 알림 follow -->
               <div v-if="bean.n_type == 'follow'">
-                <div
-                  class="notiItem followNoti flex justify-start p-4 mt-[-12px]"
-                >
+                <div class="notiItem followNoti flex justify-start p-4">
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
@@ -103,21 +92,6 @@
                         content
                       </div> -->
                     </div>
-
-                    <div
-                      class="notiItemContentButton flex w-1/4 justify-center items-center"
-                    >
-                      <div
-                        class="notiItemContentButtonYes rounded-full mr-3 bg-[#ffede6] h-10 w-20 flex justify-center items-center hover:bg-[#fadcd0] duration-300"
-                      >
-                        수락
-                      </div>
-                      <div
-                        class="notiItemContentButtonNo rounded-full bg-slate-200 h-10 w-20 flex justify-center items-center hover:bg-slate-300 duration-300"
-                      >
-                        거절
-                      </div>
-                    </div>
                   </div>
 
                   <div
@@ -143,9 +117,7 @@
 
               <!-- [ST] 알림 content - comment -->
               <div v-if="bean.n_type == 'comment'">
-                <div
-                  class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px]"
-                >
+                <div class="notiItem commentNoti h-24 flex items-center p-4">
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
@@ -201,9 +173,7 @@
 
               <!-- [ST] 알림 대댓글 Reply -->
               <div v-if="bean.n_type == 'reply'">
-                <div
-                  class="notiItem commentNoti h-28 flex items-center p-4 mt-[-12px]"
-                >
+                <div class="notiItem commentNoti h-24 flex items-center p-4">
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
@@ -318,9 +288,7 @@
 
               <!-- [ST] 알림 댓글 좋아요 commentlike -->
               <div v-if="bean.n_type == 'commentlike'">
-                <div
-                  class="notiItem likeNoti h-28 flex items-center p-4 mt-[-12px]"
-                >
+                <div class="notiItem likeNoti h-24 flex items-center p-4">
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
@@ -337,7 +305,7 @@
                   <div class="notiItemContent flex-1 pl-3 justify-start">
                     <span
                       class="notiItemContentTime text-sm text-slate-400 flex"
-                      >{{ bean.regdate }}</span
+                      >{{ formatTime(bean.regdate) }}</span
                     >
                     <div
                       class="notiItemContentMain w-auto flex items-center"
@@ -379,9 +347,7 @@
 
               <!-- [ST] 알림 대댓글 좋아요 replylike -->
               <div v-if="bean.n_type == 'replylike'">
-                <div
-                  class="notiItem likeNoti h-28 flex items-center p-4 mt-[-12px]"
-                >
+                <div class="notiItem likeNoti h-24 flex items-center p-4">
                   <div
                     class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                   >
@@ -443,32 +409,21 @@
         <!-- [ED] 알림 리스트 -->
       </div>
     </div>
-
-    <!-- <div class="w-1/5">side menu</div> -->
   </div>
 </template>
 
 <script>
-import apiClient from "./../../utils/apiClient";
-import { EventBus } from "./../../utils/EventBus.js";
+import apiClient from "@/utils/apiClient";
+import { EventBus } from "@/utils/EventBus.js";
 import { watch, ref } from "vue";
 // import axios from "axios";
 
 export default {
   name: "NotiPage",
-  components: {},
-  data() {
-    return {
-      // currentTab: 0,
-      // tabs: [
-      //   { name: "전체", id: "notiTabsAll" },
-      //   { name: "팔로잉", id: "notiTabsFollow" },
-      //   { name: "답글", id: "notiTabsReply" },
-      //   { name: "좋아요", id: "notiTabsLike" },
-      // ],
-      // showList: null,
-    };
-  },
+  // components: {},
+  // data() {
+  //   return {};
+  // },
   setup() {
     const currentTab = ref(0);
     const showList = ref(null);
@@ -479,72 +434,65 @@ export default {
       { name: "좋아요", id: "notiTabsLike", showAlert: false },
     ]);
 
-    watch(
-      () => EventBus.newAlertNoticeEvent,
-      (newValue) => {
-        if (newValue) {
-          const alertType = newValue.parseMessage.type;
-          console.log(">>>>>>>>>>>>>>>>>>>", alertType);
-          // 새로운 알림의 type과 currentTab을 비교 =>
-          // 전체탭에 있을 때 -> 무조건 리로딩, 알림표시 x
+    watch(EventBus.newAlertNoticeEvent, (newValue) => {
+      if (newValue) {
+        // Header로 부터 새 알림이 왔다고 전달받으면 -> 탭 부분에 알림 아이콘을 표시한다.
+        const alertType = newValue.parseMessage.type;
 
-          // 팔로우 알림 -> 전체탭, 팔로우탭이 아니면 아이콘 표시
-          if (alertType == "follow") {
-            if (currentTab.value != 0 && currentTab.value != 1) {
-              tabs.value[1].showAlert = true;
-            }
-          }
-          // 답글 알림 -> 전체탭, 답글탭이 아니면 아이콘 표시
-          else if (alertType == "comment" || alertType == "reply") {
-            if (currentTab.value != 0 && currentTab.value != 2) {
-              tabs.value[2].showAlert = true;
-            }
-          }
-          // 좋아요 알림 -> 전체탭, 좋아요탭이 아니면 아이콘 표시
-          else if (
-            alertType == "boardlike" ||
-            alertType == "commentlike" ||
-            alertType == "replylike"
-          ) {
-            if (currentTab.value != 0 && currentTab.value != 3) {
-              tabs.value[3].showAlert = true;
-            }
-          }
-
-          // 알림 리스트를 리로딩
-          if (currentTab.value == 0) {
-            loadNoticeListAll();
-          } else if (currentTab.value == 1) {
-            loadNoticeListFollow();
-          } else if (currentTab.value == 2) {
-            loadNoticeListReply();
-          } else if (currentTab.value == 3) {
-            loadNoticeListLike();
+        // 팔로우 알림 -> 전체탭, 팔로우탭이 아니면 아이콘 표시
+        if (alertType == "follow") {
+          if (currentTab.value != 0 && currentTab.value != 1) {
+            tabs.value[1].showAlert = true;
           }
         }
+        // 답글 알림 -> 전체탭, 답글탭이 아니면 아이콘 표시
+        else if (alertType == "comment" || alertType == "reply") {
+          if (currentTab.value != 0 && currentTab.value != 2) {
+            tabs.value[2].showAlert = true;
+          }
+        }
+        // 좋아요 알림 -> 전체탭, 좋아요탭이 아니면 아이콘 표시
+        else if (
+          alertType == "boardlike" ||
+          alertType == "commentlike" ||
+          alertType == "replylike"
+        ) {
+          if (currentTab.value != 0 && currentTab.value != 3) {
+            tabs.value[3].showAlert = true;
+          }
+        }
+        // 알림 리스트를 리로딩
+        loadNoticeList();
       }
-    );
+    });
+    function loadNoticeList() {
+      if (currentTab.value == 0) {
+        loadNoticeListAll();
+      } else if (currentTab.value == 1) {
+        loadNoticeListFollow();
+      } else if (currentTab.value == 2) {
+        loadNoticeListReply();
+      } else if (currentTab.value == 3) {
+        loadNoticeListLike();
+      }
+    }
     function loadNoticeListAll() {
       apiClient.get("/notification/select/all").then((res) => {
-        console.log(res.data);
         showList.value = res.data;
       });
     }
     function loadNoticeListFollow() {
       apiClient.get("/notification/select/follow").then((res) => {
-        console.log(res.data);
         showList.value = res.data;
       });
     }
     function loadNoticeListReply() {
       apiClient.get("/notification/select/comment").then((res) => {
-        console.log(res.data);
         showList.value = res.data;
       });
     }
     function loadNoticeListLike() {
       apiClient.get("/notification/select/like").then((res) => {
-        console.log(res.data);
         showList.value = res.data;
       });
     }
@@ -555,10 +503,11 @@ export default {
       loadNoticeListFollow,
       loadNoticeListReply,
       loadNoticeListLike,
+      loadNoticeList,
       tabs,
     };
   },
-  created() {
+  mounted() {
     this.loadNoticeListAll(); // 첫 화면은 '전체' 탭 이기 때문
   },
   methods: {
@@ -566,22 +515,7 @@ export default {
       // 전체-팔로잉-답글-좋아요 탭으로 이동
       this.currentTab = index;
       console.log(`현재 탭의 id: ${tabId}`);
-      this.loadNoticeList(tabId); // 탭 이동과 함께 알림 리스트도 다시 받아옵니다.
-    },
-    loadNoticeList(tabId) {
-      if (tabId == "notiTabsAll") {
-        console.log("ALL 조회");
-        this.loadNoticeListAll();
-      } else if (tabId == "notiTabsFollow") {
-        console.log("Follow 조회");
-        this.loadNoticeListFollow();
-      } else if (tabId == "notiTabsReply") {
-        console.log("Reply 조회");
-        this.loadNoticeListReply();
-      } else if (tabId == "notiTabsLike") {
-        console.log("Like 조회");
-        this.loadNoticeListLike();
-      }
+      this.loadNoticeList(); // 탭 이동과 함께 알림 리스트도 다시 받아옵니다.
     },
     readNotice(n_id) {
       // 알림 읽음 처리
@@ -597,6 +531,7 @@ export default {
         });
     },
     deleteNotice(n_id) {
+      // 알림을 1개씩 삭제
       let userReturn = confirm("알림을 영구적으로 삭제하시겠습니까?");
       if (userReturn == true) {
         apiClient
@@ -608,15 +543,7 @@ export default {
           .then((res) => {
             if (res.data == 1) {
               console.log(n_id, " 삭제 완료");
-              if (this.currentTab == 0) {
-                this.loadNoticeListAll();
-              } else if (this.currentTab == 1) {
-                this.loadNoticeListFollow();
-              } else if (this.currentTab == 2) {
-                this.loadNoticeListReply();
-              } else if (this.currentTab == 3) {
-                this.loadNoticeListLike();
-              }
+              this.loadNoticeList();
             } else {
               console.log(n_id, " 삭제 실패");
             }
@@ -627,35 +554,78 @@ export default {
       }
     },
     deleteAllNotice() {
+      // (전체/팔로우/답글/좋아요)알림을 모두 삭제
       const currentTabName = this.tabs[this.currentTab].name;
       let userReturn = confirm(
-        "모든 " + currentTabName + " 알림을 영구적으로 삭제하시겠습니까?"
+        currentTabName + " 알림을 모두 삭제하시겠습니까?"
       );
       if (userReturn == true) {
-        //   let userReturn2 = confirm("삭제한 알림은 복구할 수 없습니다. \n그래도 삭제하시겠습니까?");
-        //   if(userReturn2 == true){
-        //     apiClient
-        //     .delete("/notification/deleteAll")
-        //     .then((res) => {
-        //       if (res.data == 1) {
-        //         console.log(n_id, " 삭제 완료");
-        //         if (this.currentTab == 0) {
-        //           this.loadNoticeListAll();
-        //         } else if (this.currentTab == 1) {
-        //           this.loadNoticeListFollow();
-        //         } else if (this.currentTab == 2) {
-        //           this.loadNoticeListReply();
-        //         } else if (this.currentTab == 3) {
-        //           this.loadNoticeListLike();
-        //         }
-        //       } else {
-        //         console.log(n_id, " 삭제 실패");
-        //       }
-        //     })
-        //     .catch((error) => {
-        //       console.log(error);
-        //     });
-        //   }
+        let userReturn2 = confirm(
+          "삭제한 알림은 복구할 수 없습니다. \n그래도 삭제하시겠습니까?"
+        );
+        if (userReturn2 == true) {
+          if (this.currentTab == 0) {
+            // 전체
+            apiClient
+              .delete("/notification/deleteAll/all")
+              .then((res) => {
+                if (res.data == 1) {
+                  console.log(" 삭제 완료");
+                  this.loadNoticeListAll();
+                } else {
+                  console.log(" 삭제 실패");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else if (this.currentTab == 1) {
+            // 팔로우
+            apiClient
+              .delete("/notification/deleteAll/follow")
+              .then((res) => {
+                if (res.data == 1) {
+                  console.log(" 삭제 완료");
+                  this.loadNoticeListFollow();
+                } else {
+                  console.log(" 삭제 실패");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else if (this.currentTab == 2) {
+            // 답글
+            apiClient
+              .delete("/notification/deleteAll/comment")
+              .then((res) => {
+                if (res.data == 1) {
+                  console.log(" 삭제 완료");
+                  this.loadNoticeListReply();
+                } else {
+                  console.log(" 삭제 실패");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          } else if (this.currentTab == 3) {
+            // 좋아요
+            apiClient
+              .delete("/notification/deleteAll/like")
+              .then((res) => {
+                if (res.data == 1) {
+                  console.log(" 삭제 완료");
+                  this.loadNoticeListLike();
+                } else {
+                  console.log(" 삭제 실패");
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
+        }
       }
     },
     formatTime(dateString) {
@@ -701,8 +671,9 @@ export default {
 }
 .deleteButton {
   position: relative;
-  left: 16px;
-  opacity: 0.2;
+  left: 14px;
+  top: -10px;
+  opacity: 0.3;
   transition: opacity 0.2s ease;
 }
 .deleteButton:hover {

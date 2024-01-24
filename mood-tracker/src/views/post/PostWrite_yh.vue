@@ -9,21 +9,29 @@
         >
           <div class="flex items-center border-b">
             <div class="w-10 rounded-full overflow-hidden">
-              <img src="@/assets/logo.png" />
+              <img :src="getPrfileImgUrl()" alt="user icon" />
             </div>
-            <span class="ml-2">{{ memberHandle }}</span>
-            <div class="cursor-pointer ml-2" @click="isExpanded = !isExpanded">
-              {{ selectedEmoji }}
-            </div>
-            <div v-if="isExpanded" class="cursor-pointer">
-              <span
-                v-for="(emotion, emoji) in emotionMap"
-                :key="emoji"
-                @click="selectEmoji(emoji)"
-                class="ml-1"
-              >
-                {{ emoji }}
-              </span>
+            <span class="ml-2">{{ userInfo.m_handle }}</span>
+            <img
+              class="cursor-pointer ml-2"
+              @click="isExpanded = !isExpanded"
+              :src="`http://localhost:8083/images/${selectedEmoji}.png`"
+              width="25"
+              height="25"
+            />
+            <div v-if="isExpanded" class="cursor-pointer flex flex-col my-1">
+              <div class="flex">
+                <img
+                  v-for="(sentiment, index) in sentimentList"
+                  :key="index"
+                  :src="`http://localhost:8083/images/${sentiment}.png`"
+                  alt="sentiment"
+                  class="inline-block ml-2"
+                  width="20"
+                  height="20"
+                  @click="selectEmoji(sentiment, index)"
+                />
+              </div>
             </div>
           </div>
           <div class="border-b mb-1">
@@ -77,40 +85,33 @@
 <script>
 import axios from "axios";
 import apiClient from "@/utils/apiClient";
+import { jwtDecode } from "jwt-decode";
 export default {
   props: ["resultId"],
   data() {
     return {
-      memberHandle: "",
       text: "",
       files: [],
       isExpanded: false,
-      selectedEmoji: "😆", // 기본 이모지
-      emotionMap: {
-        "😆": "happy",
-        "😡": "angry",
-        "😬": "anxiety",
-        "🤕": "hurt",
-        "😐": "neutral",
-        "😢": "sad",
-        "😨": "surprise",
-      },
+      selectedEmoji: "happy", // 기본 이모지
+      sentimentList: [
+        "happy",
+        "angry",
+        "anxiety",
+        "hurt",
+        "neutral",
+        "sad",
+        "surprise",
+      ],
       emotion: "happy",
-      user: {
-        m_name: null,
-        m_hanble: null,
-        m_img_name: "",
-        m_img_path: "",
-      },
+      userInfo: {},
     };
   },
   name: "PostWrite",
+  created() {
+    this.getMemberInfo();
+  },
   mounted() {
-    // 회원이름(m_handle)을 가져옵니다.
-    apiClient.get("/member/userInfo/memberHandle").then((res) => {
-      console.log("memberHandle = ", res.data);
-      this.memberHandle = res.data;
-    });
     // 스프링 : emotion결과를 가져와 selectedEmoji에 맞춰줍니다..
     apiClient
       .get("/faceresult/detail", {
@@ -120,12 +121,8 @@ export default {
       })
       .then((res) => {
         console.log(res.data);
-        const reversedEmotionMap = {};
-        for (const key in this.emotionMap) {
-          const value = this.emotionMap[key];
-          reversedEmotionMap[value] = key;
-        }
-        this.selectedEmoji = reversedEmotionMap[res.data.ar_content_max];
+
+        this.selectedEmoji = res.data.ar_content_max;
         this.emotion = res.data.ar_content_max;
       });
     // resultId로  합성이미지의 파일이름(ar_generated_img)를 가져옵니다.
@@ -171,6 +168,23 @@ export default {
       });
   },
   methods: {
+    getPrfileImgUrl() {
+      return `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
+    },
+    getMemberInfo() {
+      const token = localStorage.getItem("jwtToken");
+      const decoded = jwtDecode(token);
+      this.memberId = decoded.m_id;
+      apiClient
+        .get(`/member/info/${this.memberId}`)
+        .then((info) => {
+          console.log("유저 정보를 불러옵니다");
+          this.userInfo = info.data;
+        })
+        .catch((err) => {
+          console.log(err, "유저 정보 못불러옴");
+        });
+    },
     adjustHeight(e) {
       // textarea높이 자동 조절
       const element = e.target;
@@ -210,13 +224,12 @@ export default {
 
     selectEmoji(emoji) {
       this.selectedEmoji = emoji;
-      this.emotion = this.emotionMap[emoji];
       this.isExpanded = false;
     },
 
     submitForm() {
       const formData = new FormData();
-      formData.append("m_id", 1);
+      formData.append("m_id", this.userInfo.m_id);
       formData.append("b_content", this.text);
 
       this.files.forEach((fileObj) => {

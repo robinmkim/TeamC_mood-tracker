@@ -16,7 +16,7 @@
 <script>
 import apiClient from "@/utils/apiClient";
 import PostDetail from "@/views/post/components/PostDetail";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 
 export default {
   name: "MyPost",
@@ -30,19 +30,25 @@ export default {
       isLoading: false,
     };
   },
+  props: {
+    m_id: {
+      type: Number,
+      required: true,
+    },
+  },
   created() {
     this.getMyBoardList();
   },
   methods: {
     getMyBoardList() {
-      let mid = this.$route.path.replace("/", "");
-      // 파라미터로 받은 memberId가 비어있으면 내 정보를 가져옴
+      // let mid = this.$route.path.replace("/", "");
+      // // 파라미터로 받은 memberId가 비어있으면 내 정보를 가져옴
 
-      if (mid === "") {
-        const token = localStorage.getItem("jwtToken");
-        const decoded = jwtDecode(token);
-        mid = decoded.m_id;
-      }
+      // if (mid === "") {
+      //   const token = localStorage.getItem("jwtToken");
+      //   const decoded = jwtDecode(token);
+      //   mid = decoded.m_id;
+      // }
 
       // this.getBIdList();
       if (this.isLoading) {
@@ -52,7 +58,7 @@ export default {
 
       this.isLoading = true;
       apiClient
-        .get(`/mypage/mylist?lastRowNum=${this.MylastRowNum}&mid=${mid}`)
+        .get(`/mypage/mylist?lastRowNum=${this.MylastRowNum}&mid=${this.m_id}`)
         .then((res) => {
           console.log("my post 넘어옴");
           this.MylastRowNum += res.data.length;

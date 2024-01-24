@@ -156,7 +156,7 @@
 <script>
 // import { Radar } from "vue-chartjs";
 // import ResultChart from "./ResultChart.vue";
-import apiClient from "./../../utils/apiClient";
+import apiClient from "@/utils/apiClient";
 import axios from "axios";
 export default {
   props: ["lastResultId"],

@@ -143,4 +143,46 @@ public class NotificationController {
         }
     }
 
+    @DeleteMapping("/deleteAll/all")
+    public int deleteNoticeAll(@AuthenticationPrincipal MemberDto memberDto){
+        try{
+            notificationService.deleteNoticeAll(memberDto.getM_id());
+            return 1;
+        }catch(Exception e) {
+            System.out.println(e);
+            return 0;
+        }
+    }
+    @DeleteMapping("/deleteAll/follow")
+    public int deleteNoticeAllFollow(@AuthenticationPrincipal MemberDto memberDto){
+        try{
+            notificationService.deleteNoticeAllFollow(memberDto.getM_id());
+            return 1;
+        }catch(Exception e) {
+            System.out.println(e);
+            return 0;
+        }
+    }
+    @DeleteMapping("/deleteAll/comment")
+    public int deleteNoticeAllComment(@AuthenticationPrincipal MemberDto memberDto){
+        try{
+            notificationService.deleteNoticeAllComment(memberDto.getM_id());
+            return 1;
+        }catch(Exception e) {
+            System.out.println(e);
+            return 0;
+        }
+    }
+
+    @DeleteMapping("/deleteAll/like")
+    public int deleteNoticeAllLike(@AuthenticationPrincipal MemberDto memberDto){
+        try{
+            notificationService.deleteNoticeAllLike(memberDto.getM_id());
+            return 1;
+        }catch(Exception e) {
+            System.out.println(e);
+            return 0;
+        }
+    }
+
 }

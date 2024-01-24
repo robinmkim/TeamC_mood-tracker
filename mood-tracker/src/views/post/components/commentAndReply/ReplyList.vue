@@ -102,29 +102,6 @@
             <span class="text-sm ml-1 mr-1">{{ this.reply.likeCount }}</span>
           </div>
         </div>
-
-        <div
-          class="flex border-t items-center justify-center p-2"
-          v-show="reply.showAddReply"
-        >
-          <textarea
-            class="text-sm border-b border-slate-200 w-[95%] h-6 resize-none focus:outline-slate-400"
-            placeholder=" 답글입력"
-            v-model="content"
-          ></textarea>
-
-          <div
-            class="flex flex-col text-xs justify-center items-center flex-grow"
-          >
-            <div
-              class="hover:bg-teal-100 rounded-lg flex w-[80%] h-[80%] justify-center items-center"
-              @click="addReply()"
-              type="submit"
-            >
-              등록
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -163,33 +140,6 @@ export default {
   },
   methods: {
     addReport() {},
-
-    addReply() {
-      const currentContent = this.content;
-      const formData = new FormData();
-      formData.append("cm_id", this.reply.cm_id);
-      formData.append("re_content", `${currentContent}`);
-
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-      apiClient
-        .post("/jh_reply/addReply", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((res) => {
-          if (res.data === 1) {
-            this.getReplyDetail();
-          }
-        })
-        .catch((error) => {
-          console.log("formData" + formData);
-
-          console.log(error);
-        });
-    },
 
     likeThis() {
       apiClient
