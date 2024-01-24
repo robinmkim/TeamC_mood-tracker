@@ -4,3 +4,12 @@ files:
   - source: /dist
     destination: /home/ubuntu/app/src/main/resources/static
     overwrite: yes
+hooks:
+  ApplicationStop:
+    - location: stop_vue.sh
+      timeout: 60
+      runas: root
+  AfterInstall:
+    - location: copy_vue_to_static.sh
+      timeout: 60
+      runas: root
