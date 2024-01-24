@@ -10,10 +10,13 @@ permissions: #CodeDeploy에서 받은 파일의 권한을 설정한다 (ubuntu�
     owner: ubuntu
     group: ubuntu
 hooks:
-  ApplicationStop:
-    - location: stop_vue.sh
+  AfterInstall:
+    - location: copy_vue_to_static.sh
       timeout: 60
       runas: root
+      # 아래 명령어로 실행 권한을 부여합니다.
+      command: chmod +x /home/ubuntu/app/vue-project/copy_vue_to_static.sh
+
   AfterInstall:
     - location: copy_vue_to_static.sh
       timeout: 60
