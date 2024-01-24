@@ -75,6 +75,7 @@ workflows:
       - build_and_deploy_vue
       - build_and_deploy_spring_boot
       - deploy:
+          context: AWS
           requires:
             - build_and_deploy_vue
             - build_and_deploy_spring_boot
