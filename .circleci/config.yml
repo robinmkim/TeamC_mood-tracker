@@ -19,8 +19,9 @@ jobs:
       - run:
           name: Package Spring Boot project
           command: |
-            mkdir -p deploy
-            zip -r deploy/spring-boot-project.zip build/libs appspec.yml scripts
+            cd mood-tracker-be  
+            mkdir -p ../deploy 
+            zip -r ../deploy/spring-boot-project.zip .
 
       - persist_to_workspace:
           root: .
@@ -33,24 +34,17 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Change to Vue project directory
-          command: cd mood-tracker
-      - restore_cache:
-          key: dependency-cache-live-{{ checksum "package.json" }}
-      - run:
           name: Build Vue project
           command: |
+            cd mood-tracker
             npm install
             npm run build
-      - save_cache:
-          key: dependency-cache-live-{{ checksum "package.json" }}
-          paths:
-            - ./node_modules
       - run:
           name: Package Vue project
           command: |
-            mkdir -p deploy
-            zip -r deploy/vue-project.zip dist appspec.yml scripts
+            cd mood-tracker  
+            mkdir -p ../deploy  
+            zip -r ../deploy/vue-project.zip .
       - persist_to_workspace:
           root: .
           paths:
@@ -88,10 +82,10 @@ workflows:
   version: 2
   build_and_deploy_workflow:
     jobs:
-      - build_and_deploy_vue
       - build_and_deploy_spring_boot
+      - build_and_deploy_vue
       - deploy:
           context: AWS
           requires:
-            - build_and_deploy_vue
             - build_and_deploy_spring_boot
+            - build_and_deploy_vue
