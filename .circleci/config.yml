@@ -57,10 +57,12 @@ jobs:
       - aws-cli/setup
       - attach_workspace: # 저장한 폴더 가져오기
           at: .
-      - aws-s3/copy:
-          from: deploy/* # deploy 폴더 내부의 모든 파일을 aws s3로 보낸다
-          to: "s3://ec2-s3-mybucket" # s3 버킷명
-          # aws-region: AWS_DEFAULT_REGION # CircleCI에 설정한 Context의 내용
+      - run:
+          name: Copy Spring Boot project to S3
+          command: aws s3 cp deploy/spring-boot-project.zip s3://ec2-s3-mybucket/spring-boot-project.zip
+      - run:
+          name: Copy Vue project to S3
+          command: aws s3 cp deploy/vue-project.zip s3://ec2-s3-mybucket/vue-project.zip
       - aws-code-deploy/deploy-bundle:
           application-name: Songtiment
           deployment-group: SongtimentDeployGroup
