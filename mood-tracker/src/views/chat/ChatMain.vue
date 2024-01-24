@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen" @click="closeToggleMenu">
+  <div class="flex h-full" @click="closeToggleMenu">
     <new-chat
       v-if="showModal"
       :show="showModal"
@@ -22,7 +22,7 @@
           <li
             v-for="(room, index) in rooms"
             :key="room.roomId"
-            class="flex rounded-lg bg-gray-100 p-2 m-1 items-center hover:bg-gray-300"
+            class="flex rounded-lg min-h-[70px] bg-gray-100 p-2 m-1 items-center hover:bg-gray-300"
           >
             <div
               class="flex flex-col items-start w-4/5 my-2"
@@ -36,7 +36,7 @@
             >
               <!-- <img class="rounded-full h-14 mr-2" :src="``" alt="profileImg" /> -->
               <div class="font-bold text-base">{{ room.otherMemberName }}</div>
-              <div class="text-base">{{ room.message }}</div>
+              <div class="text-base break-all text-left line-clamp-1">{{ room.message }}</div>
             </div>
             <div class="flex w-1/5">
               <div class="flex-col ml-auto">
@@ -84,68 +84,59 @@
         </ul>
       </div>
     </div>
-
-    <div class="flex w-3/5 border-r border-gray-200 flex-col">
-      <div
-        class="flex pl-2 pr-2 pt-3 pb-3 items-center border-b border-gray-200"
-      >
+    <div class="flex w-3/5 max-h-[800px] overflow-x-hidden overflow-y-auto border-r border-gray-200 flex-col flex-grow relative"
+    ref="messageContainer">
+      <div class="flex pl-2 pr-2 pt-3 pb-3 items-center border-b border-gray-200">
         <img class="rounded-full h-12 mr-2" src="" />
-        <input class="text-lg font-bold" v-model="chattingMember.name" />
+        <input class="text-lg font-bold" v-model="chattingMember.name" disabled/>
       </div>
-      <div class="mt-auto overflow-y-auto overflow-x-hidden">
-        <div
-          v-for="(message, index) in messages"
-          :key="index"
-          class="flex pl-4 pr-4 py-1 justify-start m-1"
-        >
-          <div v-if="message.isMine" class="flex flex-row ml-auto">
-            <div class="justify-end self-end text-xs mt-1 mr-2">
-              <span>{{ message.sendTime }}</span>
+      <div>
+        <div class="min-h-[675px]">
+          <div
+            v-for="(message, index) in messages"
+            :key="index"
+            class="flex pl-4 pr-4 py-1 justify-start m-1"
+          >
+            <div v-if="message.isMine" class="flex flex-row ml-auto">
+              <div class="justify-end self-end text-xs mt-1 mr-2">
+                <span>{{ message.sendTime }}</span>
+              </div>
+              <div class="rounded-lg bg-blue-300 p-2 break-all text-left">
+                <span>{{ message.message }}</span>
+              </div>
             </div>
-            <div class="rounded-lg bg-blue-300 p-2">
-              <span>{{ message.message }}</span>
-            </div>
-          </div>
-          <div v-else class="flex flex-row mr-auto">
-            <div class="rounded-lg bg-gray-300 p-2">
-              <span>{{ message.message }}</span>
-            </div>
-            <div class="justify-end self-end text-xs mt-1 ml-2">
-              <span>{{ message.sendTime }}</span>
+            <div v-else class="flex flex-row mr-auto break-all text-left">
+              <div class="rounded-lg bg-gray-300 p-2">
+                <span>{{ message.message }}</span>
+              </div>
+              <div class="justify-end self-end text-xs mt-1 ml-2">
+                <span>{{ message.sendTime }}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        id="inputMessage"
-        class="flex flex-grow items-center text-center p-1"
-      >
-        <span class="rounded-lg hover:bg-gray-100">
-          <label for="file" class="">
-            <img src="" alt="12" />
-          </label>
-          <input type="file" name="file" id="file" />
-        </span>
-        <span class="flex-grow mr-0.5">
-          <textarea
-            v-model="message"
-            id="myTextarea"
-            class="autoExpand bg-gray-300 block w-full rounded-md border-0 py-1.5 pl-3 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-600 focus:ring-2 focus:ring-inset focus:ring-gray-100 sm:text-sm sm:leading-6"
-            rows="1"
-            placeholder="메세지 입력.."
-            @input="autoExpand"
-            @keyup.enter="sendMessage"
-          >
-          </textarea>
-        </span>
-        <span class="flex items-center w-10">
-          <button
-            type="submit"
-            class="flex rounded-lg hover:bg-gray-100 bg-gray-100 p-1"
-          >
-            전송
-          </button>
-        </span>
+        <div id="inputMessage" class="absolute min-h-[48px] bottom-0 left-0 w-full flex items-end text-center p-1 sticky"
+        v-if="hasStartedChat">
+          <span class="flex-grow mr-0.5">
+            <textarea
+              v-model="message"
+              id="myTextarea"
+              class="resize-none bg-gray-300 block  w-full border-0 py-2 px-3 text-gray-900 focus:ring-2 sm:text-sm sm:leading-6"
+              rows="1"
+              placeholder="메세지 입력.."
+              @keyup.enter.prevent="sendMessage"
+            ></textarea>
+          </span>
+          <span class="flex items-center w-10">
+            <button
+              type="submit"
+              class="flex hover:bg-gray-100 bg-gray-100 py-2 px-1"
+              @click="sendMessage"
+            >
+              전송
+            </button>
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -184,6 +175,7 @@ export default {
       members: [],
       subscriptionId: null,
       chattingMember: { name: "", id: "" },
+      hasStartedChat: false,
     };
   },
   async created() {
@@ -193,6 +185,16 @@ export default {
 
     this.connect();
     this.loadChatRooms();
+  },
+  watch: {
+    messages: {
+      deep: true,
+      handler() {
+        this.$nextTick(() => {
+          this.scrollToBottom();
+        });
+      },
+    },
   },
   methods: {
     connect() {
@@ -214,7 +216,6 @@ export default {
     },
     onMessageReceived(payload) {
       const parseMessage = JSON.parse(payload.body);
-      console.log(parseMessage);
       const roomId = parseMessage.roomId;
 
       // 현재 채팅방 목록에 해당 채팅방이 존재하는지 확인
@@ -289,10 +290,6 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-    },
-    autoExpand(event) {
-      event.target.style.height = "auto";
-      event.target.style.height = event.target.scrollHeight + "px";
     },
     toggleMenu(roomId, event) {
       // 모든 채팅방의 메뉴 상태를 닫음
@@ -390,6 +387,7 @@ export default {
           console.log(response.data);
           // 서버에서 roomId에 해당하는 채팅방의 메시지 목록을 가져옴
           // 가져온 메시지 목록으로 this.messages 초기화
+          this.hasStartedChat = true;
           if (response.data === null) {
             this.messages = [];
             return;
@@ -408,6 +406,7 @@ export default {
             const period = hours >= 12 ? "오후" : "오전";
             this.messages[i].sendTime = `${period} ${hours}:${minutes}`;
           }
+          this.scrollToBottom();
         })
         .catch((error) => {
           console.log(error);
@@ -459,34 +458,6 @@ export default {
           });
       }
     },
-    // createNewChatRoom(user) {
-    //   apiClient
-    //     .post("/rooms/new", user)
-    //     .then((response) => {
-    //       // 새로운 채팅방의 ID를 가져와서 채팅방 목록에 추가
-    //       const res = response.data;
-    //       const roomData = {
-    //         roomId: res.roomId,
-    //         otherMemberId: res.newMemberId,
-    //         otherMemberName: res.newMemberName,
-    //         message: "",
-    //         isMenuOpen: false,
-    //         menuPosition: { top: 0, left: 0 },
-    //       };
-    //       this.rooms.splice(0, 0, roomData);
-
-    //       // 새로운 채팅방을 구독
-    //       this.createNewSubscribe(res.roomId);
-    //       // 새로운 채팅방은 메시지가 존재하지 않으므로 this.messages 초기화
-    //       this.messages = [];
-    //       // 새로운 채팅방 정보로 화면을 업데이트
-    //       this.chattingMember.name = res.newMemberName;
-    //       this.chattingMember.id = res.roomId;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
     createNewSubscribe(roomId) {
       // 기존 방 구독 해제
       // subscribe 시 생성된 subscriptionId를 사용하여 구독 해제
@@ -508,6 +479,12 @@ export default {
           });
         }
       });
+    },
+    scrollToBottom() {
+      const container = this.$refs.messageContainer;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
     },
   },
 };
