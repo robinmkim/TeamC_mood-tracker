@@ -1,18 +1,11 @@
 version: 0.0
 os: linux
 files:
-  - source: /
-    destination: /home/ubuntu/app/vue-project
+  - source: /dist
+    destination: /var/www/html
     overwrite: yes
 permissions: #CodeDeploy에서 받은 파일의 권한을 설정한다 (ubuntu는 aws ec2 기본사용자)
   - object: /
     pattern: "**"
     owner: ubuntu
     group: ubuntu
-hooks:
-  AfterInstall:
-    - location: copy_vue_to_static.sh
-      timeout: 60
-      runas: root
-      # 아래 명령어로 실행 권한을 부여합니다.
-      command: chmod +x /home/ubuntu/app/vue-project/copy_vue_to_static.sh
