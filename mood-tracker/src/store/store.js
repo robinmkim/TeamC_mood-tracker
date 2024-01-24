@@ -10,12 +10,17 @@ function loadState() {
   return {
     alertNewChat: false,
     alertNewNotice: false,
+    totalCommentCount : 0,
   };
 }
 
 export const store = new Vuex.Store({
   state: loadState(),
-  getters: {},
+  getters: {
+    getCommentCount: (state) => state.comments.length,
+    getReplyCount: (state) => state.replies.length,
+    getTotalCount: (state) => state.comments.length + state.replies.length,
+  },
   mutations: {
     setVariable(state, value) {
       state.alertNewChat = value.alertNewChat;
@@ -37,6 +42,9 @@ export const store = new Vuex.Store({
     hideAlertNewNotice: function (state) {
       state.alertNewNotice = false;
       localStorage.setItem(key, JSON.stringify(state));
+    },
+    setTotalCommentCount(state, count) {
+      state.totalCommentCount = count;
     },
   },
   actions: {
