@@ -71,8 +71,12 @@ public class MemberController {
     @PutMapping("/profile/password")
     public String updateProfilePassword(@AuthenticationPrincipal MemberDto dto,
                                         @RequestBody Map<String, String> m_password) {
-        dto.setM_pwd(passwordEncoder.encode(m_password.get("m_pwd")));
-        memberService.checkPassword(dto);
+        try {
+            dto.setM_pwd(passwordEncoder.encode(m_password.get("m_pwd")));
+            memberService.checkPassword(dto);
+        } catch (IllegalArgumentException e) {
+            return "비밀번호가 일치하지 않습니다.";
+        }
         dto.setM_pwd(m_password.get("new_pwd"));
         memberService.updateProfilePassword(dto);
         return "비밀번호 변경 성공";

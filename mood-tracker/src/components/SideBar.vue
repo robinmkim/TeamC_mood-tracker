@@ -156,7 +156,7 @@
             class="flex w-32 h-32 rounded-full overflow-hidden border-4 border-white mx-auto bg-slate-200 items-center justify-center"
           >
             <img
-              :src="getPrfileImgUrl()"
+              :src="profileImageUrl"
               alt="profile img"
               style="aspect-ratio: 100/100; object-fit: cover"
             />
@@ -164,8 +164,8 @@
         </div>
         <router-link to="/">
           <div class="text-center mt-2 mb-6">
-            <h2 class="text-lg font-bold">{{ userInfo.m_name }}</h2>
-            <p class="text-slate-500">{{ userInfo.m_handle }}</p>
+            <h2 class="text-lg font-bold">{{ this.$store.state.userInfo.m_name }}</h2>
+            <p class="text-slate-500">{{ this.$store.state.userInfo.m_handle }}</p>
           </div>
         </router-link>
       </div>
@@ -246,7 +246,7 @@
                         <div class="w-9 h-9 rounded-full overflow-hidden">
                           <img
                             class="object-contain rounded-full"
-                            :src="getUserImageUrl()"
+                            :src="profileImageUrl"
                             alt="user icon"
                             style="aspect-ratio: 100/100; object-fit: cover"
                           />
@@ -448,7 +448,6 @@
 <script>
 import apiClient from "@/utils/apiClient";
 import PostList from "@/views/post/components/PostList";
-import { jwtDecode } from "jwt-decode";
 
 export default {
   name: "SideBar",
@@ -461,7 +460,7 @@ export default {
       searchResults: [], // API로부터 받아온 결과를 담을 변수
       searchResultsBoard: [],
       postMakeModal: false,
-
+      profileImageUrl: null,
       // 게시물 작성에 필요한 data
       memberHandle: "",
       text: "",
@@ -478,42 +477,35 @@ export default {
         "surprise",
       ],
       emotion: "happy",
-      user: {
-        m_name: null,
-        m_hanble: null,
-        m_img_name: "",
-        m_img_path: "",
-      },
-
-      // 게시물 작성 필요한 data 끝
     };
   },
   components: {
     PostList,
   },
-  methods: {
-    // 게시물 작성에 필요한 함수
-    getUsetInfo() {
-      // jwtToken을 decode해서 m_id를 추출한다.
-      const token = localStorage.getItem("jwtToken");
-      const decoded = jwtDecode(token);
-      const m_id = decoded.m_id;
-      apiClient
-        .get(`/member/info/${m_id}`)
-        .then((response) => {
-          this.user = response.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching the board data:", error);
-        });
+  created() {
+    this.getMemberInfo();
+  },
+  watch: {
+    userInfo: {
+      handler: 'updateProfileImageUrl',
+      deep: true,
     },
-    getUserImageUrl() {
-      if (this.user && this.user.m_img_path) {
-        return `http://localhost:8083/${this.user.m_img_path}${this.user.m_img_name}`;
-      } else {
-        // 여기에 기본 이미지 URL 또는 다른 처리를 추가하세요.
-        return "http://images/Logo.png";
-      }
+  },
+  mounted() {
+    // 게시글 추가
+    // 회원이름(m_handle)을 가져옵니다.
+    apiClient.get("/member/userInfo/memberHandle").then((res) => {
+      this.memberHandle = res.data;
+    });
+
+    // 추가 끝
+
+    // Add a global click event listener to close the search bar when clicking outside
+    document.addEventListener("click", this.toggleSidebarOutside);
+  },
+  methods: {
+    updateProfileImageUrl() {
+      this.profileImageUrl = `http://localhost:8083/${this.$store.state.userInfo.m_img_path}${this.$store.state.userInfo.m_img_name}`
     },
     adjustHeight(e) {
       // textarea높이 자동 조절
@@ -652,21 +644,7 @@ export default {
 
     // 유저 정보
     getMemberInfo() {
-      const token = localStorage.getItem("jwtToken");
-      const decoded = jwtDecode(token);
-      this.memberId = decoded.m_id;
-      apiClient
-        .get(`/member/info/${this.memberId}`)
-        .then((info) => {
-          console.log("유저 정보를 불러옵니다");
-          this.userInfo = info.data;
-        })
-        .catch((err) => {
-          console.log(err, "유저 정보 못불러옴");
-        });
-    },
-    getPrfileImgUrl() {
-      return `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
+      this.userInfo = this.$store.state.userInfo;
     },
     toggleSidebar() {
       this.showSidebar = !this.showSidebar;
@@ -691,32 +669,12 @@ export default {
   computed: {
     isMyPage() {
       // 현재 경로가 / 이거나 /mypage로 시작할 때 true
-
       const mypage =
         this.$route.path.startsWith("/mypage") ||
         /^\/(\d+)$/.test(this.$route.path) ||
         this.$route.path === "/";
-
       return !mypage;
     },
-  },
-  created() {
-    this.getMemberInfo();
-    this.getPrfileImgUrl();
-    //게시글 추가
-    this.getUsetInfo();
-  },
-  mounted() {
-    // 게시글 추가
-    // 회원이름(m_handle)을 가져옵니다.
-    apiClient.get("/member/userInfo/memberHandle").then((res) => {
-      this.memberHandle = res.data;
-    });
-
-    // 추가 끝
-
-    // Add a global click event listener to close the search bar when clicking outside
-    document.addEventListener("click", this.toggleSidebarOutside);
   },
 };
 </script>
