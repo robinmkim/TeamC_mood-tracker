@@ -68,14 +68,14 @@ jobs:
           deployment-group: SongtimentBootGroup
           deployment-config: CodeDeployDefault.AllAtOnce
           bundle-bucket: ec2-s3-mybucket
-          bundle-key: spring-boot-project.zip
+          bundle-key: spring-boot-project
           bundle-type: zip
       - aws-code-deploy/deploy-bundle:
           application-name: Songtiment
           deployment-group: SongtimentDeployGroup
           deployment-config: CodeDeployDefault.AllAtOnce
           bundle-bucket: ec2-s3-mybucket
-          bundle-key: vue-project.zip
+          bundle-key: vue-project
           bundle-type: zip
 
 workflows:
