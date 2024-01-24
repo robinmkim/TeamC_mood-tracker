@@ -21,8 +21,7 @@ import AdminPage from "@/views/admin/AdminPage";
 import apiClient from "@/utils/apiClient";
 import ErrorPage from "@/views/error/ErrorPage";
 import chatbotRouter from "./routers/chatbotRouter";
-import introduction from "/src/views/introduction/IntroductionPage.vue";
-
+import introduction from "@/views/Introduction/IntroductionPage.vue";
 
 const routes = [
   {
@@ -51,20 +50,19 @@ const routes = [
         },
         beforeEnter: (to, from, next) => {
           apiClient
-          .get(`/member/info/${to.params.memberId}`)
-          .then((res) => {
-            if (res.data !== "") {
-              next();
-            } else {
+            .get(`/member/info/${to.params.memberId}`)
+            .then((res) => {
+              if (res.data !== "") {
+                next();
+              } else {
+                next("/error");
+                // next();
+              }
+            })
+            .catch((err) => {
+              console.log(err);
               next("/error");
-              // next();
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            next("/error");
-          }
-          );
+            });
         },
       },
       {
@@ -87,7 +85,7 @@ const routes = [
       ...faceRouter,
       ...postDetailRouter,
       ...questionRouter,
-      ...chatbotRouter, 
+      ...chatbotRouter,
     ],
   },
   {
@@ -125,13 +123,13 @@ const routes = [
     path: "/introduction",
     component: EmptyLayout,
     children: [
-        {
-          path: "",
-          components: {
-            default: introduction,
-          },
+      {
+        path: "",
+        components: {
+          default: introduction,
         },
-    ]
+      },
+    ],
   },
 ];
 
@@ -141,7 +139,15 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/login", "/signup" ,"/password", "/username","/birth","/profileImg","/success"];
+  const publicPages = [
+    "/login",
+    "/signup",
+    "/password",
+    "/username",
+    "/birth",
+    "/profileImg",
+    "/success",
+  ];
 
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("jwtToken");

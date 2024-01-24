@@ -36,11 +36,4 @@ public interface NotificationService {
 
     public void sendChat_SendAlert(SendChat sendRequest);
 
-    <<<<<<<HEAD
-    // public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto
-    // followRequestDTO); // 팔로우 부분 pull 한 다음 맞게 수정할 것
-    =======
-    // public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto
-    // followRequestDTO); // 팔로우 부분 pull 한 다음 맞게 수정할 것
-    >>>>>>>08b1e34 (🚚 boot 프로젝트 디렉토리 수정 및 파일 이름 재지정)
 }
