@@ -1,0 +1,14 @@
+version: 0.0
+os: linux
+files:
+  - source: /dist
+    destination: /var/app/mood-tracker-be/src/main/resources/static
+hooks:
+  ApplicationStop:
+    - location: scripts/stop_vue.sh
+      timeout: 60
+      runas: root
+  AfterInstall:
+    - location: scripts/copy_vue_to_static.sh
+      timeout: 60
+      runas: root

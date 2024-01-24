@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: / #CodeDeploy에서 전달해 준 파일 전부를 destination으로 전달하겠다
-    destination: /home/ubuntu/deploy
+    destination: /home/ubuntu/app
     overwrite: yes
 
 permissions: #CodeDeploy에서 받은 파일의 권한을 설정한다 (ubuntu는 aws ec2 기본사용자)
