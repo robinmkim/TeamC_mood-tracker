@@ -1,8 +1,8 @@
 version: 0.0
 os: linux
 files:
-  - source: /dist
-    destination: /home/ubuntu/app/src/main/resources/static
+  - source: /
+    destination: /home/ubuntu/app/vue-project
     overwrite: yes
 hooks:
   ApplicationStop:
