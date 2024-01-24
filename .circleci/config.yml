@@ -30,15 +30,14 @@ jobs:
   build_and_deploy_spring_boot:
     docker:
       - image: circleci/openjdk:17-jdk-buster
-    working_directory: ~/TeamC_mood-tracker/mood-tracker-be
     steps:
       - checkout
       - run:
-          name: Grant Permissions to Gradlew
-          command: chmod +x ./gradlew
-      - run:
-          name: Build with Gradle
-          command: ./gradlew build
+          name: Build Spring Boot Project
+          command: |
+            cd mood-tracker-be
+            chmod +x ./gradlew
+            ./gradlew build
       - run:
           name: Package Spring Boot project
           command: |
