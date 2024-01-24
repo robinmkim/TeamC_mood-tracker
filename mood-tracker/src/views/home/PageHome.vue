@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full border-x relative">
+  <div class="flex h-full relative">
     <div class="flex-1 h-full overflow-hidden">
       <div class="flex flex-col h-full">
         <!-- PostWriteVue를 스크롤 영역 밖에 위치 -->
