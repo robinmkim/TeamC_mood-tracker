@@ -2,7 +2,7 @@
   <div class="bg-[#64CCC5] w-full h-14 py-3 flex justify-end items-center">
     <div id="title" class="absolute left-1/2 transform -translate-x-1/2">
       <router-link to="/timeline">
-        <span class="text-2xl font-[400] text-white">Songtiment</span>
+        <span class="text-2xl font-[400]">Songtiment</span>
       </router-link>
     </div>
     <div id="menu" class="flex mr-4">
@@ -220,7 +220,7 @@ export default {
       console.log("token = ", token);
       console.log("CHECK MEMBERID>VALUE", memberId.value);
 
-      const socket = new SockJS("http://192.168.0.43:8083/ws");
+      const socket = new SockJS("http://localhost:8083/ws");
       stompClient.value = Stomp.over(socket);
 
       stompClient.value.connect(

@@ -7,19 +7,7 @@
           <!-- 감정 이모티콘 -->
           <div class="flex flex-col w-[500px] h-auto" id="imoji">
             <div class="relative m-2">
-              <div class="flex justify-center relative">
-                <!-- <img
-                  src="..\..\assets\e_happy.png"
-                  alt="Post image"
-                  class="w-20 h-20 mt-5"
-                /> -->
-                <!-- <img
-                  v-bind:src="emojiImageSource"
-                  alt="Post image"
-                  class="w-20 h-20 mt-5"
-                /> -->
-                <!-- <div class="w-20 h-20 bg-green-500" id="emojiPlace"></div> -->
-              </div>
+              <div class="flex justify-center relative"></div>
             </div>
             <div class="flex flex-col justify-center text-center">
               <p class="w-auto mt-1 text-xl font-bold">오늘의 기분은?</p>
@@ -39,16 +27,8 @@
             id="result"
             class="flex flex-col items-center justify-center w-[500px] h-auto"
           >
-            <!-- radar chart -->
-            <!-- <div class="flex">차트</div>
-            <result-chart class="flex"></result-chart> -->
-
             <div class="flex-row w-auto h-auto">
-              <img
-                v-bind:src="generatedImageSrc"
-                alt="Post image"
-                class="w-665 h-65"
-              />
+              <img v-bind:src="generatedImageSrc" alt="Post image" />
 
               <button
                 class="flex ml-auto rounded-lg bg-[#e6e6e6] p-1 m-1 hover:bg-[#a0f9f0] hover:scale-110 duration-300"
@@ -57,6 +37,61 @@
                 이미지 다운로드
               </button>
             </div>
+
+            <div class="m-2">
+              <div class="flex">
+                <button
+                  :class="{
+                    'bg-[#7deee2]': showPieChart,
+                    'bg-[#dcf7f5]': !showPieChart,
+                  }"
+                  class="rounded-tl-lg p-2 bg-[#7deee2] hover:bg-[#7deee2] duration-300"
+                  style="
+                    border: 1px solid;
+                    border-bottom: 0px;
+                    border-color: #64ccc5;
+                  "
+                  @click="changeToPieChart"
+                >
+                  파이 차트</button
+                ><button
+                  :class="{
+                    'bg-[#7deee2]': showRadarChart,
+                    'bg-[#dcf7f5]': !showRadarChart,
+                  }"
+                  class="rounded-tr-lg p-2 hover:bg-[#7deee2] duration-300"
+                  style="
+                    border: 1px solid;
+                    border-bottom: 0px;
+                    border-color: #64ccc5;
+                  "
+                  @click="changeToRadarChart"
+                >
+                  레이다 차트
+                </button>
+              </div>
+
+              <div
+                class="border-teal-300 myChartContainer p-2 rounded-lg rounded-tl-none"
+                style="border-width: 1px; border-color: #64ccc5"
+              >
+                <div
+                  v-if="showPieChart"
+                  class="flex flex-col justify-center items-center m-2 myChart"
+                >
+                  <!-- <div class="flex">파이차트</div> -->
+                  <PieChart class="flex-grow w-full h-full" />
+                </div>
+                <div
+                  v-if="showRadarChart"
+                  class="flex flex-col justify-center items-center m-2 myChart"
+                >
+                  <!-- <div class="flex">RADAR차트</div> -->
+                  <ResultChart class="flex-grow" />
+                </div>
+              </div>
+            </div>
+
             <button
               class="flex rounded-lg bg-[#7deee2] p-2 m-1 hover:bg-[#a0f9f0] hover:scale-125 duration-300"
               v-on:click="writePost"
@@ -81,8 +116,6 @@
                 </button>
               </div>
             </div>
-
-            <!-- <div class="text-center">와아 즐겁다아</div> -->
           </div>
           <!-- 음악추천 채팅창 -->
           <!-- <div id="recMusic" class="flex justify-center overflow-scroll">
@@ -155,7 +188,8 @@
 
 <script>
 // import { Radar } from "vue-chartjs";
-// import ResultChart from "./ResultChart.vue";
+import ResultChart from "./ResultChart.vue";
+import PieChart from "@/components/PieChart.vue";
 import apiClient from "@/utils/apiClient";
 import axios from "axios";
 export default {
@@ -163,10 +197,13 @@ export default {
   // props: ["formData"],
   name: "AnalyzeResult",
   components: {
-    // ResultChart,
+    ResultChart,
+    PieChart,
   },
   data() {
     return {
+      showPieChart: true,
+      showRadarChart: false,
       memberNum: 1,
       myExpresion: null,
       faceAnalyzeResult: null,
@@ -209,6 +246,14 @@ export default {
       });
   },
   methods: {
+    changeToPieChart: function () {
+      this.showPieChart = true;
+      this.showRadarChart = false;
+    },
+    changeToRadarChart: function () {
+      this.showPieChart = false;
+      this.showRadarChart = true;
+    },
     feedbackBad: function () {
       const formData = new FormData();
       formData.append("ar_id", this.lastResultId);
@@ -270,4 +315,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.myChart {
+  width: 500px;
+  height: 500px;
+}
+</style>
