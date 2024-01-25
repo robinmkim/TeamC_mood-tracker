@@ -211,7 +211,7 @@ export default {
   },
   methods: {
     connect() {
-      const socket = new SockJS("http://localhost:8083/ws");
+      const socket = new SockJS("http://192.168.0.84:8083/ws");
       this.stompClient = Stomp.over(socket);
       this.stompClient.connect(
         {},
@@ -275,7 +275,7 @@ export default {
     subscribe() {
       this.stompClient.subscribe(
         `/topic/chat/${this.memberId}`,
-        this.onMessageReceived
+        this.onMessageReceived,
       );
     },
     sendMessage() {
@@ -333,8 +333,9 @@ export default {
     },
     deleteChatRoom(roomId) {
       apiClient
-        .post(`/rooms/exit`, { roomId: roomId })
+        .post(`/chat/rooms/exit`, { roomId: roomId })
         .then((response) => {
+          console.log('aaaaaaaaaaaaa');
           const deletedRoomId = response.data;
           // 채팅방 목록에서 해당 채팅방 삭제
           const indexToRemove = this.rooms.findIndex(
@@ -349,6 +350,7 @@ export default {
           this.messages = [];
         })
         .catch((error) => {
+          console.log('bbbbbbbbbbbbbb');
           console.log(error);
         });
     },
@@ -477,6 +479,7 @@ export default {
       this.stompClient.unsubscribe(`${this.subscriptionId}`, {});
       // 새로운 방 구독
       // 현재 구독 중인 방(subscriptionId) 값 수정
+      console.log("구독요청", `/topic/${roomId}`);
       this.subscriptionId = this.stompClient.subscribe(
         `/topic/${roomId}`,
         this.onMessageReceived
