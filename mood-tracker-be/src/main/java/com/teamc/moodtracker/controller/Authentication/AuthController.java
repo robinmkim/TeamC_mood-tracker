@@ -22,7 +22,7 @@ import java.util.Map;
 @RestController
 //CORS (Cross-Origin Resource Sharing) 요청을 허용함, 다른 도메인/포트에서 이 서비스에 접근할 수 있게 해준다.
 @CrossOrigin
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
