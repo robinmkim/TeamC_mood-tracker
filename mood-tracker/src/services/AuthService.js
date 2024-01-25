@@ -3,7 +3,7 @@ import router from "@/router";
 
 class AuthService {
   login = async (user) => {
-    return await apiClient.post("/api/auth/login", {
+    return await apiClient.post("/auth/login", {
       username: user.username,
       password: user.password,
     });
