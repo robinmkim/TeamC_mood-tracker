@@ -77,10 +77,6 @@
           type="submit"
           class="bg-[#64CCC5] text-white p-2 rounded-lg shadow hover:bg-[#3f827e]"
         >
-        <button
-          type="submit"
-          class="bg-[#64CCC5] text-white p-2 rounded-lg shadow hover:bg-[#3f827e]"
-        >
           다음
         </button>
       </form>
@@ -92,8 +88,8 @@
 import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
 import { useRouter } from "vue-router"; // router를 임포트
-// import apiClient from "@/utils/apiClient";
-// import { ref } from "vue";
+import apiClient from "@/utils/apiClient";
+import { ref } from "vue";
 
 const validationSchema = yup.object().shape({
   name: yup.string().required("이름을 입력하세요"),
@@ -101,10 +97,10 @@ const validationSchema = yup.object().shape({
     .string()
     .required("이메일을 입력하세요")
     .email("이메일 형식이 아닙니다"),
-  // code: yup
-  //   .string()
-  //   .required("인증번호를 입력하세요")
-  //   .length(6, "인증번호는 6자리여야 합니다"),
+  code: yup
+    .string()
+    .required("인증번호를 입력하세요")
+    .length(6, "인증번호는 6자리여야 합니다"),
 });
 
 export default {
