@@ -38,4 +38,12 @@ public class FollowService {
                 .followedCnt(followCount.getFollowedCnt())
                 .build();
     }
+
+    public String checkFollow(FollowRequestDto followRequestDTO) {
+        if (followDao.checkFollow(followRequestDTO) == 0) {
+            return "Not Followed";
+        } else {
+            return "Followed";
+        }
+    }
 }
