@@ -162,7 +162,6 @@
     <div>
       <div class="text-left text-base font-normal flex mb-3">
         <div v-if="!showMoreText">
-          안녕하세요
           {{ shotText }}
           <span v-if="shotText.length >= 20">
             ...<button @click="expandText" class="text-[#b3b3b3]">
@@ -170,7 +169,7 @@
             </button>
           </span>
         </div>
-        <div v-else class="whitespace-pre">
+        <div v-else class="whitespace-pre-wrap">
           {{ board.b_content }}
         </div>
       </div>
