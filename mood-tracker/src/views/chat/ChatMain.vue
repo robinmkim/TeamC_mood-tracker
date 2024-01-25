@@ -295,7 +295,7 @@ export default {
       };
       // 서버로 메시지 전송
       apiClient
-        .post(`/send`, chatMessage)
+        .post(`/chat/send`, chatMessage)
         .then((response) => {
           console.log(response.data);
           this.message = "";
@@ -372,7 +372,7 @@ export default {
     loadChatRooms() {
       // 현재 로그인한 사용자의 채팅방 목록 조회
       apiClient
-        .get(`/rooms`)
+        .get(`/chat/rooms`)
         .then((response) => {
           console.log(response.data);
           this.rooms = "";
@@ -395,7 +395,7 @@ export default {
       this.chattingMember.name = otherMemberName;
       this.chattingMember.id = otherMemberId;
       apiClient
-        .get(`/rooms/${roomId}/messages`)
+        .get(`/chat/rooms/${roomId}/messages`)
         .then((response) => {
           console.log(response.data);
           // 서버에서 roomId에 해당하는 채팅방의 메시지 목록을 가져옴
@@ -446,7 +446,7 @@ export default {
 
         // 이전에 대화했던 채팅방이 존재하는지 확인
         apiClient
-          .post(`/rooms/newRoom`, user)
+          .post(`/chat/rooms/newRoom`, user)
           .then((response) => {
             // 채팅방이 존재하면 해당 채팅방으로 이동
             // 기존에 채팅방을 나갔다가 다시 들어오는 경우

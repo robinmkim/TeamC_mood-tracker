@@ -164,12 +164,8 @@
         </div>
         <router-link to="/">
           <div class="text-center mt-2 mb-6">
-            <h2 class="text-lg font-bold">
-              {{ this.$store.state.userInfo.m_name }}
-            </h2>
-            <p class="text-slate-500">
-              {{ this.$store.state.userInfo.m_handle }}
-            </p>
+            <h2 class="text-lg font-bold">{{ this.userInfo.m_name }}</h2>
+            <p class="text-slate-500">{{ this.userInfo.m_handle }}</p>
           </div>
         </router-link>
       </div>
@@ -475,7 +471,7 @@ export default {
         "happy",
         "angry",
         "anxiety",
-        "hurt",
+        "hurt",   
         "neutral",
         "sad",
         "surprise",
@@ -489,12 +485,6 @@ export default {
   created() {
     this.getMemberInfo();
   },
-  watch: {
-    userInfo: {
-      handler: "updateProfileImageUrl",
-      deep: true,
-    },
-  },
   mounted() {
     // 게시글 추가
     // 회원이름(m_handle)을 가져옵니다.
@@ -502,15 +492,12 @@ export default {
       this.memberHandle = res.data;
     });
 
-    // 추가 끝
-
-    // Add a global click event listener to close the search bar when clicking outside
     document.addEventListener("click", this.toggleSidebarOutside);
   },
+  watch: {
+    '$route': 'refreshComponent',
+  },
   methods: {
-    updateProfileImageUrl() {
-      this.profileImageUrl = `http://localhost:8083/${this.$store.state.userInfo.m_img_path}${this.$store.state.userInfo.m_img_name}`;
-    },
     adjustHeight(e) {
       // textarea높이 자동 조절
       const element = e.target;
@@ -648,7 +635,8 @@ export default {
 
     // 유저 정보
     getMemberInfo() {
-      this.userInfo = this.$store.state.userInfo;
+      this.userInfo = JSON.parse(this.$store.state.userInfo);
+      this.profileImageUrl = `http://localhost:8083/images/${this.userInfo.m_img_name}`;
     },
     toggleSidebar() {
       this.showSidebar = !this.showSidebar;

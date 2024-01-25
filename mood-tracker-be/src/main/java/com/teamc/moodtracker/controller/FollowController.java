@@ -63,4 +63,16 @@ public class FollowController {
     public ResponseEntity<FollowCount> getFollowCnt(@PathVariable("memberId") int memberId) {
         return ResponseEntity.ok(followService.getFollowCnt(memberId));
     }
+
+    @GetMapping("/check/{memberId}")
+    public ResponseEntity<String> checkFollow(@AuthenticationPrincipal MemberDto memberDto,
+                                              @PathVariable("memberId") int followedId){
+        System.out.println("followedId: " + followedId);
+        int followerId = memberDto.getM_id();
+        FollowRequestDto followRequestDTO = FollowRequestDto.builder()
+                .followerId(followerId)
+                .followedId(followedId)
+                .build();
+        return ResponseEntity.ok(followService.checkFollow(followRequestDTO));
+    }
 }
