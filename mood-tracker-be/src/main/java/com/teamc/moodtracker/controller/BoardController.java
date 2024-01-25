@@ -44,7 +44,8 @@ public class BoardController {
     @Autowired
     private BoardLikeService likeService;
 
-    String imageDirectory = "src/main/resources/static/images/";
+//    String imageDirectory = "src/main/resources/static/images/";
+    String imageDirectory = "build/resources/main/static/images/";
 
     @PostMapping("/add")
     public int addBoardContent(@AuthenticationPrincipal MemberDto memberDto,

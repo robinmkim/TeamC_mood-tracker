@@ -28,8 +28,8 @@ public class NotificationController {
     @Autowired
     private final NotificationService notificationService;
 
-    private final String imageDirectory = "src/main/resources/static/images/";
-
+//    private final String imageDirectory = "src/main/resources/static/images/";
+    String imageDirectory = "build/resources/main/static/images/";
 
     private final SimpMessagingTemplate messagingTemplate;
 
