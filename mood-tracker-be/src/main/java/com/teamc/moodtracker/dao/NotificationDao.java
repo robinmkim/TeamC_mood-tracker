@@ -34,5 +34,4 @@ public interface NotificationDao {
     public void deleteNoticeAllComment(int mId);
 
     public void deleteNoticeAllLike(int mId);
-
 }

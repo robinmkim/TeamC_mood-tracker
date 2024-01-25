@@ -46,4 +46,5 @@ public interface NotificationService {
     public void deleteNoticeAllLike(int mId);
 
     public void makeFollow_SaveNotificationAndSendAlert(FollowRequestDto followRequestDTO); // 팔로우 부분 pull 한 다음 맞게 수정할 것
+
 }
