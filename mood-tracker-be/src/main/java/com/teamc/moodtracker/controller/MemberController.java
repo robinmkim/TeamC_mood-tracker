@@ -26,7 +26,8 @@ public class MemberController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    String imageDirectory = "src/main/resources/static/images/";
+//    String imageDirectory = "src/main/resources/static/images/";
+    String imageDirectory = "build/resources/main/static/images/";
 
     @GetMapping("/userInfo/memberHandle") // 윤영호 postWrite_yh에서 닉네임 가져올 때 사용.
     public String getMemberHandle(@AuthenticationPrincipal MemberDto memberDto) {
