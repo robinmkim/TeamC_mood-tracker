@@ -4,7 +4,7 @@
       <!-- page 1 : 차트 -->
       <div class="flex flex-col items-center justify-center">
         <div class="flex w-4/5 items-center justify-center m-2">
-          <div class="flex w-full h-24 items-center justify-center flex">
+          <div class="flex w-full h-24 items-center justify-center">
             <div class="flex w-1/5 text-5xl justify-center items-center">
               <div>{{ mainSenti }}</div>
             </div>

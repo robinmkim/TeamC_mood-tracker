@@ -7,6 +7,8 @@ import com.teamc.moodtracker.dto.follow.FollowRequestDto;
 import com.teamc.moodtracker.dto.follow.MyFollow;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.ibatis.javassist.compiler.ast.Member;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,5 +47,13 @@ public class FollowService {
         } else {
             return "Followed";
         }
+    }
+
+    public List<MemberDto> FollowerId(int followerId) {
+        return followDao.FollowerId(followerId);
+    }
+
+    public List<MemberDto> FolloweredId(int followeredId) {
+        return followDao.FolloweredId(followeredId);
     }
 }

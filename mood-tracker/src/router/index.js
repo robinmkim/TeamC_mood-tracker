@@ -22,6 +22,7 @@ import apiClient from "@/utils/apiClient";
 import ErrorPage from "@/views/error/ErrorPage";
 import chatbotRouter from "./routers/chatbotRouter";
 import Introduction from "@/views/introduction/IntroductionPage.vue";
+import followRouter from "./routers/followRouter";
 
 
 const routes = [
@@ -87,6 +88,7 @@ const routes = [
       ...postDetailRouter,
       ...questionRouter,
       ...chatbotRouter,
+      ...followRouter,
     ],
   },
   {
