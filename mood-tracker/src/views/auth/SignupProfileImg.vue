@@ -136,7 +136,7 @@ export default {
       }
 
       apiClient
-        .post("/auth/signUp", formData, {
+        .post("/api/auth/signUp", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
