@@ -3,7 +3,7 @@ import "tailwindcss/tailwind.css";
 import App from "./App.vue";
 import axios from "axios";
 import Vuex from "vuex";
-import { store } from "./store/store";
+import { store } from "./store";
 // import router from "./router";
 store.dispatch("initializeStore");
 import router from "./router/index";

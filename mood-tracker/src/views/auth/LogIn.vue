@@ -79,6 +79,7 @@ export default {
   setup() {
     const sendLoginEvent = () => {
       EventBus.myLoginEvent = { message: "login" };
+      console.log("로그인 버스 보냄");
     };
 
     const { value: id, errorMessage: idError } = useField(

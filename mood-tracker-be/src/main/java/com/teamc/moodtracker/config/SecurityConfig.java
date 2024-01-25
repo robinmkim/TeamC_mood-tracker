@@ -75,9 +75,10 @@ public class SecurityConfig {
                 // HTTP 요청에 대한 보안 필터 체인을 구성
                 // .authorizeHttpRequests((auth) -> auth.anyRequest().permitAll())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/images/**").permitAll() // 정적 이미지 리소스에 대한 접근 허용
+                        .requestMatchers("/", "/index.html", "/static/**", "/css/**","/js/**").permitAll()
                         .anyRequest().authenticated())
                 // JWT 토큰 필터 추가: JwtTokenFilter를 BasicAuthenticationFilter 전에 추가하여 JWT 토큰을 검증
                 .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter.class)
