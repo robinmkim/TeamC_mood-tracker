@@ -494,6 +494,9 @@ export default {
 
     document.addEventListener("click", this.toggleSidebarOutside);
   },
+  watch: {
+    '$route': 'refreshComponent',
+  },
   methods: {
     adjustHeight(e) {
       // textarea높이 자동 조절
