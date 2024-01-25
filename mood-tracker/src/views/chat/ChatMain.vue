@@ -36,7 +36,9 @@
             >
               <!-- <img class="rounded-full h-14 mr-2" :src="``" alt="profileImg" /> -->
               <div class="font-bold text-base">{{ room.otherMemberName }}</div>
-              <div class="text-base break-all text-left line-clamp-1">{{ room.message }}</div>
+              <div class="text-base break-all text-left line-clamp-1">
+                {{ room.message }}
+              </div>
             </div>
             <div class="flex w-1/5">
               <div class="flex-col ml-auto">
@@ -84,11 +86,19 @@
         </ul>
       </div>
     </div>
-    <div class="flex w-3/5 max-h-[800px] overflow-x-hidden overflow-y-auto border-r border-gray-200 flex-col flex-grow relative"
-    ref="messageContainer">
-      <div class="flex pl-2 pr-2 pt-3 pb-3 items-center border-b border-gray-200">
+    <div
+      class="flex w-3/5 max-h-[800px] overflow-x-hidden overflow-y-auto border-r border-gray-200 flex-col flex-grow relative"
+      ref="messageContainer"
+    >
+      <div
+        class="flex pl-2 pr-2 pt-3 pb-3 items-center border-b border-gray-200"
+      >
         <img class="rounded-full h-12 mr-2" src="" />
-        <input class="text-lg font-bold" v-model="chattingMember.name" disabled/>
+        <input
+          class="text-lg font-bold"
+          v-model="chattingMember.name"
+          disabled
+        />
       </div>
       <div>
         <div class="min-h-[675px]">
@@ -115,13 +125,16 @@
             </div>
           </div>
         </div>
-        <div id="inputMessage" class="absolute min-h-[48px] bottom-0 left-0 w-full flex items-end text-center p-1 sticky"
-        v-if="hasStartedChat">
+        <div
+          id="inputMessage"
+          class="absolute min-h-[48px] bottom-0 left-0 w-full flex items-end text-center p-1 sticky"
+          v-if="hasStartedChat"
+        >
           <span class="flex-grow mr-0.5">
             <textarea
               v-model="message"
               id="myTextarea"
-              class="resize-none bg-gray-300 block  w-full border-0 py-2 px-3 text-gray-900 focus:ring-2 sm:text-sm sm:leading-6"
+              class="resize-none bg-gray-300 block w-full border-0 py-2 px-3 text-gray-900 focus:ring-2 sm:text-sm sm:leading-6"
               rows="1"
               placeholder="메세지 입력.."
               @keyup.enter.prevent="sendMessage"
@@ -282,7 +295,7 @@ export default {
       };
       // 서버로 메시지 전송
       apiClient
-        .post(`/send`, chatMessage)
+        .post(`/chat/send`, chatMessage)
         .then((response) => {
           console.log(response.data);
           this.message = "";
@@ -359,7 +372,7 @@ export default {
     loadChatRooms() {
       // 현재 로그인한 사용자의 채팅방 목록 조회
       apiClient
-        .get(`/rooms`)
+        .get(`/chat/rooms`)
         .then((response) => {
           console.log(response.data);
           this.rooms = "";
@@ -382,7 +395,7 @@ export default {
       this.chattingMember.name = otherMemberName;
       this.chattingMember.id = otherMemberId;
       apiClient
-        .get(`/rooms/${roomId}/messages`)
+        .get(`/chat/rooms/${roomId}/messages`)
         .then((response) => {
           console.log(response.data);
           // 서버에서 roomId에 해당하는 채팅방의 메시지 목록을 가져옴
@@ -433,7 +446,7 @@ export default {
 
         // 이전에 대화했던 채팅방이 존재하는지 확인
         apiClient
-          .post(`/rooms/newRoom`, user)
+          .post(`/chat/rooms/newRoom`, user)
           .then((response) => {
             // 채팅방이 존재하면 해당 채팅방으로 이동
             // 기존에 채팅방을 나갔다가 다시 들어오는 경우

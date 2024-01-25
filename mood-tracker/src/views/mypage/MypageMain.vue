@@ -28,11 +28,20 @@
                 <span class="text-lg mr-3"> 팔로워 {{ followerCnt }} </span>
                 <span class="text-lg"> 팔로잉 {{ followingCnt }} </span>
                 <span v-if="isVisible">
+
                   <button
                     @click="follow"
                     class="m-2 h-[30px] w-[80px] rounded-lg bg-blue-500 hover:bg-blue-700 items-center justify-center text-white font-bold"
+                    v-if="followed === true"
                   >
                     팔로우
+                  </button>
+                  <button
+                    @click="follow"
+                    class="m-2 h-[30px] w-[80px] rounded-lg bg-blue-500 hover:bg-blue-700 items-center justify-center text-white font-bold"
+                    v-if="followed === false"
+                  >
+                    언팔로우
                   </button>
                 </span>
               </div>
@@ -136,6 +145,7 @@ export default {
       followerCnt: 0,
       followingCnt: 0,
       isVisible: false,
+      followed: false,
       m_id: null,
     };
   },
@@ -228,20 +238,47 @@ export default {
         .then((res) => {
           if (res.data === "Follow Success") {
             this.followerCnt = this.followerCnt + 1;
+            this.followed = false;
           } else {
             this.followerCnt = this.followerCnt - 1;
+            this.followed = true;
           }
         })
         .catch((err) => {
           console.log("팔로우 실패", err);
         });
     },
+    checkFollow() {
+      const memberId = this.$route.path.replace("/", "");
+
+      const token = localStorage.getItem("jwtToken");
+      const decoded = jwtDecode(token);
+      const loginMemberId = decoded.m_id;
+      if (this.m_id == "" || this.m_id == loginMemberId) {
+        return;
+      } else {
+        apiClient
+          .get(`/follow/check/${memberId}`)
+          .then((res) => {
+            console.log(res.data, "팔로우 체크 성공");
+            if (res.data === "Not Followed") {
+              this.followed = true;
+            } else {
+              this.followed = false;
+            }
+          })
+          .catch((err) => {
+            console.log(err, "팔로우 체크 실패");
+          });
+      }
+    }
   },
   created() {
     this.getMemberInfo();
     this.getPrfileImgUrl();
     this.checkMemberId();
     this.getFollowCnt();
+    this.checkFollow();
   },
 };
 </script>

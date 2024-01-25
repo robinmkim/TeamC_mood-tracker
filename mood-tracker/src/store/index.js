@@ -6,21 +6,22 @@ const key = "myStore";
 
 function loadState() {
   const storedState = localStorage.getItem(key);
-  if (storedState) {
-    const parsedState = JSON.parse(storedState);
-    return {
-      alertNewChat: parsedState.alertNewChat,
-      alertNewNotice: parsedState.alertNewNotice,
-      totalCommentCount : parsedState.totalCommentCount,
-      userInfo: null,
-    };
-  }
-  return {
+
+  let state = {
     alertNewChat: false,
     alertNewNotice: false,
     totalCommentCount : 0,
     userInfo: null,
-  };
+  }
+
+  if (storedState) {
+    const parsedState = JSON.parse(storedState);
+    state.alertNewChat = parsedState.alertNewChat;
+    state.alertNewNotice = parsedState.alertNewNotice;
+    state.totalCommentCount = parsedState.totalCommentCount;
+    state.userInfo = parsedState.userInfo;
+  }
+  return state;
 }
 
 export const store = new Vuex.Store({
@@ -74,7 +75,7 @@ export const store = new Vuex.Store({
         commit("setVariable", JSON.parse(storedValue));
       }
     },
-    async initializeUserInfo({ commit }) {
+    async initializeUserInfo({ commit, state }) {
       try {
         const token = localStorage.getItem("jwtToken");
         const decoded = jwtDecode(token);
@@ -84,74 +85,81 @@ export const store = new Vuex.Store({
         const userInfo = response.data;
 
         commit("initializeUserInfo", userInfo);
+        state.userInfo = JSON.stringify(userInfo);
+        localStorage.setItem("myStore", JSON.stringify(state));
       } catch (error) {
         console.error(error);
       }
     },
-    async updateUserName({ commit, state }, newName) {
+    async updateUserName({ state }, newName) {
       try{
         const response = await apiClient.put(`/member/profile/name`, {
           m_name: newName,
         });
   
-        const updateUserInfo = {...state.userInfo, m_name: newName};
-        commit("updateUserInfo", updateUserInfo);
+        const userInfo = JSON.parse(state.userInfo);
+        userInfo.m_name = newName;
+        state.userInfo = JSON.stringify(userInfo);
   
         console.log(response);
       } catch(error) {
         console.log(error);
       }
     },
-    async updateUserHandle({ commit, state }, newHandle) {
+    async updateUserHandle({ state }, newHandle) {
       try{
         const response = await apiClient.put(`/member/profile/handle`, {
           m_handle: newHandle,
         });
   
-        const updateUserInfo = {...state.userInfo, m_handle: newHandle};
-        commit("updateUserInfo", updateUserInfo);
+        const userInfo = JSON.parse(state.userInfo);
+        userInfo.m_handle = newHandle;
+        state.userInfo = JSON.stringify(userInfo);
   
         console.log(response);
       } catch(error) {
         console.log(error);
       }
     },
-    async updateUserBio({ commit, state }, newBio) {
+    async updateUserBio({ state }, newBio) {
       try{
         const response = await apiClient.put(`/member/profile/bio`, {
           m_bio: newBio,
         });
   
-        const updateUserInfo = {...state.userInfo, m_bio: newBio};
-        commit("updateUserInfo", updateUserInfo);
+        const userInfo = JSON.parse(state.userInfo);
+        userInfo.m_bio = newBio;
+        state.userInfo = JSON.stringify(userInfo);
   
         console.log(response);
       } catch(error) {
         console.log(error);
       }
     },
-    async updateUserGender({ commit, state }, newGender) {
+    async updateUserGender({ state }, newGender) {
       try{
         const response = await apiClient.put(`/member/profile/gender`, {
           m_gender: newGender,
         });
   
-        const updateUserInfo = {...state.userInfo, m_gender: newGender};
-        commit("updateUserInfo", updateUserInfo);
+        const userInfo = JSON.parse(state.userInfo);
+        userInfo.m_gender = newGender;
+        state.userInfo = JSON.stringify(userInfo);
   
         console.log(response);
       } catch(error) {
         console.log(error);
       }
     },
-    async updateUserProfileImage({ commit, state }, newImageName) {
+    async updateUserProfileImage({ state }, newImageName) {
       try{
         const response = await apiClient.put(`/member/profile/image`, {
           m_img_name: newImageName,
         });
   
-        const updateUserInfo = {...state.userInfo, m_img_name: newImageName};
-        commit("updateUserInfo", updateUserInfo);
+        const userInfo = JSON.parse(state.userInfo);
+        userInfo.m_gender = newImageName;
+        state.userInfo = JSON.stringify(userInfo);
   
         console.log(response);
       } catch(error) {

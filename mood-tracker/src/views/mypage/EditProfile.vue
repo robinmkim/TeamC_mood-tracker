@@ -102,7 +102,7 @@
                   <input
                     class="bg-inherit flex-grow h-7 resize-none focus:outline-none border px-3"
                     type="password"
-                    v-model="new_pwd"
+                    v-model="cur_pwd"
                     @input="adjustHeight"
                   />
                 </div>
@@ -113,7 +113,7 @@
                   <input
                     class="bg-inherit flex-grow h-7 resize-none focus:outline-none border px-3"
                     type="password"
-                    v-model="new_pwd_check"
+                    v-model="new_pwd"
                     @input="adjustHeight"
                   />
                 </div>
@@ -341,6 +341,7 @@ export default {
       changingBio: false,
       changingEmail: false,
       changingGender: false,
+      cur_pwd: "",
       new_pwd: "",
       new_pwd_check: "",
     };
@@ -359,7 +360,7 @@ export default {
       this.profileImageUrl = `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
     },
     getMemberInfo() {
-      this.userInfo = this.$store.getters.getUserInfo;
+      this.userInfo = JSON.parse(this.$store.state.userInfo);
     },
     adjustHeight(e) {
       const element = e.target;
@@ -387,7 +388,7 @@ export default {
         })
         .then(() => {
           this.userInfo.m_img_name = file.name;
-          this.$store.dispatch("updateUserProfileImage", file.name)
+          this.$store.dispatch("updateUserProfileImage", file.name);
         })
         .catch((err) => {
           console.log(err, "프로필 이미지 변경 실패");

@@ -1,0 +1,91 @@
+version: 2.1
+orbs:
+  aws-s3: circleci/aws-s3@4.0.0
+  aws-code-deploy: circleci/aws-code-deploy@3.0.0
+  aws-cli: circleci/aws-cli@4.1.2
+
+jobs:
+  build_and_deploy_spring_boot:
+    docker:
+      - image: circleci/openjdk:17-jdk-buster
+    steps:
+      - checkout
+      - run:
+          name: Build Spring Boot Project
+          command: |
+            cd mood-tracker-be
+            chmod +x ./gradlew
+            ./gradlew build
+      - run:
+          name: Package Spring Boot project
+          command: |
+            cd mood-tracker-be  
+            mkdir -p ../deploy 
+            zip -r ../deploy/spring-boot-project.zip .
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - deploy
+
+  build_and_deploy_vue:
+    docker:
+      - image: cimg/node:lts # Node 환경 설정
+    steps:
+      - checkout
+      - run:
+          name: Build Vue project
+          command: |
+            cd mood-tracker
+            npm install
+            npm run build
+      - run:
+          name: Package Vue project
+          command: |
+            cd mood-tracker  
+            mkdir -p ../deploy  
+            zip -r ../deploy/vue-project.zip .
+      - persist_to_workspace:
+          root: .
+          paths:
+            - deploy
+
+  deploy:
+    docker:
+      - image: cimg/python:3.8.4
+    steps:
+      - aws-cli/setup
+      - attach_workspace: # 저장한 폴더 가져오기
+          at: .
+      - run:
+          name: Copy Spring Boot project to S3
+          command: aws s3 cp deploy/spring-boot-project.zip s3://ec2-s3-mybucket/spring-boot-project.zip
+      - run:
+          name: Copy Vue project to S3
+          command: aws s3 cp deploy/vue-project.zip s3://ec2-s3-mybucket/vue-project.zip
+      - aws-code-deploy/deploy-bundle:
+          application-name: SongtimentBoot
+          deployment-group: SongtimentBootGroupv2
+          deployment-config: CodeDeployDefault.AllAtOnce
+          bundle-bucket: ec2-s3-mybucket
+          bundle-key: spring-boot-project
+          bundle-type: zip
+      - aws-code-deploy/deploy-bundle:
+          application-name: Songtiment
+          deployment-group: SongtimentVue
+          deployment-config: CodeDeployDefault.AllAtOnce
+          bundle-bucket: ec2-s3-mybucket
+          bundle-key: vue-project
+          bundle-type: zip
+
+workflows:
+  version: 2
+  build_and_deploy_workflow:
+    jobs:
+      - build_and_deploy_spring_boot
+      - build_and_deploy_vue
+      - deploy:
+          context: AWS
+          requires:
+            - build_and_deploy_spring_boot
+            - build_and_deploy_vue

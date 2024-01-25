@@ -1,0 +1,11 @@
+version: 0.0
+os: linux
+files:
+  - source: /dist
+    destination: /var/www/html/dist
+    overwrite: yes
+permissions: #CodeDeploy에서 받은 파일의 권한을 설정한다 (ubuntu는 aws ec2 기본사용자)
+  - object: /var/www/html/dist
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu

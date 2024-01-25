@@ -18,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/chat")
 public class ChatController {
 
     private final ChatService chatService;

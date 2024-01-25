@@ -26,4 +26,10 @@
                 (SELECT COUNT(*) FROM Follow WHERE FOLLOWER_ID = #{memberId}) AS followedCnt
         FROM DUAL
     </select>
+
+    <select id="checkFollow" parameterType="FollowRequestDto" resultType="int">
+        SELECT COUNT(*)
+        FROM follow
+        WHERE followed_id = #{followedId} AND follower_id = #{followerId}
+    </select>
 </mapper>
