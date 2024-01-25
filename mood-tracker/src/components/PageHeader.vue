@@ -1,8 +1,10 @@
 <template>
-  <div class="bg-[#64CCC5] w-full h-14 py-3 flex justify-end items-center">
+  <div
+    class="bg-[#FFF2E2] w-full h-14 py-3 flex justify-end items-center shadow"
+  >
     <div id="title" class="absolute left-1/2 transform -translate-x-1/2">
       <router-link to="/timeline">
-        <span class="text-2xl font-[400]">Songtiment</span>
+        <span class="text-2xl font-[400] text-[#5a5959]">Songtiment</span>
       </router-link>
     </div>
     <div id="menu" class="flex mr-4">
@@ -140,7 +142,11 @@ export default {
           receivedMessage.value = newValue.message;
           // Login.vue로부터 (로그인성공)이벤트버스를 전달받으면 Header에서 웹소켓 연결합니다.
           if (newValue.message == "login") {
-            console.log(">>>>>> RECEIVED EVENTBUS ==> ", newValue.message);
+            console.log(">>>>>> HEADER :: LOGIN EVENTBUS !!");
+            console.log(
+              ">>>>>> HEADER :: RECEIVED EVENTBUS ==> ",
+              newValue.message
+            );
             console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIng");
             connect(); // 알림용 웹소켓 연결
             getUnreadNotice(); // 안 읽은 알림의 개수를 가져오고 알림아이콘을 표시한다.
@@ -189,7 +195,7 @@ export default {
       console.log("token = ", token);
       console.log("CHECK MEMBERID>VALUE", memberId.value);
 
-      const socket = new SockJS("http://192.168.0.43:8083/ws");
+      const socket = new SockJS("http://localhost:8083/ws");
       stompClient.value = Stomp.over(socket);
 
       stompClient.value.connect(
@@ -226,7 +232,7 @@ export default {
       console.log("token = ", token);
       console.log("CHECK MEMBERID>VALUE", memberId.value);
 
-      const socket = new SockJS("http://192.168.0.43:8083/ws");
+      const socket = new SockJS("http://localhost:8083/ws");
       stompClient.value = Stomp.over(socket);
 
       stompClient.value.connect(

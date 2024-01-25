@@ -73,12 +73,13 @@ import * as yup from "yup";
 import AuthService from "@/services/AuthService";
 import router from "@/router";
 import { EventBus } from "./../../utils/EventBus.js";
-
+import { store } from "@/store/store.js";
 export default {
   name: "LogIn",
   setup() {
     const sendLoginEvent = () => {
       EventBus.myLoginEvent = { message: "login" };
+      console.log("로그인 버스 보냄");
     };
 
     const { value: id, errorMessage: idError } = useField(
@@ -110,9 +111,11 @@ export default {
             window.localStorage.clear();
             window.localStorage.setItem("jwtToken", response.data.accessToken);
 
-            sendLoginEvent(); //로그인 됬다고 header에 EventBus 전송
+            store.dispatch('initializeUserInfo').then(() => {
+              sendLoginEvent(); //로그인 됬다고 header에 EventBus 전송
 
-            router.push("/");
+              router.push("/");
+            });
           }
         }
       );

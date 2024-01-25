@@ -5,7 +5,7 @@
     @click="closeModal"
   >
     <div class="lg:w-3/5 h-2/3 flex flex-col">
-      <div class="ml-auto cursor-pointer mb-1" @click="closeModal">
+      <div class="ml-auto cursor-pointer mb-1 max-h-full" @click="closeModal">
         <!--x버튼-->
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -20,10 +20,13 @@
           />
         </svg>
       </div>
-      <div class="w-full h-full bg-white rounded shadow-lg flex" @click.stop="">
+      <div
+        class="w-full min-h-full bg-white rounded shadow-lg flex"
+        @click.stop=""
+      >
         <!-- PostList -->
-        <div class="w-1/3 flex flex-col min-h-5/6 bg-red-200">
-          <div class="flex border-b justify-center items-center h-1/6">
+        <div class="w-1/3 flex flex-col h-full">
+          <div class="flex border-b justify-center items-center h-6 p-6">
             {{ this.month }}월 {{ day }}일
           </div>
           <div
@@ -37,11 +40,19 @@
               @postSelected="handlePostSelected"
             />
           </div>
-          <div v-else>데이터가 없습니다.</div>
+          <div v-else class="h-full items-center justify-center flex flex-col">
+            <img
+              src="http://localhost:8083/images/nullGIF.gif"
+              width="120"
+              height="120"
+              class="mb-4 -mt-16"
+            />
+            데이터가 없습니다.
+          </div>
         </div>
         <!-- postDetail -->
         <div class="border-x flex flex-grow w-2/3 overflow-y-auto">
-          <div v-if="this.selectedPostId === null">아무것도 안 불러옴!</div>
+          <div v-if="this.selectedPostId === null"></div>
           <div v-else class="w-full">
             <div class="shadow">
               <postDetail
@@ -109,6 +120,10 @@ export default {
     },
     month: {
       type: number,
+      required: true,
+    },
+    m_id: {
+      type: Number,
       required: true,
     },
   },

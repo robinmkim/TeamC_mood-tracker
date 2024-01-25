@@ -1,83 +1,85 @@
 <template>
-  <div v-if="isLoading" class="loading-container">
-    <div class="loading">
-      <Fade-loader />
+  <div>
+    <div v-if="isLoading" class="loading-container">
+      <div class="loading">
+        <Fade-loader />
+      </div>
     </div>
-  </div>
 
-  <div class="flex h-screen">
-    <div class="flex-1 w-full border-r border-l border-gray-200">
-      <!-- 여기서부터 ~~~ -->
-      <div class="flex flex-col items-center justify-center">
-        <div class="p-5 mt-5 w-[700px] bg-slate-200">
-          <span
-            >얼굴을 분석하여 결과에 따라 음악을 추천합니다 <br />(ง ᵕᴗᵕ)ว
-          </span>
-        </div>
+    <div class="flex h-screen">
+      <div class="flex-1 w-full border-x">
+        <!-- 여기서부터 ~~~ -->
+        <div class="flex flex-col items-center justify-center">
+          <div class="p-5 mt-3 w-[700px] bg-slate-200">
+            <span
+              >얼굴을 분석하여 결과에 따라 음악을 추천합니다 <br />(ง ᵕᴗᵕ)ว
+            </span>
+          </div>
 
-        <!-- 클릭하여 파일 업로드 -->
-        <div class="flex mt-5">
-          <span class="p-5 w-[700px] h-100 item-center text-center">
-            <p>⬇⬇ 선택 또는 드래그 하여 사진 업로드 ⬇⬇</p>
+          <!-- 클릭하여 파일 업로드 -->
+          <div class="flex mt-5">
+            <span class="p-5 w-[700px] h-100 item-center text-center">
+              <p>⬇⬇ 선택 또는 드래그 하여 사진 업로드 ⬇⬇</p>
 
-            <!-- <input
+              <!-- <input
               type="file"
               ref="fileInput"
               class="hidden"
               @change="handleFileSelect"
               accept=".jpg, .jpeg, .png"
             /> -->
-          </span>
-        </div>
-        <!-- 드래그하여 파일 업로드-->
-        <div
-          class="flex m-1 w-[550px] h-[450px] bg-[#eaeaea] hover:bg-[#dad9d9] duration-150 box-content text-center border-2 border-gray-200"
-          @dragover.prevent="handleDragOver"
-          @drop="handleDrop"
-        >
+            </span>
+          </div>
+          <!-- 드래그하여 파일 업로드-->
           <div
-            class="flex flex-col items-center justify-center w-full h-full cursor-pointer"
-            @click="openFileInput"
+            class="flex m-1 w-[550px] h-[450px] bg-[#eaeaea] hover:bg-[#dad9d9] duration-150 box-content text-center border-2 border-gray-200"
+            @dragover.prevent="handleDragOver"
+            @drop="handleDrop"
           >
-            <p v-if="!image" class="cursor-pointer">---</p>
-            <input
-              type="file"
-              ref="fileInput"
-              class="hidden"
-              @change="handleFileSelect"
-              accept=".jpg, .jpeg, .png"
-            />
-
-            <!-- 이미지 미리보기-->
-            <div @click="openFileInput" class="flex">
-              <img
-                v-if="image"
-                :src="image"
-                alt="Uploaded"
-                class="flex object-contain w-auto h-[450px]"
+            <div
+              class="flex flex-col items-center justify-center w-full h-full cursor-pointer"
+              @click="openFileInput"
+            >
+              <p v-if="!image" class="cursor-pointer">---</p>
+              <input
+                type="file"
+                ref="fileInput"
+                class="hidden"
+                @change="handleFileSelect"
+                accept=".jpg, .jpeg, .png"
               />
+
+              <!-- 이미지 미리보기-->
+              <div @click="openFileInput" class="flex">
+                <img
+                  v-if="image"
+                  :src="image"
+                  alt="Uploaded"
+                  class="flex object-contain w-auto h-[450px]"
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="flex justify-center mt-3">
-          <span
-            v-if="!isLoading"
-            id="submit"
-            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center hover:bg-[#6fe3db] hover:scale-110 duration-200"
-            @click="goToResult"
-            >분석하기</span
-          >
+          <div class="flex justify-center mt-3">
+            <span
+              v-if="!isLoading"
+              id="submit"
+              class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center hover:bg-[#6fe3db] hover:scale-110 duration-200"
+              @click="goToResult"
+              >분석하기</span
+            >
 
-          <span
-            v-if="isLoading"
-            id="submit"
-            class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center"
-            >분석 중...</span
-          >
+            <span
+              v-if="isLoading"
+              id="submit"
+              class="bg-[#64CCC5] px-4 py-2 rounded-full cursor-pointer text-center"
+              >분석 중...</span
+            >
+          </div>
         </div>
+        <!-- 여까지 -->
       </div>
-      <!-- 여까지 -->
     </div>
   </div>
 </template>
@@ -86,7 +88,7 @@
 import FadeLoader from "vue-spinner/src/FadeLoader.vue";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import apiClient from "./../../utils/apiClient";
+import apiClient from "@/utils/apiClient";
 export default {
   name: "FaceAnalyze",
   components: {

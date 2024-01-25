@@ -1,6 +1,8 @@
 <template>
-  <page-header class="fixed top-0 z-50" />
-  <router-view />
+  <div class="min-h-screen bg-[#fffdfb]">
+    <page-header class="fixed top-0 z-50" />
+    <router-view class="h-auto" />
+  </div>
 </template>
 
 <script>

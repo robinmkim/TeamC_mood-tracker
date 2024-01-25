@@ -14,7 +14,6 @@
           </div>
           <div class="flex-grow flex-col ml-48 mt-2 justify-start items-center">
             <div class="flex flex-col border-b-2 border-slate-200 w-full">
-
               <div class="flex my-2">
                 <div>
                   <span class="text-3xl font-bold mr-3">{{
@@ -26,14 +25,13 @@
                 </span>
               </div>
               <div class="flex items-center w-full">
-                <span class="text-lg mr-3">
-                  팔로워 {{ followerCnt }}
-                </span>
-                <span class="text-lg">
-                  팔로잉 {{ followingCnt }}
-                </span>
+                <span class="text-lg mr-3"> 팔로워 {{ followerCnt }} </span>
+                <span class="text-lg"> 팔로잉 {{ followingCnt }} </span>
                 <span v-if="isVisible">
-                  <button @click="follow" class="m-2 h-[30px] w-[80px] rounded-lg bg-blue-500 hover:bg-blue-700 items-center justify-center text-white font-bold">
+                  <button
+                    @click="follow"
+                    class="m-2 h-[30px] w-[80px] rounded-lg bg-blue-500 hover:bg-blue-700 items-center justify-center text-white font-bold"
+                  >
                     팔로우
                   </button>
                 </span>
@@ -45,14 +43,12 @@
               </div>
             </div>
           </div>
-          <div class="flex" v-if="isVisible===false">
+          <div class="flex" v-if="isVisible === false">
             <router-link
               to="/mypage/edit"
               class="m-2 h-[30px] w-[100px] border-2 rounded-lg border-slate-500 items-center justify-center"
             >
-              <div class="text-slate-500">
-                프로필 편집
-              </div>
+              <div class="text-slate-500">프로필 편집</div>
             </router-link>
           </div>
         </div>
@@ -85,13 +81,13 @@
               v-show="currentTab === index"
               role="tabpanel"
             >
-              <MyMood v-if="tab.id === 'mood'" />
+              <MyMood v-if="tab.id === 'mood'" :m_id="m_id" />
               <!--내 게시글 목록-->
-              <MyPost v-else-if="tab.id === 'post'" />
+              <MyPost v-else-if="tab.id === 'post'" :m_id="m_id" />
               <!--달력-->
-              <MoodCalander v-else-if="tab.id === 'calander'" />
+              <MoodCalander v-else-if="tab.id === 'calander'" :m_id="m_id" />
               <!--좋아요 목록-->
-              <MyLike v-else-if="tab.id === 'like'" />
+              <MyLike v-else-if="tab.id === 'like'" :m_id="m_id" />
             </div>
           </div>
         </div>
@@ -140,23 +136,24 @@ export default {
       followerCnt: 0,
       followingCnt: 0,
       isVisible: false,
+      m_id: null,
     };
   },
 
   methods: {
     // 유저 정보
     getMemberInfo() {
-      let memberId = this.$route.path.replace("/", "");
-      // 파라미터로 받은 memberId가 비어있으면 내 정보를 가져옴
+      this.m_id = this.$route.path.replace("/", "");
+      // 파라미터로 받은 m_id가 비어있으면 내 정보를 가져옴
 
-      if (memberId === "") {
+      if (this.m_id === "") {
         const token = localStorage.getItem("jwtToken");
         const decoded = jwtDecode(token);
-        memberId = decoded.m_id;
+        this.m_id = decoded.m_id;
       }
 
       apiClient
-        .get(`/member/info/${memberId}`)
+        .get(`/member/info/${this.m_id}`)
         .then((res) => {
           res.data.m_handle = "@" + res.data.m_handle;
           this.userInfo = res.data;
@@ -181,7 +178,6 @@ export default {
           { name: "게시글", id: "post" },
           { name: "달력", id: "calander" },
           { name: "좋아요", id: "like" },
-
         ];
       } else {
         this.tabs = [
@@ -228,14 +224,13 @@ export default {
         followedId: this.userInfo.m_id,
       };
       apiClient
-        .post('/follow', followInfo)
+        .post("/follow", followInfo)
         .then((res) => {
           if (res.data === "Follow Success") {
             this.followerCnt = this.followerCnt + 1;
           } else {
             this.followerCnt = this.followerCnt - 1;
           }
-
         })
         .catch((err) => {
           console.log("팔로우 실패", err);
@@ -252,4 +247,3 @@ export default {
 </script>
 
 <style scoped="scoped"></style>
- 

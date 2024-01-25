@@ -19,7 +19,7 @@
                   <!-- 프로필 이미지 -->
                   <img
                     class="w-20 h-20 mt-2 rounded-full inline-block border"
-                    :src="getPrfileImgUrl()"
+                    :src="profileImageUrl"
                     alt="나의 프로필 이미지"
                   />
                 </label>
@@ -102,6 +102,7 @@
                   <input
                     class="bg-inherit flex-grow h-7 resize-none focus:outline-none border px-3"
                     type="password"
+                    v-model="new_pwd"
                     @input="adjustHeight"
                   />
                 </div>
@@ -112,7 +113,7 @@
                   <input
                     class="bg-inherit flex-grow h-7 resize-none focus:outline-none border px-3"
                     type="password"
-                    v-model="new_pwd"
+                    v-model="new_pwd_check"
                     @input="adjustHeight"
                   />
                 </div>
@@ -221,7 +222,7 @@
               <div class="w-2/3 bg-s h-8">
                 <input
                   class="bg-inherit w-3/4 h-7 resize-none focus:outline-none border px-3"
-                  placeholder="핸들"
+                  placeholder="바이오"
                   v-model="userInfo.m_bio"
                   @input="adjustHeight"
                 />
@@ -250,22 +251,22 @@
             <div v-if="!changingGender" class="flex w-2/3 my-3 mx-5">
               <div class="w-2/3 bg-s h-8">
                 <span>{{ userInfo.m_gender }}</span>
-                <div class="w-1/3" @click="toggleGender">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                    />
-                  </svg>
-                </div>
+              </div>
+              <div class="w-1/3" @click="toggleGender">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                  />
+                </svg>
               </div>
             </div>
 
@@ -312,11 +313,13 @@
             </div>
           </div>
           <div class="mb-3 mt-3">
-            <input
-              class="bg-[#64CCC5] w-1/5 h-8 rounded-md p-0.5 cursor-pointer"
-              type="submit"
-              value="나가기"
-            />
+            <router-link to="/">
+              <input
+                class="bg-[#64CCC5] w-1/5 h-8 rounded-md p-0.5 cursor-pointer"
+                type="submit"
+                value="나가기"
+              />
+            </router-link>
           </div>
         </div>
       </div>
@@ -325,8 +328,8 @@
 </template>
 
 <script>
-import { jwtDecode } from "jwt-decode";
 import apiClient from "@/utils/apiClient";
+
 export default {
   data() {
     return {
@@ -344,26 +347,19 @@ export default {
   },
   created() {
     this.getMemberInfo();
-    this.getPrfileImgUrl();
-    console.log(this.userInfo);
+  },
+  watch: {
+    userInfo: {
+      handler: 'updateProfileImageUrl',
+      deep: true,
+    },
   },
   methods: {
-    getPrfileImgUrl() {
-      return `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
+    updateProfileImageUrl() {
+      this.profileImageUrl = `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
     },
     getMemberInfo() {
-      const token = localStorage.getItem("jwtToken");
-      const decoded = jwtDecode(token);
-      const memberId = decoded.m_id;
-
-      apiClient
-        .get(`/member/info/${memberId}`)
-        .then((res) => {
-          this.userInfo = res.data;
-        })
-        .catch((err) => {
-          console.log(err, "유저 정보 못불러옴");
-        });
+      this.userInfo = this.$store.getters.getUserInfo;
     },
     adjustHeight(e) {
       const element = e.target;
@@ -389,9 +385,9 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         })
-        .then((res) => {
-          console.log(res);
-          console.log(file);
+        .then(() => {
+          this.userInfo.m_img_name = file.name;
+          this.$store.dispatch("updateUserProfileImage", file.name)
         })
         .catch((err) => {
           console.log(err, "프로필 이미지 변경 실패");
@@ -420,56 +416,20 @@ export default {
       this.changingGender = !this.changingGender;
     },
     updateName() {
-      apiClient
-        .put(`/member/profile/name`, {
-          m_name: this.userInfo.m_name,
-        })
-        .then((res) => {
-          console.log(res);
-          this.toggleName();
-        })
-        .catch((err) => {
-          console.log(err, "이름 변경 실패");
-        });
+      this.$store.dispatch("updateUserName", this.userInfo.m_name);
+      this.toggleName();
     },
     updateHandle() {
-      apiClient
-        .put(`/member/profile/handle`, {
-          m_handle: this.userInfo.m_handle,
-        })
-        .then((res) => {
-          console.log(res);
-          this.toggleHandle();
-        })
-        .catch((err) => {
-          console.log(err, "핸들 변경 실패");
-        });
+      this.$store.dispatch("updateUserHandle", this.userInfo.m_handle);
+      this.toggleHandle();
     },
     updateBio() {
-      apiClient
-        .put(`/member/profile/bio`, {
-          m_bio: this.userInfo.m_bio,
-        })
-        .then((res) => {
-          console.log(res);
-          this.toggleBio();
-        })
-        .catch((err) => {
-          console.log(err, "바이오 변경 실패");
-        });
+      this.$store.dispatch("updateUserBio", this.userInfo.m_bio);
+      this.toggleBio();
     },
     updateGender() {
-      apiClient
-        .put(`/member/profile/gender`, {
-          m_gender: this.userInfo.m_gender,
-        })
-        .then((res) => {
-          console.log(res);
-          this.toggleGender();
-        })
-        .catch((err) => {
-          console.log(err, "성별 변경 실패");
-        });
+      this.$store.dispatch("updateUserGender", this.userInfo.m_gender);
+      this.toggleGender();
     },
     updatePassword() {
       if (this.new_pwd !== this.new_pwd_check) {
@@ -488,7 +448,7 @@ export default {
           this.togglePassword();
         })
         .catch((err) => {
-          console.log(err, "비밀번호 변경 실패");
+          console.log(err);
         });
     },
   },

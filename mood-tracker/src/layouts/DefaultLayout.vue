@@ -1,13 +1,13 @@
 <template lang="">
-  <div class="flex justify-center mt-14 min-h-full">
+  <div class="flex justify-center min-h-full">
     <!-- 왼쪽 side menu -->
-    <side-bar />
+    <side-bar class="mt-14" />
 
     <!-- 기본 뷰 -->
-    <router-view class="md:w-[700px] sm:w-[300px]" />
+    <router-view class="mt-14 md:w-[700px] sm:w-[300px]" />
 
     <!-- 오른쪽 widget 뷰 -->
-    <router-view name="widget" class="" />
+    <router-view name="widget" class="mt-14" />
   </div>
 </template>
 <script>

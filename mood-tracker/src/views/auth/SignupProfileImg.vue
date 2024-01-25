@@ -30,15 +30,23 @@
                 @change="handleFileSelect"
                 accept=".jpg, .jpeg, .png"
               />
-              <div @click="openFileInput" class="flex">
+              <div
+                @click="openFileInput"
+                class="w-full h-full flex items-center justify-center"
+                v-if="profileImg"
+              >
                 <img
-                  v-if="profileImg"
                   :src="profileImg"
                   alt="Uploaded"
                   class="w-full h-full object-cover"
+                  width="100"
+                  height="100"
                 />
               </div>
-              <div class="w-full h-full flex items-center justify-center">
+              <div
+                v-else
+                class="w-full h-full flex items-center justify-center"
+              >
                 <span class="text-gray-500 text-3xl">+</span>
               </div>
             </div>

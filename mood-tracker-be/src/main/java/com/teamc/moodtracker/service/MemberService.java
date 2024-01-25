@@ -61,7 +61,7 @@ public class MemberService {
     public void checkPassword(MemberDto dto) {
         int res = dao.checkPassword(dto);
         if (res == 0) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException();
         }
     }
 }

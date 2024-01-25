@@ -101,7 +101,7 @@ export default {
     };
     const checkHandle = () => {
       apiClient
-        .post(`auth/checkHandle`, { handle: username.value })
+        .post(`/auth/checkHandle`, { handle: username.value })
         .then(() => {
           alert("사용가능한 닉네임입니다.");
         })
