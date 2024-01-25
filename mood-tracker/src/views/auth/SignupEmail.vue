@@ -141,7 +141,7 @@ export default {
 
     const verifyCode = () => {
       apiClient
-        .post("/api/auth/verifyCode", { email: email.value, code: code.value })
+        .post("/auth/verifyCode", { email: email.value, code: code.value })
         .then(() => {
           alert("인증되었습니다");
           isVerified.value = true;
