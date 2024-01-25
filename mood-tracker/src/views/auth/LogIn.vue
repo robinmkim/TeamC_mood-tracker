@@ -73,7 +73,7 @@ import * as yup from "yup";
 import AuthService from "@/services/AuthService";
 import router from "@/router";
 import { EventBus } from "./../../utils/EventBus.js";
-import { store } from "@/store/store.js";
+import { store } from "@/store";
 export default {
   name: "LogIn",
   setup() {
