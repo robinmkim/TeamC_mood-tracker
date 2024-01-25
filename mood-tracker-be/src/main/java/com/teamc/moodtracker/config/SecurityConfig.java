@@ -75,7 +75,7 @@ public class SecurityConfig {
                 // HTTP 요청에 대한 보안 필터 체인을 구성
                 // .authorizeHttpRequests((auth) -> auth.anyRequest().permitAll())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/images/**").permitAll() // 정적 이미지 리소스에 대한 접근 허용
                         .requestMatchers("/", "/index.html", "/static/**", "/css/**","/js/**").permitAll()
