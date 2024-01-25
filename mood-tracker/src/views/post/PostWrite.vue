@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full overflow-y-auto">
+  <div class="h-full overflow-y-auto bg-white border shadow rounded-lg my-2">
     <form @submit.prevent="submitForm">
       <div class="flex flex-col">
         <div
@@ -78,7 +78,7 @@
           </svg>
 
           <input
-            class="bg-[#ffede6] w-16 h-8 rounded-md p-0.5"
+            class="bg-[#8ee2dd] w-16 h-8 rounded-md p-0.5"
             type="submit"
             value="입력"
           />

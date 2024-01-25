@@ -30,7 +30,6 @@ public class ChatController {
     public void sendChat(@RequestBody SendChat sendRequest) {
         // 상대방이 나갔는지 확인
         String getLastMsgStatus = chatService.getLastMsgStatus(sendRequest.getRoomId(), sendRequest.getOtherMemberId());
-        System.out.println("getLastaaaaaaaaaaaMsgStatus: " + getLastMsgStatus);
         EnterDto enterDto = EnterDto.builder()
                 .myMemberId(sendRequest.getOtherMemberId())
                 .otherMemberId(sendRequest.getMemberId())

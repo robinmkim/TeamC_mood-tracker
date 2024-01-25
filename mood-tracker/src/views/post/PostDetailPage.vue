@@ -1,9 +1,7 @@
 <template>
-  <div class="flex h-full" @scroll="handleScroll">
-    <div class="flex-1 border-x flex h-full">
-      <div
-        class="flex-1 flex flex-col border-r h-full relative overflow-y-auto"
-      >
+  <div class="flex">
+    <div class="flex-1 flex h-full">
+      <div class="flex-1 flex flex-col h-full relative overflow-y-auto">
         <!-- post 내용 -->
         <postDetail
           :b_id="b_id"
@@ -11,26 +9,40 @@
           @post-detail-scroll="handlePostDetailScroll"
           :isDropdownOpen="openCm_id === cm_id"
           @toggle-dropdown="toggleDropdown"
+          :caller="callerComponent"
         ></postDetail>
       </div>
-      <div class="flex-1 flex flex-col h-full relative overflow-y-auto">
+      <div
+        class="flex-1 flex flex-col max-h-[850px] relative overflow-hidden overflow-y-auto h-full"
+      >
         <!-- comment 내용 -->
-        <div v-if="commentCount > 0" class="overflow-hidden h-[95%]">
-          <div class="comment-list max-h-full overflow-y-auto">
-            <CommentList
-              v-for="cm_id in commentList"
-              :key="cm_id"
-              :cm_id="cm_id"
-              :isDropdownOpen="openCm_id === cm_id"
-              @toggle-dropdown="toggleDropdown"
-              @delComment="delComment"
-            />
-          </div>
+        <div
+          v-if="commentCount > 0"
+          class="overflow-hidden max-h-full overflow-y-auto"
+        >
+          <CommentList
+            v-for="cm_id in commentList"
+            :key="cm_id"
+            :cm_id="cm_id"
+            :isDropdownOpen="openCm_id === cm_id"
+            @toggle-dropdown="toggleDropdown"
+            @delComment="delComment"
+            @updateReply="updateReply"
+          />
         </div>
-        <div v-else-if="commentCount === 0" class="h-[95%]">
-          comment가 없습니다!
+        <div
+          v-else-if="commentCount === 0"
+          class="h-[95%] items-center justify-center flex flex-col"
+        >
+          <img
+            src="http://localhost:8083/images/nullGIF.gif"
+            width="120"
+            height="120"
+            class="mb-4"
+          />
+          <div>comment가 없습니다!</div>
         </div>
-        <div class="flex border-t items-center justify-center p-2">
+        <div class="bottom-0 w- flex border-t items-center justify-center p-2">
           <textarea
             class="text-sm border-b border-slate-200 w-[95%] h-6 resize-none focus:outline-slate-400"
             placeholder=" 답글입력"
@@ -73,9 +85,13 @@ export default {
       content: "",
       commentList: [],
       openCm_id: null,
+      callerComponent: "postDetailPage",
     };
   },
   methods: {
+    updateReply() {
+      this.getCommentCount();
+    },
     delComment() {
       this.getCm_idList();
       this.getCommentCount();
@@ -140,6 +156,7 @@ export default {
       apiClient
         .get(`/jh_comment/allCommentCount?b_id=${this.b_id}`)
         .then((response) => {
+          this.$store.commit("setTotalCommentCount", response.data);
           this.commentCount = response.data;
         })
         .catch((error) => {

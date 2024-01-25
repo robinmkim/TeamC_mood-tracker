@@ -34,7 +34,12 @@ ChartJS.register(
 export default {
   name: "BarChart",
   components: { Bar },
-
+  props: {
+    m_id: {
+      type: Number,
+      required: true,
+    },
+  },
   data: () => ({
     loaded: false,
     chartData: {
@@ -79,7 +84,7 @@ export default {
       this.loaded = false;
 
       apiClient
-        .get(`/mypage/sentiment`)
+        .get(`/mypage/sentiment?m_id=${this.m_id}`)
         .then((res) => {
           this.chartData;
           const datas = res.data;

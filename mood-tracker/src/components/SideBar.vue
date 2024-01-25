@@ -156,7 +156,7 @@
             class="flex w-32 h-32 rounded-full overflow-hidden border-4 border-white mx-auto bg-slate-200 items-center justify-center"
           >
             <img
-              :src="getPrfileImgUrl()"
+              :src="profileImageUrl"
               alt="profile img"
               style="aspect-ratio: 100/100; object-fit: cover"
             />
@@ -164,8 +164,8 @@
         </div>
         <router-link to="/">
           <div class="text-center mt-2 mb-6">
-            <h2 class="text-lg font-bold">{{ userInfo.m_name }}</h2>
-            <p class="text-slate-500">{{ userInfo.m_handle }}</p>
+            <h2 class="text-lg font-bold">{{ this.$store.state.userInfo.m_name }}</h2>
+            <p class="text-slate-500">{{ this.$store.state.userInfo.m_handle }}</p>
           </div>
         </router-link>
       </div>
@@ -193,8 +193,12 @@
           <span class="ml-2">홈</span>
         </div>
       </router-link>
-      <router-link to="/postwrite" class="text-lg">
-        <div class="flex px-2 hover:bg-[#FFDDE4]/50 rounded-lg">
+
+      <div class="text-lg">
+        <div
+          class="flex px-2 hover:bg-[#FFDDE4]/50 rounded-lg"
+          @click="postWrite()"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -209,10 +213,128 @@
               d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
             />
           </svg>
-
           <span class="ml-2">게시물 작성</span>
         </div>
-      </router-link>
+
+        <!-- 게시물 모달 창 -->
+        <div
+          v-if="postMakeModal"
+          class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center z-40"
+          @click="closepostModal"
+        >
+          <!-- 모달 내용 -->
+          <div
+            class="bg-white rounded-lg max-w-screen-sm w-1/3 z-45"
+            @click.stop
+          >
+            <span
+              class="close absolute top-4 right-4 cursor-pointer"
+              @click="postWriteModal()"
+            ></span>
+            <p class="border-b py-2">게시물을 작성하세요~</p>
+            <!-- 게시물 작성 페이지 -->
+            <div>
+              <div class="h-full overflow-y-auto">
+                <form @submit.prevent="submitForm">
+                  <div class="flex flex-col">
+                    <div
+                      class="h-auto px-2 pt-2 border-b"
+                      @drop.prevent="handleFileDrop"
+                      @dragover.prevent
+                    >
+                      <div class="flex items-center border-b h-10">
+                        <div class="w-9 h-9 rounded-full overflow-hidden">
+                          <img
+                            class="object-contain rounded-full"
+                            :src="profileImageUrl"
+                            alt="user icon"
+                            style="aspect-ratio: 100/100; object-fit: cover"
+                          />
+                        </div>
+                        <span class="ml-2">{{ memberHandle }}</span>
+                        <img
+                          class="cursor-pointer ml-2"
+                          @click="isExpanded = !isExpanded"
+                          :src="`http://localhost:8083/images/${selectedEmoji}.png`"
+                          width="25"
+                          height="25"
+                        />
+                        <div
+                          v-if="isExpanded"
+                          class="cursor-pointer flex flex-col my-1"
+                        >
+                          <div class="flex">
+                            <img
+                              v-for="(sentiment, index) in sentimentList"
+                              :key="index"
+                              :src="`http://localhost:8083/images/${sentiment}.png`"
+                              alt="sentiment"
+                              class="inline-block ml-2"
+                              width="20"
+                              height="20"
+                              @click="selectEmoji(sentiment, index)"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="border-b mb-1">
+                        <textarea
+                          class="bg-inherit w-full h-auto resize-none focus:outline-none"
+                          placeholder="오늘의 기분을 알려주세요 :)"
+                          v-model="text"
+                          @input="adjustHeight"
+                        ></textarea>
+                      </div>
+                      <div class="flex">
+                        <div
+                          v-for="(file, index) in files"
+                          :key="index"
+                          class="py-1"
+                        >
+                          <img :src="file.preview" class="w-24 border" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex justify-between px-3 py-2 border-b">
+                      <input
+                        type="file"
+                        ref="fileInput"
+                        multiple
+                        style="display: none"
+                        @change="handleFileChange"
+                      />
+                      <svg
+                        @click="triggerFileInput"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6 cursor-pointer"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                        />
+                      </svg>
+
+                      <input
+                        class="bg-[#ffede6] w-16 h-8 rounded-md p-0.5"
+                        type="submit"
+                        value="입력"
+                      />
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <!-- 게시물 작성 -->
+          </div>
+        </div>
+        <!-- 게시물 모달 창 끝 -->
+      </div>
+
       <router-link to="/faceanalyze" class="text-lg">
         <div class="flex px-2 hover:bg-[#FFE778]/50 rounded-lg">
           <svg
@@ -326,7 +448,6 @@
 <script>
 import apiClient from "@/utils/apiClient";
 import PostList from "@/views/post/components/PostList";
-import { jwtDecode } from "jwt-decode";
 
 export default {
   name: "SideBar",
@@ -338,12 +459,153 @@ export default {
       searchQuery: "", // 사용자의 검색어를 담을 변수
       searchResults: [], // API로부터 받아온 결과를 담을 변수
       searchResultsBoard: [],
+      postMakeModal: false,
+      profileImageUrl: null,
+      // 게시물 작성에 필요한 data
+      memberHandle: "",
+      text: "",
+      files: [],
+      isExpanded: false,
+      selectedEmoji: "happy", // 기본 이모지
+      sentimentList: [
+        "happy",
+        "angry",
+        "anxiety",
+        "hurt",
+        "neutral",
+        "sad",
+        "surprise",
+      ],
+      emotion: "happy",
     };
   },
   components: {
     PostList,
   },
+  created() {
+    this.getMemberInfo();
+  },
+  watch: {
+    userInfo: {
+      handler: 'updateProfileImageUrl',
+      deep: true,
+    },
+  },
+  mounted() {
+    // 게시글 추가
+    // 회원이름(m_handle)을 가져옵니다.
+    apiClient.get("/member/userInfo/memberHandle").then((res) => {
+      this.memberHandle = res.data;
+    });
+
+    // 추가 끝
+
+    // Add a global click event listener to close the search bar when clicking outside
+    document.addEventListener("click", this.toggleSidebarOutside);
+  },
   methods: {
+    updateProfileImageUrl() {
+      this.profileImageUrl = `http://localhost:8083/${this.$store.state.userInfo.m_img_path}${this.$store.state.userInfo.m_img_name}`
+    },
+    adjustHeight(e) {
+      // textarea높이 자동 조절
+      const element = e.target;
+      element.style.height = "auto";
+      element.style.height = element.scrollHeight + "px";
+    },
+
+    handleFileDrop(e) {
+      // 파일 드롭
+      const files = e.dataTransfer.files;
+      this.processFiles(files);
+    },
+
+    handleFileChange(e) {
+      // 파일이 선택되었을 때
+      const files = e.target.files;
+      this.processFiles(files);
+    },
+
+    processFiles(files) {
+      // 파일 목록을 받아 각 파일을 처리, files배열에 추가
+      //FileReader 를 생성해서 메타데이터와 실제 파일 객체 저장
+      Array.from(files).forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          // 파일의 메타데이터와 실제 파일 객체 저장
+          this.files.push({
+            name: file.name,
+            preview: e.target.result,
+            file: file, // 실제 파일 객체 추가
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+    },
+
+    triggerFileInput() {
+      // 파일 input 클릭하게 만듦
+      this.$refs.fileInput.click();
+    },
+
+    selectEmoji(sentiment, index) {
+      this.selectedEmoji = sentiment;
+      console.log(this.sentimentList[index]);
+      this.emotion = this.sentimentList[index];
+      this.isExpanded = false;
+    },
+
+    submitForm() {
+      const formData = new FormData();
+      formData.append("m_id", 1);
+      formData.append("b_content", this.text);
+
+      this.files.forEach((fileObj) => {
+        formData.append("mediaList", fileObj.file); // 실제 파일 객체를 사용
+      });
+      formData.append("b_sentiment", this.emotion);
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+      apiClient
+        .post("/post/add", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => {
+          console.log("success");
+          alert("전송이 완료되었습니다!");
+          this.$emit("update-parent-data");
+
+          // 전송 후에 데이터 초기화
+          this.text = "";
+          this.files = [];
+          this.emotion = "";
+          this.selectedEmoji = "happy";
+          this.closepostModal();
+        })
+        .catch((error) => {
+          console.log("formData" + formData);
+
+          console.log(error);
+        });
+    },
+
+    // 게시물 모델창 끄기
+    closepostModal() {
+      this.postMakeModal = false;
+      console.log("안녕 난 모달이야2");
+      console.log("this.postMakeModal =====", this.postMakeModal);
+    },
+    // 신고하기
+    postWrite() {
+      // 모달 열기 등의 동작 추가
+      console.log("안녕 난 모달이야");
+      this.postMakeModal = true;
+      console.log("this.postMakeModal >>>", this.postMakeModal);
+    },
+
     onSearchInputChange() {
       // 검색어 입력이 변경될 때마다 수행할 로직 추가
       console.log("검색어 입력 변경:", this.searchQuery);
@@ -382,21 +644,7 @@ export default {
 
     // 유저 정보
     getMemberInfo() {
-      const token = localStorage.getItem("jwtToken");
-      const decoded = jwtDecode(token);
-      this.memberId = decoded.m_id;
-      apiClient
-        .get(`/member/info/${this.memberId}`)
-        .then((info) => {
-          console.log("유저 정보를 불러옵니다");
-          this.userInfo = info.data;
-        })
-        .catch((err) => {
-          console.log(err, "유저 정보 못불러옴");
-        });
-    },
-    getPrfileImgUrl() {
-      return `http://localhost:8083/${this.userInfo.m_img_path}${this.userInfo.m_img_name}`;
+      this.userInfo = this.$store.state.userInfo;
     },
     toggleSidebar() {
       this.showSidebar = !this.showSidebar;
@@ -421,22 +669,12 @@ export default {
   computed: {
     isMyPage() {
       // 현재 경로가 / 이거나 /mypage로 시작할 때 true
-
       const mypage =
         this.$route.path.startsWith("/mypage") ||
         /^\/(\d+)$/.test(this.$route.path) ||
         this.$route.path === "/";
-
       return !mypage;
     },
-  },
-  created() {
-    this.getMemberInfo();
-    this.getPrfileImgUrl();
-  },
-  mounted() {
-    // Add a global click event listener to close the search bar when clicking outside
-    document.addEventListener("click", this.toggleSidebarOutside);
   },
 };
 </script>

@@ -1,5 +1,9 @@
 <template>
-  <div class="flex" @scroll="handleScroll" :class="childClass">
+  <div
+    class="flex border my-1 bg-white rounded-lg"
+    @scroll="handleScroll"
+    :class="childClass"
+  >
     <div class="flex-1">
       <div class="p-3 pb-0 border-b border-t-slate-300">
         <div class="postHerder flex flex-row">
@@ -13,6 +17,8 @@
                 )
               "
               alt="user icon"
+              width="50"
+              height="50"
             />
           </div>
           <div class="flex flex-row items-center mx-3">
@@ -110,11 +116,13 @@
                   </ul>
                 </div>
               </div>
-              <!-- <div @click.stop="preventClose"></div> -->
+              <div @click.stop="preventClose"></div>
             </div>
           </div>
         </div>
-        <div class="text-left ml-6 mt-3 mb-3">
+        <div
+          class="text-left ml-6 mt-3 mb-3 w-[260px] overflow-x-auto break-words"
+        >
           {{ comment.cm_content }}
         </div>
         <div class="flex flex-row ml-2">
@@ -194,7 +202,7 @@
           </div>
         </div>
         <div v-if="comment.reply_count > 0" class="flex flex-col ml-2">
-          <div v-if="showReplyList" class="flex-col bg-slate-100">
+          <div v-if="showReplyList" class="flex-col">
             <ReplyList
               v-for="re_id in replyList"
               :key="re_id"
@@ -220,10 +228,6 @@ export default {
     // Step 1: Props 정의
     cm_id: {
       type: Number,
-      required: true,
-    },
-    isDropdownOpen: {
-      type: Boolean,
       required: true,
     },
   },
@@ -429,6 +433,7 @@ export default {
         .get(`/jh_reply/getRe_idList?cm_id=${this.cm_id}`)
         .then((response) => {
           this.replyList = response.data;
+          this.$emit("updateReply");
         })
         .catch((error) => {
           console.error("Error fetching the board data:", error);
