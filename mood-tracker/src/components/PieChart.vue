@@ -119,20 +119,6 @@ export default {
     console.log("불러올 예측결과 아이디는 => ", ar_id);
 
     this.getSentiData(ar_id);
-
-    // let self = this; // formatter함수 내에서는 this 키워드가 Vue 인스턴스를 가리키지 않기 때문에 따로 변수에 저장하여 사용해야 한다.
-    // this.chartOptions.plugins.datalabels.formatter = function (value, ctx) {
-    //   if (value > 4) {
-    //     return ctx.chart.data.labels[ctx.dataIndex] + "\n" + value;
-    //   } else {
-    //     if (self.cnt < 1) {
-    //       // 4퍼센트 이하인 라벨은 첫번째만 표시
-    //       self.cnt = self.cnt + 1;
-    //       return ctx.chart.data.labels[ctx.dataIndex] + "\n" + value;
-    //     }
-    //     return "";
-    //   }
-    // };
   },
   mounted() {},
   methods: {
