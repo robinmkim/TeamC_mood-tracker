@@ -111,7 +111,7 @@ export default {
             window.localStorage.clear();
             window.localStorage.setItem("jwtToken", response.data.accessToken);
 
-            store.dispatch('initializeUserInfo').then(() => {
+            store.dispatch("initializeUserInfo").then(() => {
               sendLoginEvent(); //로그인 됬다고 header에 EventBus 전송
 
               router.push("/");
