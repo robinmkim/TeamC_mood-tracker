@@ -112,7 +112,7 @@
 import { jwtDecode } from "jwt-decode";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-import { EventBus } from "@/utils/EventBus.js";
+import { EventBus } from "./../utils/EventBus.js";
 import { watch, ref } from "vue";
 import { useStore } from "vuex";
 import apiClient from "@/utils/apiClient.js";
@@ -133,26 +133,36 @@ export default {
     const store = useStore(); // vuex store 가져오기
     const route = useRoute(); // route.path로 보고있는 페이지 경로 가져오기
     //
-    watch(EventBus.myLoginEvent, (newValue) => {
-      if (newValue) {
-        receivedMessage.value = newValue.message;
-        // Login.vue로부터 (로그인성공)이벤트버스를 전달받으면 Header에서 웹소켓 연결합니다.
-        if (newValue.message == "login") {
-          console.log(">>>>>> RECEIVED EVENTBUS ==> ", newValue.message);
-          console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIng");
-          connect(); // 알림용 웹소켓 연결
-          getUnreadNotice(); // 안 읽은 알림의 개수를 가져오고 알림아이콘을 표시한다.
-        } else {
-          console.log(
-            ">>>>>> HEADER :: UNIDENTIFIED MESSAGE => ",
-            newValue.message
-          );
+    watch(
+      () => EventBus.myLoginEvent,
+      (newValue) => {
+        if (newValue) {
+          receivedMessage.value = newValue.message;
+          // Login.vue로부터 (로그인성공)이벤트버스를 전달받으면 Header에서 웹소켓 연결합니다.
+          if (newValue.message == "login") {
+            console.log(">>>>>> HEADER :: LOGIN EVENTBUS !!");
+            console.log(
+              ">>>>>> HEADER :: RECEIVED EVENTBUS ==> ",
+              newValue.message
+            );
+            console.log(">>>>>> HEADER :: WEBSOCKET CONNECTIng");
+            connect(); // 알림용 웹소켓 연결
+            getUnreadNotice(); // 안 읽은 알림의 개수를 가져오고 알림아이콘을 표시한다.
+          } else {
+            console.log(
+              ">>>>>> HEADER :: UNIDENTIFIED MESSAGE => ",
+              newValue.message
+            );
+          }
         }
       }
-    });
-    watch(EventBus.myChatEvent, (newValue) => {
-      console.log("ch.채팅 => ", newValue.message);
-    });
+    );
+    watch(
+      () => EventBus.myChatEvent,
+      (newValue) => {
+        console.log("ch.채팅 => ", newValue.message);
+      }
+    );
 
     function getUnreadNotice() {
       // 안 읽은 알림 개수를 체크해서 알림아이콘을 표시
