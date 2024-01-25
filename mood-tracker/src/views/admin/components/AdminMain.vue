@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <div class="w-5/6" ref="postScrollContainer">
+    <div class="w-10/12" ref="postScrollContainer">
       <div class="">
         <div class="flex h-28">
           <div class="relative flex"></div>

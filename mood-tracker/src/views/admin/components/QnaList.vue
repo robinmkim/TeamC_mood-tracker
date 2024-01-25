@@ -73,11 +73,12 @@
                   >
                     <textarea
                       class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
-                      :value="'질문의 답변을 입력해 주세요' + (newIndex + 1)"
+                      v-model="AnswerList.A_CONTENT"
+                      placeholder="질문의 답변을 입력해 주세요"
                     ></textarea>
                     <div
                       class="rounded-full bg-slate-200 h-7 w-20 flex justify-center items-center mt-2 text-sm"
-                      @click="answeringMethod(newIndex)"
+                      @click="answerInsert(Q_ID)"
                     >
                       답변하기
                     </div>
@@ -179,6 +180,7 @@ export default {
       answeringShow: false,
       // 아코디언의 열림/닫힘 상태를 저장하는 배열 추가
       QnaList: {}, // 배열로 초기화
+      AnswerList: {},
       requestBody: {}, //리스트 페이지 데이터전송
       q_id: "", //게시판 숫자처리
       paging: {
@@ -257,6 +259,27 @@ export default {
           }
         });
     },
+    getAnswerDetail(Q_ID) {
+      apiClient
+        .get(`cteam/admin/answer/detail/${Q_ID}`, {
+          params: this.requestBody,
+          headers: {},
+        })
+        .then((res) => {
+          if (res.data.result_code === "OK") {
+            this.AnswerList = res.data.data;
+
+            console.log("AnswerList : ", this.AnswerList);
+          }
+        })
+        .catch((err) => {
+          if (err.message.indexOf("Network Error") > -1) {
+            alert("네트워크에 문제가 있습니다.\n잠시 후 다시 시도해주세요.");
+          } else {
+            console.error("데이터를 가져오는 중 오류 발생:", err);
+          }
+        });
+    },
 
     // deleteQna(aid) {
     //   // 삭제할 데이터
@@ -304,6 +327,23 @@ export default {
     },
     answeringMethod() {
       this.answeringShow = true;
+    },
+    async answerInsert() {
+      console.log("답변 등록");
+      const apiUrl = "/cteam/admin/insert"; // 기본적으로 baseURL이 적용됩니다.
+      const requestData = {
+        a_qid: this.a_qid,
+        a_content: this.a_Content,
+      };
+
+      try {
+        const response = await apiClient.post(apiUrl, requestData);
+        console.log(response.data);
+        alert("답변 등록 성공");
+        this.insertOpenSuccessPopup();
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 };

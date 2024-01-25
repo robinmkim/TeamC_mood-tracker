@@ -1,4 +1,4 @@
-<!-- QnaList.vue -->
+<!-- ReportComments.vue -->
 <template>
   <div>
     <div class="border-b-2 flex h-10">
@@ -9,53 +9,59 @@
       <div class="flex w-2/12 items-center justify-center">처리</div>
     </div>
     <ul class="accordion-item">
-      <li v-for="(item, index) in Useritems" :key="index">
+      <li v-for="(item, newIndex) in CommentsList" :key="newIndex">
         <ul>
           <li
             class="accordion-title border-b flex h-8 hover:bg-slate-100"
-            @click="toggleAccordion(index)"
+            :class="{ 'bg-slate-50': isAccordionOpen(newIndex) }"
+            @click="handleAccordionClick(newIndex, item.bc_id)"
           >
             <div
               class="flex w-1/12 items-center justify-center text-sm text-slate-500 border-b-1"
             >
-              {{ item.number }}
+              {{ item.report_id }}
             </div>
             <div
               class="flex w-5/12 items-center text-sm text-slate-500 border-b-1"
             >
-              {{ item.content }}
+              {{ item.report_type }}
             </div>
             <div
               class="flex w-2/12 items-center justify-center text-sm text-slate-500 border-b-1"
             >
-              {{ item.user }}
+              {{ item.report_bid }}
             </div>
             <div
               class="flex w-2/12 items-center justify-center text-sm text-slate-500 border-b-1"
             >
-              {{ item.date }}
+              {{ formatRegDate(item.regdate) }}
             </div>
             <div
               class="flex w-2/12 items-center justify-center text-sm text-slate-500 pr-1 border-b-1"
             >
               <div
                 class="rounded-full mr-1 bg-slate-200 h-7 w-20 flex justify-center items-center"
+                @click="reportCmtDelete(item.bc_id)"
               >
                 삭제
-              </div>
-              <div
-                class="rounded-full bg-red-600 h-7 w-20 flex justify-center items-center text-white"
-              >
-                정지
               </div>
             </div>
           </li>
           <li>
             <div
-              v-show="isAccordionOpen && currentAccordionIndex === index"
+              v-show="isAccordionOpen && currentAccordionIndex === newIndex"
               class="accordion-content bg-red-50 flex"
             >
-              <MypageMain></MypageMain>
+              <div
+                v-show="!updateShow"
+                class="read flex border-b text-sm p-2 pt-0 flex-col w-full text-left font-semibold"
+              >
+                <div v-for="(boardItem, index) in boardData" :key="index">
+                  <div v-if="item.bc_id === boardItem.b_id">
+                    {{ boardItem.cm_content || "No content available" }}
+                  </div>
+                </div>
+              </div>
             </div>
           </li>
         </ul>
@@ -64,7 +70,6 @@
   </div>
 </template>
 <script>
-import MypageMain from "@/views/mypage/MypageMain.vue";
 import apiClient from "@/utils/apiClient";
 
 export default {
@@ -77,29 +82,9 @@ export default {
       answeringShow: false,
       // 아코디언의 열림/닫힘 상태를 저장하는 배열 추가
       // 리스트 준비되면 Postitems -> ReportList변경하기
-      Useritems: [
-        {
-          number: 1,
-          content: "타인의 생명을 위협하는 내용의 게시물1",
-          user: "user041",
-          date: "2023.12.17",
-        },
-        {
-          number: 2,
-          content: "욕설 및 비방 글1",
-          user: "user071",
-          date: "2023.12.18",
-        },
-        {
-          number: 3,
-          content: "도배 및 홍보 게시물1",
-          user: "user121",
-          date: "2023.12.19",
-        },
-      ],
-
-      idx: null,
-      ReportList: [],
+      CommentsList: [],
+      boardData: [],
+      // 페이징,검색
       requestBody: {}, //리스트 페이지 데이터전송
       q_id: "", //게시판 숫자처리
       paging: {
@@ -128,32 +113,56 @@ export default {
         for (let i = start_page; i <= end_page; i++) pageNumber.push(i);
         return pageNumber;
       },
-      editedTitle: "",
-      editedContent: "",
     };
   },
-  components: {
-    MypageMain,
-  },
+
   //추가
   mounted() {
     // this.faqPage();
-    this.repoertGetList();
+    this.repoertCmtGetList();
   },
 
   methods: {
-    goToDetailPage(item) {
-      // 신고자인지, 신고게시물인지 확인하고수정하기
-      this.$router.push(`/PostDetail/${item.report_id}`);
-    },
-    repoertGetList() {
+    // goToDetailPage(item) {
+    //   // 신고자인지, 신고게시물인지 확인하고수정하기
+    //   this.$router.push(`/PostDetail/${item.report_id}`);
+    // },
+    reportCmtGetDetail(b_c_id) {
+      console.log("b_c_id :", b_c_id);
       apiClient
-        .get("/report/list", {
+        .get(`cteam/admin/reports/comments/detail/${b_c_id}`)
+        .then((res) => {
+          const responseData = res.data;
+
+          if (Array.isArray(responseData) && responseData.length > 0) {
+            this.boardData = responseData.map((item) => {
+              const [b_id, cm_content] = item;
+              return {
+                b_id,
+                cm_content,
+              };
+            });
+            console.log("board 응답 데이터: ", this.boardData);
+          } else {
+            console.error(
+              "Received data has unexpected structure:",
+              responseData
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching detail:", error);
+        });
+    },
+
+    repoertCmtGetList() {
+      apiClient
+        .get("cteam/admin/reports/comments/list", {
           headers: {},
         })
         .then((res) => {
-          this.ReportList = res.data;
-          console.log("list 응답 데이터: ", this.ReportList);
+          this.CommentsList = res.data;
+          console.log("commentList 응답 데이터: ", this.CommentsList);
         })
         .catch((err) => {
           if (err.message.indexOf("Network Error") > -1) {
@@ -164,54 +173,13 @@ export default {
         });
     },
 
-    // // 검색 함수 추가
-    // faqPage(n) {
-    //   if (this.page !== n) {
-    //     this.page = n - 1;
-    //   }
-    //   this.faqGetList();
-    // },
-    // repoertGetList() {
-    //   this.requestBody = {
-    //     // 데이터 전송
-    //     sk: this.search_key,
-    //     sv: this.search_value,
-    //     page: this.page,
-    //     size: this.size,
-    //   };
-    //   apiClient
-    //     .get("/admin/list", {
-    //       params: this.requestBody,
-    //       headers: {},
-    //     })
-    //     .then((res) => {
-    //       if (res.data.result_code === "OK") {
-    //         this.ReportList = res.data.data;
-    //         this.paging = res.data.pagination;
-    //         this.q_id =
-    //           this.paging.total_list_cnt -
-    //           (this.paging.page - 1) * this.paging.page_size;
-    //         console.log("list : ", this.ReportList);
-    //         console.log("paging : ", this.paging);
-    //         console.log("q_id : ", this.q_id);
-    //       }
-    //     })
-    //     .catch((err) => {
-    //       if (err.message.indexOf("Network Error") > -1) {
-    //         alert("네트워크에 문제가 있습니다.\n잠시 후 다시 시도해주세요.");
-    //       } else {
-    //         console.error("데이터를 가져오는 중 오류 발생:", err);
-    //       }
-    //     });
-    // },
-
-    reportDelete(qid) {
+    reportCmtDelete(b_c_id) {
       // 삭제할 데이터
       apiClient
-        .delete(`/cteam/admin/deleteFaq/${qid}`)
+        .delete(`cteam/admin/reports/comments/delete/${b_c_id}`)
         .then((response) => {
           console.log("데이터 삭제 성공", response);
-          alert("FAQ 삭제성공");
+          alert("신고 댓글 삭제성공");
           this.successPopup();
         })
         .catch((error) => {
@@ -249,10 +217,12 @@ export default {
       console.log(`기존 아코디언-->: ${this.currentAccordionIndex}`);
       console.log(`지금 열린 아코디언: ${this.currentOpenedAccordionIndex}`);
     },
+    handleAccordionClick(index, bc_id) {
+      // 클릭시 상세 호출
+      this.reportCmtGetDetail(bc_id);
 
-    // answeringMethod() {
-    //   this.answeringShow = true;
-    // },
+      this.toggleAccordion(index);
+    },
   },
 };
 </script>

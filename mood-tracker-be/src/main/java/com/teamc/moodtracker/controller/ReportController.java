@@ -31,33 +31,6 @@ public class ReportController {
     @Autowired
     JwtTokenProvider jwtTokenProvider;
 
-
-    // 신고 게시글
-    @GetMapping("/list")
-    public List<ReportDto> reportList() {
-        System.out.println("들어왔니?" + service.reportList());
-        return service.reportList();
-    }
-
-    // 신고 게시글에 있는 게시물
-    @GetMapping("/get/{report_id}")
-    public ReportDto reportDetail(@PathVariable int report_id) {
-        return service.reportDetail(report_id);
-    }
-
-    // 신고 댓글
-    @GetMapping("/comment/list")
-    public List<ReportDto> reportCommentList() {
-        System.out.println("댓글 목록 호출");
-        return service.reportCommentList();
-    }
-
-    // 신고 댓글에 있는 댓글
-    @GetMapping("/comment/get/{comment_id}")
-    public ReportDto reportCommentDetail(@PathVariable int comment_id) {
-        return service.reportCommentDetail(comment_id);
-    }
-
     @PostMapping("/add")
     public int addReport(
             @AuthenticationPrincipal MemberDto memberDto,

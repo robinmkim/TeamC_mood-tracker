@@ -25,7 +25,7 @@
         </div>
       </nav>
     </div>
-    <div class="flex-1 border-x">
+    <div class="flex-1 border-200">
       <div class="">
         <div
           v-for="(tab, index) in tabs"
@@ -34,44 +34,8 @@
           v-show="currentTab === index"
           role="tabpanel"
         >
-          <!-- Main Tab -->
-          <div v-if="currentTab === 0">
-            <AdminMain></AdminMain>
-          </div>
-          <!-- QnA 게시판 Tab -->
-          <div v-if="currentTab === 1">
-            <div class="border m-10">
-              <nav class="flex" role="tablist">
-                <div
-                  v-for="(adminQnATab, adminQnATabIndex) in adminQnATabs"
-                  :key="adminQnATabIndex"
-                  class="text-base h-10 flex-1 flex justify-center items-center border-b-4 py-1.5"
-                  :class="{
-                    'border-[#64CCC5]': currentSubTab === adminQnATabIndex,
-                    'hover:border-[#e0e0e0] border-transparent':
-                      currentSubTab !== adminQnATabIndex,
-                  }"
-                  @click="changeSubTab(adminQnATabIndex)"
-                  role="tab"
-                >
-                  <div class="notiTabName text-left">
-                    {{ adminQnATab.name }}
-                  </div>
-                </div>
-              </nav>
-              <!-- FAQ 게시판 subTab -->
-              <div v-if="currentSubTab === 0">
-                <FaqList></FaqList>
-              </div>
-              <!-- QNA 게시판 상세 subTab -->
-              <div v-else-if="currentSubTab === 1">
-                <QnaList></QnaList>
-              </div>
-            </div>
-          </div>
-
           <!-- 신고게시판 tab -->
-          <div v-if="currentTab === 2">
+          <div v-if="currentTab === 0">
             <div class="border m-10">
               <nav class="flex" role="tablist">
                 <div
@@ -104,6 +68,37 @@
               </div>
             </div>
           </div>
+          <!-- QnA 게시판 Tab -->
+          <div v-if="currentTab === 1">
+            <div class="border m-10">
+              <nav class="flex" role="tablist">
+                <div
+                  v-for="(adminQnATab, adminQnATabIndex) in adminQnATabs"
+                  :key="adminQnATabIndex"
+                  class="text-base h-10 flex-1 flex justify-center items-center border-b-4 py-1.5"
+                  :class="{
+                    'border-[#64CCC5]': currentSubTab === adminQnATabIndex,
+                    'hover:border-[#e0e0e0] border-transparent':
+                      currentSubTab !== adminQnATabIndex,
+                  }"
+                  @click="changeSubTab(adminQnATabIndex)"
+                  role="tab"
+                >
+                  <div class="notiTabName text-left">
+                    {{ adminQnATab.name }}
+                  </div>
+                </div>
+              </nav>
+              <!-- FAQ 게시판 subTab -->
+              <div v-if="currentSubTab === 0">
+                <FaqList></FaqList>
+              </div>
+              <!-- QNA 게시판 상세 subTab -->
+              <div v-else-if="currentSubTab === 1">
+                <QnaList></QnaList>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -115,7 +110,7 @@ import ReportList from "@/views/admin/components/ReportList.vue";
 import ReportComments from "@/views/admin/components/ReportComments.vue";
 import FaqList from "@/views/admin/components/FaqList.vue";
 import QnaList from "@/views/admin/components/QnaList.vue";
-import AdminMain from "@/views/admin/components/AdminMain.vue";
+
 // import Editor from "@toast-ui/editor";
 // import "@toast-ui/editor/dist/toastui-editor.css";
 
@@ -131,9 +126,8 @@ export default {
       answeringShow: false,
       // 아코디언의 열림/닫힘 상태를 저장하는 배열 추가
       tabs: [
-        { name: "홈", id: "adminMain" },
-        { name: "QnA게시판", id: "adminQnA" },
         { name: "신고게시판", id: "adminComplaint" },
+        { name: "QnA게시판", id: "adminQnA" },
       ],
       adminComplaintTabs: [
         { name: "게시글", id: "adminComplaintPost" },
@@ -149,7 +143,7 @@ export default {
   components: {
     FaqList,
     QnaList,
-    AdminMain,
+
     ReportList,
     ReportComments,
   },
