@@ -1,7 +1,7 @@
 <template lang="">
   <div>
     <div
-      style="overflow: scroll  width: 100%; height: 500px; padding: 10px;"
+      style="overflow: scroll  width: 100%; height: 650px; padding: 10px;"
       class="flex-1 border-x overflow-auto h-full"
       ref="postScroll"
       @scroll="handlePostScroll"
