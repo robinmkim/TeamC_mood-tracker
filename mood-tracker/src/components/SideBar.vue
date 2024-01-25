@@ -164,21 +164,12 @@
         </div>
         <router-link to="/">
           <div class="text-center mt-2 mb-6">
-            <<<<<<< HEAD
             <h2 class="text-lg font-bold">
               {{ this.$store.state.userInfo.m_name }}
             </h2>
             <p class="text-slate-500">
               {{ this.$store.state.userInfo.m_handle }}
             </p>
-            =======
-            <h2 class="text-lg font-bold">
-              {{ this.$store.state.userInfo.m_name }}
-            </h2>
-            <p class="text-slate-500">
-              {{ this.$store.state.userInfo.m_handle }}
-            </p>
-            >>>>>>> 2cb815c (⚡️현재 로그인 정보 vuex로 관리하도록 변경)
           </div>
         </router-link>
       </div>
