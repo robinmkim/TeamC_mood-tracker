@@ -18,4 +18,6 @@ public interface FollowDao {
     public void deleteFollow(FollowRequestDto followRequestDto);
 
     public FollowCount getFollowCnt(int memberId);
+
+    public int checkFollow(FollowRequestDto followRequestDTO);
 }

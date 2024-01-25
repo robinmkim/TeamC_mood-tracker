@@ -23,6 +23,7 @@ import ErrorPage from "@/views/error/ErrorPage";
 import chatbotRouter from "./routers/chatbotRouter";
 import Introduction from "@/views/introduction/IntroductionPage.vue";
 
+
 const routes = [
   {
     path: "/",

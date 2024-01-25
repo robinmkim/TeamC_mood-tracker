@@ -75,6 +75,9 @@ export default {
         legend: {
           display: false,
         },
+        datalabels: {
+          display: false,
+        },
       },
     },
   }),

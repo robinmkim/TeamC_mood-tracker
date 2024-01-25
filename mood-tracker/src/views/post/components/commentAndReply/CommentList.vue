@@ -8,18 +8,20 @@
       <div class="p-3 pb-0 border-b border-t-slate-300">
         <div class="postHerder flex flex-row">
           <div class="h-14 w-14 overflow-hidden relative rounded-full">
-            <img
-              class="postDetailUserImg object-contain rounded-full"
-              :src="
-                getUserImageUrl(
-                  comment.member.m_img_path,
-                  comment.member.m_img_name
-                )
-              "
-              alt="user icon"
-              width="50"
-              height="50"
-            />
+            <router-link :to="`${comment.member.m_id}`">
+              <img
+                class="postDetailUserImg object-contain rounded-full"
+                :src="
+                  getUserImageUrl(
+                    comment.member.m_img_path,
+                    comment.member.m_img_name
+                  )
+                "
+                alt="user icon"
+                width="50"
+                height="50"
+              />
+            </router-link>
           </div>
           <div class="flex flex-row items-center mx-3">
             <div class="notiUserName font-bold text-lg">

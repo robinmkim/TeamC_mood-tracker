@@ -32,7 +32,7 @@ public class CommentController {
 
     @Autowired
     private ReplyService replyService;
-//    private NotificationService notificationService; // 윤영호
+    // private NotificationService notificationService; // 윤영호
 
     @GetMapping("/allCommentCount")
     public int allCommentCount(@RequestParam(value = "b_id") int b_id) {
@@ -52,7 +52,11 @@ public class CommentController {
     @GetMapping("/getCommentListDetail")
     public List<CommentDto> getCommentListDetail(@AuthenticationPrincipal MemberDto memberDto,
             @RequestParam("b_id") int b_id) {
+        System.out.println("getCommentListDetail");
+        System.out.println("b_id::::::::::::::::" + b_id);
+
         List<CommentDto> comments = commentService.getCommentListDetail(b_id);
+
         CommentLikeDto dto = new CommentLikeDto();
         dto.setM_id(memberDto.getM_id());
         boolean isMyLike = false;

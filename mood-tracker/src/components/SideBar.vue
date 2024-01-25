@@ -7,7 +7,7 @@
           'translate-x-0': showSidebar,
           '-translate-x-full': !showSidebar,
         }"
-        class="real-sidebar rounded-br-lg rounded-tr-lg bg-gradient-to-b from-[#4bc9c0] to-white text-white transition-transform duration-300 z-20 fixed top-0 left-0 w-[400px] h-full overflow-y-auto shadow-2xl"
+        class="real-sidebar rounded-br-lg rounded-tr-lg bg-gradient-to-b from-[#fdfcf5] to-white text-black transition-transform duration-300 z-20 fixed top-0 left-0 w-[400px] h-full overflow-y-auto shadow-2xl"
       >
         <div class="h-10"></div>
         <!-- 검색 창 -->
@@ -18,18 +18,18 @@
             @keyup.space="onSearchInputChange"
             type="text"
             placeholder="검색"
-            class="w-full border-b border-white text-sm focus:outline-none text-white bg-transparent"
+            class="w-full border-b border-black text-sm focus:outline-none text-black bg-transparent"
           />
           <button
             @click="fetchData()"
-            class="text-white rounded-full hover:bg-blue-600 focus:outline-none"
+            class="text-blackrounded-full hover:scale-110 focus:outline-none duration-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               stroke-width="2.5"
-              stroke="currentColor"
+              stroke="black"
               class="w-6 h-6"
             >
               <path
@@ -42,35 +42,42 @@
         </div>
         <div class="border-b border-gray-500 h-3 w-full"></div>
 
-        <div v-if="searchResults.length >= 1">
-          -------------------유저 이름--------------------
+        <div
+          class="mt-2 pt-1 pb-1 bg-[#FFF2E2]"
+          v-if="searchResults.length >= 1"
+        >
+          유저
         </div>
 
         <!-- 유저의 정보가 검색되는 부분 -->
-        <div class="mt-3">
+        <div class="">
           <div
             v-for="(bean, index) in searchResults.slice(0, 2)"
             :key="index"
             :id="bean.n_id"
           >
             <!-- 인물 들어갈 자리  -->
+
             <div
-              class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200 hover:bg-[#dad9d9] focus:outline-none rounded-md"
+              class="notiItem followNoti flex justify-start p-4 border-b border-gray-200 hover:bg-[#fff7ee] focus:outline-none rounded-md"
             >
               <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
-                <img
-                  class="object-contain rounded-full"
-                  :src="bean.m_img_name"
-                  alt="프로필 이미지"
-                />
+                <router-link :to="`${bean.m_id}`">
+                  <img
+                    class="object-contain rounded-full"
+                    :src="bean.m_img_name"
+                    alt="프로필 이미지"
+                  />
+                </router-link>
               </div>
               <div class="notiItemContent flex-1 flex h-14">
                 <div
                   class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
                 >
-                  <span class="notiItemContentTime font-bold text-lg">{{
-                    bean.m_name
-                  }}</span>
+                  <span
+                    class="notiItemContentTime font-bold text-lg text-black"
+                    >{{ bean.m_name }}</span
+                  >
                   <div
                     class="notiItemContentMain w-auto flex items-center cursor-pointer"
                   >
@@ -92,22 +99,25 @@
           v-if="searchResults.length > 2"
           @click="showAll = !showAll"
           style="cursor: pointer"
-          class="mb-10 mt-5"
+          class="mb-10 pt-1 pb-1 bg-[#fff9f1]"
         >
           <router-link
             :to="{
               path: '/search',
               query: { searchQuery: searchQuery, searchType: 'userSearch' },
             }"
-            class="text-lg text-stone-900"
+            class="text-stone-900"
             @click="toggleSidebar()"
             >모두보기</router-link
           >
         </div>
 
         <!-- 유저의 정보가 검색되는 부분 끝 -->
-        <div v-if="searchResultsBoard.length >= 1">
-          -------------------게시글 내용-------------------
+        <div
+          class="mb-2 mt-2 pt-1 pb-1 bg-[#FFF2E2]"
+          v-if="searchResultsBoard.length >= 1"
+        >
+          게시글
         </div>
 
         <!-- 게시글이 나오는 페이지 -->
@@ -118,6 +128,7 @@
         >
           <div v-if="index == 1">
             <PostList
+              class="text-black hover:bg-[#fff7ee]"
               v-for="bId in searchResultsBoard.slice(0, 5)"
               :key="bId"
               :b_id="bId"
@@ -127,7 +138,7 @@
               v-if="searchResultsBoard.length > 5"
               @click="showAll = !showAll"
               style="cursor: pointer"
-              class="mb-10 mt-5"
+              class="pt-1 pb-1 bg-[#fff9f1]"
             >
               <router-link
                 :to="{
@@ -136,7 +147,7 @@
                 }"
                 class="text-lg text-stone-900"
                 @click="toggleSidebar()"
-                >모두보기</router-link
+                ><div class="">모두보기</div></router-link
               >
             </div>
           </div>
@@ -164,8 +175,8 @@
         </div>
         <router-link to="/">
           <div class="text-center mt-2 mb-6">
-            <h2 class="text-lg font-bold">{{ this.$store.state.userInfo.m_name }}</h2>
-            <p class="text-slate-500">{{ this.$store.state.userInfo.m_handle }}</p>
+            <h2 class="text-lg font-bold">{{ this.userInfo.m_name }}</h2>
+            <p class="text-slate-500">{{ this.userInfo.m_handle }}</p>
           </div>
         </router-link>
       </div>
@@ -485,12 +496,6 @@ export default {
   created() {
     this.getMemberInfo();
   },
-  watch: {
-    userInfo: {
-      handler: 'updateProfileImageUrl',
-      deep: true,
-    },
-  },
   mounted() {
     // 게시글 추가
     // 회원이름(m_handle)을 가져옵니다.
@@ -498,15 +503,12 @@ export default {
       this.memberHandle = res.data;
     });
 
-    // 추가 끝
-
-    // Add a global click event listener to close the search bar when clicking outside
     document.addEventListener("click", this.toggleSidebarOutside);
   },
+  watch: {
+    $route: "refreshComponent",
+  },
   methods: {
-    updateProfileImageUrl() {
-      this.profileImageUrl = `http://localhost:8083/${this.$store.state.userInfo.m_img_path}${this.$store.state.userInfo.m_img_name}`
-    },
     adjustHeight(e) {
       // textarea높이 자동 조절
       const element = e.target;
@@ -644,7 +646,8 @@ export default {
 
     // 유저 정보
     getMemberInfo() {
-      this.userInfo = this.$store.state.userInfo;
+      this.userInfo = JSON.parse(this.$store.state.userInfo);
+      this.profileImageUrl = `http://localhost:8083/images/${this.userInfo.m_img_name}`;
     },
     toggleSidebar() {
       this.showSidebar = !this.showSidebar;

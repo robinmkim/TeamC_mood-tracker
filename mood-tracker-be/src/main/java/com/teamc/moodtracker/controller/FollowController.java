@@ -32,7 +32,6 @@ public class FollowController {
     public ResponseEntity<String> makeFollow(@AuthenticationPrincipal MemberDto memberDto, @RequestBody Map<String, Integer> followedInfo) {
         int followerId = memberDto.getM_id();
         int followedId  = followedInfo.get("followedId");
-        System.out.println("followerId: " + followerId + " followedId: " + followedId                           );
         if (followerId == followedId) {
             return ResponseEntity.badRequest().body("자기 자신을 팔로우할 수 없습니다.");
         }
@@ -42,9 +41,7 @@ public class FollowController {
                 .build();
         try {
             followService.makeFollow(followRequestDTO);
-
             notificationService.makeFollow_SaveNotificationAndSendAlert(followRequestDTO);//알림 전송
-
             return ResponseEntity.ok("Follow Success");
         } catch (DuplicateKeyException e) {
             followService.deleteFollow(followRequestDTO);
@@ -62,5 +59,17 @@ public class FollowController {
     @GetMapping("/followcnt/{memberId}")
     public ResponseEntity<FollowCount> getFollowCnt(@PathVariable("memberId") int memberId) {
         return ResponseEntity.ok(followService.getFollowCnt(memberId));
+    }
+
+    @GetMapping("/check/{memberId}")
+    public ResponseEntity<String> checkFollow(@AuthenticationPrincipal MemberDto memberDto,
+                                              @PathVariable("memberId") int followedId){
+        System.out.println("followedId: " + followedId);
+        int followerId = memberDto.getM_id();
+        FollowRequestDto followRequestDTO = FollowRequestDto.builder()
+                .followerId(followerId)
+                .followedId(followedId)
+                .build();
+        return ResponseEntity.ok(followService.checkFollow(followRequestDTO));
     }
 }
