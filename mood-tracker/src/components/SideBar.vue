@@ -425,7 +425,7 @@
           <button class="ml-2">검색</button>
         </div>
       </div>
-      <router-link to="/admin" class="text-lg">
+      <router-link to="/question" class="text-lg">
         <div class="flex px-2 hover:bg-[#C9BCE8]/50 rounded-lg">
           <svg
             xmlns="http://www.w3.org/2000/svg"
