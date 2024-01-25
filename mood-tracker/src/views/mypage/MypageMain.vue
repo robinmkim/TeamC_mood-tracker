@@ -3,11 +3,14 @@
     <!-- 본문 -->
     <div class="border-x md:w-[800px] sm:w-[300px]" ref="postScrollContainer">
       <div class="">
-        <div class="w-full h-20 bg-slate-200"></div>
+        <div
+          class="w-full h-20"
+          :style="{ backgroundColor: backgroundColor }"
+        ></div>
         <div class="flex h-32">
           <div class="relative flex">
             <div
-              class="border-4 absolute top-[-40px] left-8 flex border-white bg-gray-300 w-32 h-32 rounded-full overflow-hidden"
+              class="border-4 absolute top-[-40px] left-8 flex border-white w-32 h-32 rounded-full overflow-hidden"
             >
               <img :src="getPrfileImgUrl()" alt="profile_img" />
             </div>
@@ -26,9 +29,8 @@
               </div>
               <div class="flex items-center w-full">
                 <span class="text-lg mr-3"> 팔로워 {{ followerCnt }} </span>
-                <span class="text-lg"> 팔로잉 {{ followingCnt }} </span>
+                <span class="text-lg"> 팔로잉 {{ followingCnt }}</span>
                 <span v-if="isVisible">
-
                   <button
                     @click="follow"
                     class="m-2 h-[30px] w-[80px] rounded-lg bg-blue-500 hover:bg-blue-700 items-center justify-center text-white font-bold"
@@ -90,7 +92,11 @@
               v-show="currentTab === index"
               role="tabpanel"
             >
-              <MyMood v-if="tab.id === 'mood'" :m_id="m_id" />
+              <MyMood
+                v-if="tab.id === 'mood'"
+                :m_id="m_id"
+                @handleMainSenti="handleMainSenti"
+              />
               <!--내 게시글 목록-->
               <MyPost v-else-if="tab.id === 'post'" :m_id="m_id" />
               <!--달력-->
@@ -147,6 +153,8 @@ export default {
       isVisible: false,
       followed: false,
       m_id: null,
+      mainSenti: "",
+      backgroundColor: "",
     };
   },
 
@@ -271,7 +279,32 @@ export default {
             console.log(err, "팔로우 체크 실패");
           });
       }
-    }
+    },
+    handleMainSenti(senti) {
+      this.mainSenti = senti;
+      console.log("마이무드에서 넘어온", senti, "그걸 담은", this.mainSenti);
+      this.backgroundColor = this.getBackgroundColor(this.mainSenti);
+    },
+    getBackgroundColor(mainSenti) {
+      switch (mainSenti) {
+        case "angry":
+          return "#F67D73";
+        case "happy":
+          return "#FFDDE4";
+        case "surprise":
+          return "#FFE778";
+        case "neutral":
+          return "#D9F3C1";
+        case "hurt":
+          return "#597F61";
+        case "sad":
+          return "#A4BED3";
+        case "anxiety":
+          return "#C9BCE8";
+        default:
+          return ""; // 기본값 설정
+      }
+    },
   },
   created() {
     this.getMemberInfo();

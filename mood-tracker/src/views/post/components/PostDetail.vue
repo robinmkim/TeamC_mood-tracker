@@ -19,7 +19,7 @@
             :src="getUserImageUrl()"
             alt="user icon"
             style="aspect-ratio: 100/100; object-fit: cover"
-        />
+          />
         </router-link>
         <!-- src="../../assets/notiProfileImage01.jpg" -->
       </div>
@@ -163,13 +163,13 @@
       <div class="text-left text-base font-normal flex mb-3">
         <div v-if="!showMoreText">
           {{ shotText }}
-          <span v-if="showMoreText">
+          <span v-if="shotText.length >= 20">
             ...<button @click="expandText" class="text-[#b3b3b3]">
               더보기
             </button>
           </span>
         </div>
-        <div v-else class="whitespace-pre">
+        <div v-else class="whitespace-pre-wrap">
           {{ board.b_content }}
         </div>
       </div>

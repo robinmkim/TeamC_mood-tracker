@@ -65,8 +65,7 @@
                 <router-link :to="`${bean.m_id}`">
                   <img
                     class="object-contain rounded-full"
-                    :src="bean.m_img_name"
-                    alt="프로필 이미지"
+                    :src="`http://localhost:8083/images/${bean.m_img_name}`"
                   />
                 </router-link>
               </div>
