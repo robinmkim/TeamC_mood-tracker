@@ -13,12 +13,14 @@
     <!-- 게시글 헤더 영역 -->
     <div class="postHerder flex flex-row mb-3">
       <div class="h-[45px] w-[45px] overflow-hidden relative rounded-full">
-        <img
-          class="postDetailUserImg object-contain rounded-full"
-          :src="getUserImageUrl()"
-          alt="user icon"
-          style="aspect-ratio: 100/100; object-fit: cover"
+        <router-link :to="`/${board.m_id}`">
+          <img
+            class="postDetailUserImg object-contain rounded-full"
+            :src="getUserImageUrl()"
+            alt="user icon"
+            style="aspect-ratio: 100/100; object-fit: cover"
         />
+        </router-link>
         <!-- src="../../assets/notiProfileImage01.jpg" -->
       </div>
       <div class="flex flex-row items-center mx-3">
