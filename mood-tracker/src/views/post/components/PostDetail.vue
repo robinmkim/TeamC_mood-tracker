@@ -467,7 +467,7 @@ export default {
       const userConfirmed = confirm("게시물을 삭제하시겠습니까?");
       if (userConfirmed) {
         apiClient
-          .get(`/jh_post/delPost?b_id=${this.b_id}`)
+          .get(`/post/delPost?b_id=${this.b_id}`)
           .then(() => {
             this.$router.push("/timeline");
           })

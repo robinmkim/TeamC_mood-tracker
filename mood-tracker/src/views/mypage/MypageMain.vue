@@ -10,7 +10,7 @@
         <div class="flex h-32">
           <div class="relative flex">
             <div
-              class="border-4 absolute top-[-40px] left-8 flex border-white w-32 h-32 rounded-full overflow-hidden"
+              class="border-4 absolute top-[-40px] left-8 flex bg-slate-200 border-white w-32 h-32 rounded-full overflow-hidden"
             >
               <img :src="getPrfileImgUrl()" alt="profile_img" />
             </div>
