@@ -28,8 +28,30 @@
                 </span>
               </div>
               <div class="flex items-center w-full">
-                <span class="text-lg mr-3"> 팔로워 {{ followerCnt }} </span>
-                <span class="text-lg"> 팔로잉 {{ followingCnt }}</span>
+                <router-link
+                  :to="{
+                    path: '/follow',
+                    query: {
+                      searchType: 'follower',
+                      m_id: userInfo.m_id,
+                    },
+                  }"
+                  class="text-lg mr-3"
+                >
+                  팔로워 {{ followerCnt }}
+                </router-link>
+                <router-link
+                  :to="{
+                    path: '/follow',
+                    query: {
+                      searchType: 'following',
+                      m_id: userInfo.m_id,
+                    },
+                  }"
+                  class="text-lg"
+                >
+                  팔로잉 {{ followingCnt }}
+                </router-link>
                 <span v-if="isVisible">
                   <button
                     @click="follow"
