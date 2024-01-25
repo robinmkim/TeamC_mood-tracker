@@ -100,7 +100,8 @@ export const store = new Vuex.Store({
         const userInfo = JSON.parse(state.userInfo);
         userInfo.m_name = newName;
         state.userInfo = JSON.stringify(userInfo);
-  
+        localStorage.setItem("myStore", JSON.stringify(state));
+
         console.log(response);
       } catch(error) {
         console.log(error);
@@ -115,6 +116,7 @@ export const store = new Vuex.Store({
         const userInfo = JSON.parse(state.userInfo);
         userInfo.m_handle = newHandle;
         state.userInfo = JSON.stringify(userInfo);
+        localStorage.setItem("myStore", JSON.stringify(state));
   
         console.log(response);
       } catch(error) {
@@ -130,6 +132,7 @@ export const store = new Vuex.Store({
         const userInfo = JSON.parse(state.userInfo);
         userInfo.m_bio = newBio;
         state.userInfo = JSON.stringify(userInfo);
+        localStorage.setItem("myStore", JSON.stringify(state));
   
         console.log(response);
       } catch(error) {
@@ -145,6 +148,7 @@ export const store = new Vuex.Store({
         const userInfo = JSON.parse(state.userInfo);
         userInfo.m_gender = newGender;
         state.userInfo = JSON.stringify(userInfo);
+        localStorage.setItem("myStore", JSON.stringify(state));
   
         console.log(response);
       } catch(error) {
@@ -160,6 +164,7 @@ export const store = new Vuex.Store({
         const userInfo = JSON.parse(state.userInfo);
         userInfo.m_gender = newImageName;
         state.userInfo = JSON.stringify(userInfo);
+        localStorage.setItem("myStore", JSON.stringify(state));
   
         console.log(response);
       } catch(error) {
