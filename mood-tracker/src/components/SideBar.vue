@@ -62,11 +62,13 @@
               class="notiItem followNoti flex justify-start p-4 border-b border-gray-200 hover:bg-[#fff7ee] focus:outline-none rounded-md"
             >
               <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
-                <img
-                  class="object-contain rounded-full"
-                  :src="bean.m_img_name"
-                  alt="프로필 이미지"
-                />
+                <router-link :to="`${bean.m_id}`">
+                  <img
+                    class="object-contain rounded-full"
+                    :src="bean.m_img_name"
+                    alt="프로필 이미지"
+                  />
+                </router-link>
               </div>
               <div class="notiItemContent flex-1 flex h-14">
                 <div
