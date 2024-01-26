@@ -566,14 +566,71 @@ export default {
       }
     },
     readAllNotice() {
-      apiClient
-        .patch("/notification/readAll")
-        .then(() => {
-          console.log("알림을 모두 읽었습니다.");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      const currentTabName = this.tabs[this.currentTab].name;
+      let userReturn2 = confirm(currentTabName + "ㅇㅇ");
+      if (userReturn2 == true) {
+        if (this.currentTab == 0) {
+          // 전체
+          apiClient
+            .delete("/notification/deleteAll/all")
+            .then((res) => {
+              if (res.data == 1) {
+                console.log(" 삭제 완료");
+                this.loadNoticeListAll();
+              } else {
+                console.log(" 삭제 실패");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else if (this.currentTab == 1) {
+          // 팔로우
+          apiClient
+            .delete("/notification/deleteAll/follow")
+            .then((res) => {
+              if (res.data == 1) {
+                console.log(" 삭제 완료");
+                this.loadNoticeListFollow();
+              } else {
+                console.log(" 삭제 실패");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else if (this.currentTab == 2) {
+          // 답글
+          apiClient
+            .delete("/notification/deleteAll/comment")
+            .then((res) => {
+              if (res.data == 1) {
+                console.log(" 삭제 완료");
+                this.loadNoticeListReply();
+              } else {
+                console.log(" 삭제 실패");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else if (this.currentTab == 3) {
+          // 좋아요
+          apiClient
+            .delete("/notification/deleteAll/like")
+            .then((res) => {
+              if (res.data == 1) {
+                console.log(" 삭제 완료");
+                this.loadNoticeListLike();
+              } else {
+                console.log(" 삭제 실패");
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      }
     },
     deleteAllNotice() {
       // (전체/팔로우/답글/좋아요)알림을 모두 삭제
