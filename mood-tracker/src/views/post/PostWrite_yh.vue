@@ -247,6 +247,7 @@ export default {
         })
         .then(() => {
           console.log("success");
+          alert("전송이 완료되었습니다!");
           this.$router.push({
             path: "/timeline",
           });
