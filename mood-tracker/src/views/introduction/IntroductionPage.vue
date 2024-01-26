@@ -30,22 +30,25 @@
 
     <!-- page 2 -->
     <div class="flex w-full h-screen ipage">
-      <div class="flex flex-col w-2/3 mt-[500px] ml-[260px] text-end">
-        <span class="animated-text font-extrabold text-[#64CCC5] text-[128px]"
+      <div class="flex flex-col w-2/3 mt-[235px] ml-[90px] mr-[165px] text-end">
+        <div class="animated-photo w-[800px] h-[500px] z-01">
+          <img src="../../assets/introImg_sns.png" />
+        </div>
+        <span
+          class="absolute top-[650px] left-[930px] animated-text font-extrabold text-[#64CCC5] text-[128px] z-30"
           >SN</span
         >
-        <div class="mr-2">
+        <div class="animated-text absolute top-[843px] left-[570px] mr-2 z-30">
           <span class="text-[36px]">다른 유저들과의 소통, 기록 </span>
           <span class="text-[36px] text-[#64CCC5] font-bold"> 그리고 </span>
         </div>
       </div>
       <div class="w-1/3 bg-gradient-to-b from-[#FFF2E2] from-45% to-[#64CCC5]">
-        <div class="mt-[500px] mr-2 text-start">
-          <span
-            class="animated-text text-white font-extrabold text-right text-[128px]"
+        <div class="animated-text mt-[650px] mr-2 text-start">
+          <span class="text-white font-extrabold text-right text-[128px]"
             >S</span
           >
-          <div>
+          <div class="animated-text">
             <span class="text-[36px] ml-3">공유 </span>
           </div>
         </div>
@@ -55,28 +58,27 @@
 
     <!-- page 3 -->
     <div class="flex w-full h-screen ipage">
-      <div class="flex w-2/3 flex-col mt-[200px] ml-[258px] text-end">
-        <div class="mr-20">
-          <!-- <img src="../../assets/image 127.png" /> -->
+      <div class="flex w-2/3 flex-col mt-[212px] ml-[258px] text-end">
+        <div class="animated-photo mr-20">
+          <img src="../../assets/image 127.png" />
         </div>
         <span class="animated-text font-extrabold text-[#64CCC5] text-[128px]"
           >Record Analy</span
         >
-        <div>
-          <span class="text-[36px]">당신의 기록을 분석 </span>
+        <div class="animated-text">
+          <span class="text-[36px]">당신이 기록한 감정들 </span>
           <span class="text-[36px] text-[#64CCC5] font-bold mr-2">
             그리고
           </span>
         </div>
       </div>
       <div class="w-1/3 bg-gradient-to-b from-[#64CCC5] from-45% to-[#FFF2E2]">
-        <div class="mt-[560px] mr-2 text-start">
-          <span
-            class="animated-text text-white font-extrabold text-right text-[128px]"
+        <div class="animated-text mt-[560px] mr-2 text-start">
+          <span class="text-white font-extrabold text-right text-[128px]"
             >sis</span
           >
-          <div>
-            <span class="text-[30px] ml-1">결과 </span>
+          <div class="animated-text">
+            <span class="text-[36px] ml-1">차트 </span>
           </div>
         </div>
       </div>
@@ -86,22 +88,28 @@
     <!-- page 4 -->
     <div class="flex w-full h-screen ipage">
       <div class="w-1/3 bg-gradient-to-b from-[#FFF2E2] to-[#64CCC5] to-45%">
-        <div class="mt-48 mr-2 text-end">
-          <span class="animated-text font-extrabold text-white text-[128px]"
-            >AI</span
-          >
+        <div class="animated-photo mt-48 mr-2 text-end">
+          <span class="font-extrabold text-white text-[128px]">AI</span>
         </div>
       </div>
       <div class="w-2/3">
         <div class="flex flex-col mt-48 ml-6 text-start">
-          <span class="animated-text font-extrabold text-[#64CCC5] text-[128px]"
+          <span
+            class="animated-photo font-extrabold text-[#64CCC5] text-[128px]"
             >Service</span
           >
-          <div>
+          <div class="animated-photo">
             <span class="text-[36px]">얼굴 표정분석, 기록의 긍정도 </span>
             <span class="text-[36px] text-[#64CCC5] font-bold"> 그리고 </span>
             <span class="text-[36px]"> 노래 추천</span>
           </div>
+        </div>
+        <div class="animated-text flex ml-5">
+          <img src="../../assets/introImg_ai.png" />
+          <img
+            src="../../assets/introImg_ai2.png"
+            class="h-[150px] w-[400px] mt-16 ml-10"
+          />
         </div>
       </div>
     </div>
@@ -162,10 +170,20 @@ export default {
           text.style.animation = "none";
         });
 
+        // .animated-photo
+        let animatedPhotos = document.querySelectorAll(".animated-photo");
+        animatedPhotos.forEach((photo) => {
+          photo.style.opacity = 0;
+          photo.style.animation = "none";
+        });
+
         // 애니메이션 다시 시작
         setTimeout(() => {
           animatedTexts.forEach((text) => {
             text.style.animation = "";
+          });
+          animatedPhotos.forEach((photo) => {
+            photo.style.animation = "";
           });
         }, 10);
       };
@@ -199,7 +217,7 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
 }
-
+.animated-photo,
 .animated-text {
   opacity: 0;
   animation: fadeIn 1s ease-in-out forwards; /* 페이드인 애니메이션 설정 */
@@ -219,10 +237,26 @@ export default {
   animation: fadeInRight 1s ease-in-out forwards;
 }
 
+.animated-photo {
+  opacity: 0;
+  animation: fadeInLeft 1s ease-in-out forwards;
+}
+
 @keyframes fadeInRight {
   0% {
     opacity: 0;
     transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
   }
   100% {
     opacity: 1;
