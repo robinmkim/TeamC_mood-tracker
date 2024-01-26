@@ -204,7 +204,7 @@ export default {
       console.log("token = ", token);
       console.log("CHECK MEMBERID>VALUE", memberId.value);
 
-      const socket = new SockJS("http://localhost:8083/ws");
+      const socket = new SockJS("http://192.168.0.81:8083/ws");
       stompClient.value = Stomp.over(socket);
 
       stompClient.value.connect(
@@ -241,7 +241,7 @@ export default {
       console.log("token = ", token);
       console.log("CHECK MEMBERID>VALUE", memberId.value);
 
-      const socket = new SockJS("http://localhost:8083/ws");
+      const socket = new SockJS("http://192.168.0.81:8083/ws");
       stompClient.value = Stomp.over(socket);
 
       stompClient.value.connect(
