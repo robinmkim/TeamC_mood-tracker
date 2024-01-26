@@ -1,5 +1,5 @@
 <template>
-  <div class="flex min-h-screen">
+  <div class="flex-1 min-h-screen p-8">
     <div class="w-1/5">
       <div class="flex mt-3 mb-3 items-center">
         <div
@@ -25,7 +25,7 @@
         </div>
       </nav>
     </div>
-    <div class="flex-1 border-200">
+    <div class="flex-1">
       <div class="">
         <div
           v-for="(tab, index) in tabs"

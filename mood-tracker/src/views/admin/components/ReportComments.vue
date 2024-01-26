@@ -68,72 +68,6 @@
       </li>
     </ul>
   </div>
-  <!-- 페이징 폼 -->
-  <div
-    class="pagination w3-bar w3-padding-16 w3-small"
-    v-if="paging.total_list_cnt > 0"
-  >
-    <span class="pg">
-      <a
-        href="javascript:;"
-        @click="reportPage(1)"
-        class="first w3-button w3-bar-item w3-border"
-        >&lt;&lt;</a
-      >
-      <a
-        href="javascript:;"
-        v-if="paging.start_page > 10"
-        @click="reportPage(`${paging.start_page}`)"
-        class="prev w3-button w3-bar-item w3-border"
-        >&lt;</a
-      >
-      <template v-for="(n, q_id) in paginavigation()">
-        <template v-if="paging.page == n">
-          <strong
-            class="w3-button w3-bar-item w3-border bg-[#64CCC5] text-white mr-2 ml-2"
-            :key="q_id"
-          >
-            {{ n }}
-          </strong>
-        </template>
-        <template v-else>
-          <a
-            class="w3-button w3-bar-item w3-border hover:bg-gray-300 mr-2 ml-2"
-            href="javascript:;"
-            @click="reportPage(`${n}`)"
-            :key="q_id"
-          >
-            {{ n }}
-          </a>
-        </template>
-      </template>
-      <a
-        href="javascript:;"
-        v-if="paging.total_page_cnt > paging.end_page"
-        @click="reportPage(`${paging.end_page + 1}`)"
-        class="next w3-button w3-bar-item w3-border"
-        >&gt;</a
-      >
-      <a
-        href="javascript:;"
-        @click="reportPage(`${paging.total_page_cnt}`)"
-        class="last w3-button w3-bar-item w3-border"
-        >&gt;&gt;</a
-      >
-    </span>
-  </div>
-  <!-- 검색 폼 -->
-  <div>
-    <!-- 여기에 나머지 템플릿 내용을 추가하세요 -->
-    <select v-model="search_key">
-      <option value="">- 선택 -</option>
-      <option value="report_Type">내용</option>
-    </select>
-    &nbsp;
-    <input type="text" v-model="search_value" @keyup.enter="reportPage()" />
-    &nbsp;
-    <button @click="reportPage()">검색</button>
-  </div>
 </template>
 <script>
 import apiClient from "@/utils/apiClient";
@@ -228,7 +162,7 @@ export default {
           headers: {},
         })
         .then((res) => {
-          this.CommentsList = res.data.data;
+          this.CommentsList = res.data;
           console.log("commentList 응답 데이터: ", this.CommentsList);
         })
         .catch((err) => {
