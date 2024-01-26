@@ -23,4 +23,13 @@ apiClient.interceptors.request.use(
   }
 );
 
+// 추가 baseURL 설정
+export const apiClient2 = axios.create({
+  baseURL: "http://localhost:8082",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
+});
+
 export default apiClient;

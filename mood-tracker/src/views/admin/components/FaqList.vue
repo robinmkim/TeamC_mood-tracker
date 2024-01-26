@@ -190,7 +190,7 @@
 </template>
 <script>
 import FaqInsert from "@/views/admin/components/FaqInsert.vue";
-import apiClient from "@/utils/apiClient";
+import { apiClient2 as apiClient } from "@/utils/apiClient";
 
 export default {
   components: { FaqInsert },

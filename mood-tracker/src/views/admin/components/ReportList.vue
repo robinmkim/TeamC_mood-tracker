@@ -56,43 +56,19 @@
                 v-show="!updateShow"
                 class="read flex border-b text-sm p-2 pt-0 flex-col w-full text-left font-semibold"
               >
+                {{ board.mediaList }}********
                 <!-- 게시글 이미지 영역 -->
-                <div
-                  class="postImage relative mb-3"
-                  v-if="board.mediaList.length > 0"
-                >
-                  {{ board.mediaList.length }}
-                  <div class="flex items-center justify-center relative">
-                    <!-- 이미지 목록 순회 -->
-                    <div
-                      v-for="(media, mediaindex) in board.mediaList"
-                      :key="mediaindex"
-                      class="h-60 overflow-hidden relative rounded-lg flex items-center justify-center"
-                    >
-                      <img
-                        :src="getImageUrl(media)"
-                        alt="Post image"
-                        class="items-center rounded-lg"
-                      />
-                    </div>
-                    <!-- 이미지 이전/다음 버튼 -->
-                    <a
-                      v-if="currentImageIndex > 1"
-                      class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer left-2.5 text-black"
-                      @click="prevImage"
-                    >
-                      &#10094;
-                    </a>
-                    <a
-                      v-if="currentImageIndex < board.mediaList.length"
-                      class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer right-2.5 text-black"
-                      @click="nextImage"
-                    >
-                      &#10095;
-                    </a>
-                  </div>
+                <div v-if="board.mediaList && board.mediaList.length > 0">
+                  <img
+                    :src="getImageUrl(board.mediaList[0])"
+                    alt="게시물 이미지"
+                    class="items-center rounded-lg"
+                  />
+                </div>
 
-                  {{ board.b_content }}
+                <!-- 내용 출력 부분 -->
+                <div v-if="board.b_content">
+                  <p>{{ board.b_content }}</p>
                 </div>
               </div>
             </div>
@@ -169,7 +145,7 @@
   </div>
 </template>
 <script>
-import apiClient from "@/utils/apiClient";
+import { apiClient2 as apiClient } from "@/utils/apiClient";
 
 export default {
   data() {
@@ -181,7 +157,7 @@ export default {
       answeringShow: false,
       // 아코디언의 열림/닫힘 상태를 저장하는 배열 추가
       // 리스트 준비되면 Postitems -> ReportList변경하기
-      currentImageIndex: 1,
+
       board: {
         b_id: null,
         b_content: "",
@@ -219,12 +195,7 @@ export default {
       },
     };
   },
-  computed: {
-    imageCount() {
-      // mediaList 배열의 길이를 반환합니다.
-      return this.board.mediaList.length;
-    },
-  },
+
   //추가
   mounted() {
     this.reportPage();
@@ -275,18 +246,8 @@ export default {
       // md_path와 md_name을 결합하여 이미지의 전체 경로를 반환합니다.
       return `http://localhost:8083/${media.md_path}${media.md_name}`;
     },
-    prevImage() {
-      // 이전 이미지로 이동합니다.
-      if (this.currentImageIndex > 1) {
-        this.currentImageIndex -= 1;
-      }
-    },
-    nextImage() {
-      // 다음 이미지로 이동합니다.
-      if (this.currentImageIndex < this.imageCount) {
-        this.currentImageIndex += 1;
-      }
-    },
+
+    // reportGetDetail 메서드 수정
     reportGetDetail(b_c_id) {
       console.log("상세 b_c_id :", b_c_id);
       apiClient
@@ -295,43 +256,31 @@ export default {
           // API로부터 받은 데이터를 변수에 할당
           const responseData = res.data;
 
-          // 받은 데이터가 기대한 구조를 가지고 있는지 확인
+          // Ensure that the received data has the expected structure
           if (Array.isArray(responseData) && responseData.length > 0) {
-            // 모든 게시글을 저장할 배열 생성
-            const boards = [];
+            // Extract the first item in the array (assuming there's only one item)
+            const [b_id, b_content, ...mediaListData] = responseData[0];
 
-            // responseData의 각 항목을 순회
-            for (let j = 0; j < responseData.length; j++) {
-              // responseData의 각 항목에서 필요한 데이터 추출
-              const [b_id, b_content, md_id, md_name, md_path, md_type] =
-                responseData[j];
+            // Create an array of mediaList objects
+            const mediaList = [];
+            for (let i = 0; i < mediaListData.length; i += 4) {
+              const [md_id, md_name, md_path] = mediaListData.slice(i, i + 4);
 
-              // mediaList 객체 생성
-              const mediaList = [
-                {
-                  md_id,
-                  md_name,
-                  md_path,
-                  md_type,
-                },
-              ];
-
-              // board 객체 생성
-              const board = {
-                b_id,
-                b_content,
-                mediaList,
-              };
-
-              // board 객체를 배열에 추가
-              boards.push(board);
+              mediaList.push({
+                md_id,
+                md_name,
+                md_path,
+              });
             }
 
-            // 이제 boards 배열에는 여러 게시글이 들어 있음
-            console.log("Boards:", boards);
-
-            // 첫 번째 게시글을 this.board에 할당
-            this.board = boards[0];
+            // Assign data to the board object
+            this.board = {
+              b_id,
+              b_content,
+              mediaList,
+            };
+            alert("md_name" + mediaListData[1]);
+            console.log("mediaList" + this.board.mediaList[0][1]);
           } else {
             // 구조가 예상과 다를 경우 처리
             console.error(
@@ -339,11 +288,6 @@ export default {
               responseData
             );
           }
-
-          // 디버깅을 위한 로그 출력
-          console.log("M_id", this.board.mediaList[0].md_id);
-          console.log("Detail 응답 데이터: ", this.board);
-          console.log("boards 응답 데이터: ", this.boards);
         })
         .catch((error) => {
           console.error("Error fetching detail:", error);
