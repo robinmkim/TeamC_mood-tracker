@@ -57,15 +57,33 @@
             :id="bean.n_id"
           >
             <!-- 인물 들어갈 자리  -->
-            <router-link :to="`${bean.m_id}`">
-              <div
-                class="notiItem followNoti flex justify-start p-4 border-b border-gray-200 hover:bg-[#fff7ee] focus:outline-none rounded-md"
-              >
-                <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
+
+            <div
+              class="notiItem followNoti flex justify-start p-4 border-b border-gray-200 hover:bg-[#fff7ee] focus:outline-none rounded-md"
+            >
+              <div class="notiItemImg z-0 h-14 w-14 overflow-hidden relative">
+                <div @click="handleLinkClick(bean.m_id)">
                   <img
                     class="object-contain rounded-full"
                     :src="`http://localhost:8083/images/${bean.m_img_name}`"
                   />
+                </div>
+              </div>
+              <div class="notiItemContent flex-1 flex h-14">
+                <div
+                  class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
+                >
+                  <span
+                    class="notiItemContentTime font-bold text-lg text-black"
+                    >{{ bean.m_name }}</span
+                  >
+                  <div
+                    class="notiItemContentMain w-auto flex items-center cursor-pointer"
+                  >
+                    <span class="notiUserName text-sm text-slate-400">
+                      @{{ bean.m_handle }}
+                    </span>
+                  </div>
                 </div>
                 <div class="notiItemContent flex-1 flex h-14">
                   <div
@@ -158,11 +176,11 @@
     <!-- relative 추가하여 프로필과 메뉴를 묶어준다 -->
     <!-- 사용자 정보 및 이미지 시작 -->
     <div v-if="isMyPage">
-      <div class="rounded-lg shadow-lg mx-2 mt-2 bg-[#D9F3C1] p-4">
+      <div class="rounded-lg shadow-lg mx-2 mt-2 bg-white border p-4">
         <!-- 사용자 정보 좌우에 여백 추가 -->
         <div class="my-4">
           <div
-            class="flex w-32 h-32 rounded-full overflow-hidden border-4 border-white mx-auto bg-slate-200 items-center justify-center"
+            class="flex w-32 h-32 shadow-lg rounded-full overflow-hidden border-4 border-white mx-auto bg-slate-200 items-center justify-center"
           >
             <img
               :src="profileImageUrl"
@@ -507,6 +525,10 @@ export default {
     $route: "refreshComponent",
   },
   methods: {
+    handleLinkClick(m_id) {
+      window.location.href = `/${m_id}`;
+    },
+
     adjustHeight(e) {
       // textarea높이 자동 조절
       const element = e.target;
