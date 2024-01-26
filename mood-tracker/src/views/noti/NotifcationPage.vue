@@ -41,6 +41,13 @@
           <div
             class="cursor-pointer pr-1.5 pl-1.5 ml-auto mt-1 mb-1 mr-1 text-sm text-center rounded-md border-2 border-teal-400"
             typeof="button"
+            @click="readAllNotice"
+          >
+            모두 읽음
+          </div>
+          <div
+            class="cursor-pointer pr-1.5 pl-1.5 mt-1 mb-1 mr-1 text-sm text-center rounded-md border-2 border-teal-400"
+            typeof="button"
             @click="deleteAllNotice"
           >
             모두 삭제
@@ -557,6 +564,16 @@ export default {
             console.log(error);
           });
       }
+    },
+    readAllNotice() {
+      apiClient
+        .patch("/notification/readAll")
+        .then(() => {
+          console.log("알림을 모두 읽었습니다.");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     deleteAllNotice() {
       // (전체/팔로우/답글/좋아요)알림을 모두 삭제
