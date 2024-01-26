@@ -10,7 +10,7 @@
         <div class="flex h-32">
           <div class="relative flex">
             <div
-              class="border-4 absolute top-[-40px] left-8 flex border-white w-32 h-32 rounded-full overflow-hidden"
+              class="border-4 absolute top-[-40px] left-8 flex bg-slate-200 border-white w-32 h-32 rounded-full overflow-hidden"
             >
               <img :src="getPrfileImgUrl()" alt="profile_img" />
             </div>
@@ -28,8 +28,30 @@
                 </span>
               </div>
               <div class="flex items-center w-full">
-                <span class="text-lg mr-3"> 팔로워 {{ followerCnt }} </span>
-                <span class="text-lg"> 팔로잉 {{ followingCnt }}</span>
+                <router-link
+                  :to="{
+                    path: '/follow',
+                    query: {
+                      searchType: 'follower',
+                      m_id: userInfo.m_id,
+                    },
+                  }"
+                  class="text-lg mr-3"
+                >
+                  팔로워 {{ followerCnt }}
+                </router-link>
+                <router-link
+                  :to="{
+                    path: '/follow',
+                    query: {
+                      searchType: 'following',
+                      m_id: userInfo.m_id,
+                    },
+                  }"
+                  class="text-lg"
+                >
+                  팔로잉 {{ followingCnt }}
+                </router-link>
                 <span v-if="isVisible">
                   <button
                     @click="follow"

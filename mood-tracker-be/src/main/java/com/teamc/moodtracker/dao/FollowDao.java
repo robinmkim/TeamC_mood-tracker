@@ -20,4 +20,8 @@ public interface FollowDao {
     public FollowCount getFollowCnt(int memberId);
 
     public int checkFollow(FollowRequestDto followRequestDTO);
+
+    public List<MemberDto> FollowerId(int followerId);
+
+    public List<MemberDto> FolloweredId(int followeredId);
 }

@@ -143,14 +143,14 @@
         </div>
         <a
           v-if="currentImageIndex > 1"
-          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer left-2.5 text-black"
+          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer left-2.5 text-slate-300 text-2xl"
           @click="prevImage"
         >
           &#10094;
         </a>
         <a
           v-if="currentImageIndex < board.mediaList.length"
-          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer right-2.5 text-black"
+          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer right-2.5 text-slate-300 text-2xl"
           @click="nextImage"
         >
           &#10095;
@@ -467,7 +467,7 @@ export default {
       const userConfirmed = confirm("게시물을 삭제하시겠습니까?");
       if (userConfirmed) {
         apiClient
-          .get(`/jh_post/delPost?b_id=${this.b_id}`)
+          .get(`/post/delPost?b_id=${this.b_id}`)
           .then(() => {
             this.$router.push("/timeline");
           })

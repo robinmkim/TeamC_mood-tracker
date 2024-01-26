@@ -247,6 +247,9 @@ export default {
         })
         .then(() => {
           console.log("success");
+          this.$router.push({
+            path: "/timeline",
+          });
         })
         .catch((error) => {
           console.log("formData" + formData);
