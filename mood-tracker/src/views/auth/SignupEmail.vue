@@ -127,15 +127,16 @@ export default {
       if (isButtonActive.value) {
         // 이메일 인증 로직
         apiClient
-          .post("/api/auth/sendCode", { email: email.value })
+          .post("/auth/sendCode", { email: email.value })
           .then(() => {
             alert("인증번호가 전송되었습니다");
+            startTimer();
           })
           .catch((err) => {
             alert(err.response.data.message);
+            isButtonActive.value = true;
           });
         isButtonActive.value = false;
-        startTimer();
       }
     };
 
