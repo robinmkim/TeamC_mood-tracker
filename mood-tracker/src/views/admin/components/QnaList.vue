@@ -73,12 +73,12 @@
                   >
                     <textarea
                       class="bg-slate-50 text-sm rounded-lg border border-slate-200 focus:outline-slate-400 w-full h-80 resize-none"
-                      v-model="AnswerList.A_CONTENT"
+                      v-model="a_Content"
                       placeholder="질문의 답변을 입력해 주세요"
                     ></textarea>
                     <div
                       class="rounded-full bg-slate-200 h-7 w-20 flex justify-center items-center mt-2 text-sm"
-                      @click="answerInsert(Q_ID)"
+                      @click="answerInsert(item.qid)"
                     >
                       답변하기
                     </div>
@@ -151,7 +151,6 @@
       </span>
     </div>
     <!-- 검색 폼 -->
-    <!-- 여기에 나머지 템플릿 내용을 추가하세요 -->
     <div>
       <select v-model="search_key">
         <option value="">- 선택 -</option>
@@ -179,8 +178,8 @@ export default {
       updateShow: false,
       answeringShow: false,
       // 아코디언의 열림/닫힘 상태를 저장하는 배열 추가
-      QnaList: {}, // 배열로 초기화
       AnswerList: {},
+      QnaList: {}, // 배열로 초기화
       requestBody: {}, //리스트 페이지 데이터전송
       q_id: "", //게시판 숫자처리
       paging: {
@@ -246,9 +245,6 @@ export default {
             this.q_id =
               this.paging.total_list_cnt -
               (this.paging.page - 1) * this.paging.page_size;
-            console.log("qnalist : ", this.QnaList);
-            console.log("paging : ", this.paging);
-            console.log("q_id : ", this.q_id);
           }
         })
         .catch((err) => {
@@ -328,11 +324,11 @@ export default {
     answeringMethod() {
       this.answeringShow = true;
     },
-    async answerInsert() {
-      console.log("답변 등록");
-      const apiUrl = "/cteam/admin/insert"; // 기본적으로 baseURL이 적용됩니다.
+    async answerInsert(Q_ID) {
+      console.log("Q_ID 답변 등록", Q_ID);
+      console.log("a_Content 값: ", this.a_Content);
+      const apiUrl = `cteam/admin/answer/insert/${Q_ID}`; // 기본적으로 baseURL이 적용됩니다.
       const requestData = {
-        a_qid: this.a_qid,
         a_content: this.a_Content,
       };
 

@@ -1,6 +1,7 @@
 <!-- ReportList.vue -->
 <template>
   <div>
+    <!-- 리스트 헤더 -->
     <div class="border-b-2 flex h-10">
       <div class="flex w-1/12 items-center justify-center">no</div>
       <div class="flex w-7/12 items-center">신고사유</div>
@@ -8,6 +9,7 @@
       <div class="flex w-2/12 items-center justify-center">신고날짜</div>
       <div class="flex w-2/12 items-center justify-center">처리</div>
     </div>
+    <!-- 리스트 내용 -->
     <ul class="accordion-item">
       <li v-for="(item, newIndex) in ReportList" :key="newIndex">
         <ul>
@@ -16,6 +18,7 @@
             :class="{ 'bg-slate-50': isAccordionOpen(newIndex) }"
             @click="handleAccordionClick(newIndex, item.bc_id)"
           >
+            <!-- 각 열의 데이터 -->
             <div
               class="flex w-1/12 items-center justify-center text-sm text-slate-500 border-b-1"
             >
@@ -43,6 +46,7 @@
               </div>
             </div>
           </li>
+          <!-- 아코디언 내용 -->
           <li>
             <div
               v-show="isAccordionOpen && currentAccordionIndex === newIndex"
@@ -57,19 +61,21 @@
                   class="postImage relative mb-3"
                   v-if="board.mediaList.length > 0"
                 >
+                  {{ board.mediaList.length }}
                   <div class="flex items-center justify-center relative">
+                    <!-- 이미지 목록 순회 -->
                     <div
+                      v-for="(media, mediaindex) in board.mediaList"
+                      :key="mediaindex"
                       class="h-60 overflow-hidden relative rounded-lg flex items-center justify-center"
-                      v-if="board.mediaList.md_id !== null"
                     >
                       <img
-                        :src="
-                          getImageUrl(board.mediaList[currentImageIndex - 1])
-                        "
+                        :src="getImageUrl(media)"
                         alt="Post image"
                         class="items-center rounded-lg"
                       />
                     </div>
+                    <!-- 이미지 이전/다음 버튼 -->
                     <a
                       v-if="currentImageIndex > 1"
                       class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer left-2.5 text-black"
@@ -344,23 +350,6 @@ export default {
         });
     },
 
-    // reportGetList() {
-    //   apiClient
-    //     .get("cteam/admin/reports/list", {
-    //       headers: {},
-    //     })
-    //     .then((res) => {
-    //       this.ReportList = res.data;
-    //       console.log("list 응답 데이터: ", this.ReportList);
-    //     })
-    //     .catch((err) => {
-    //       if (err.message.indexOf("Network Error") > -1) {
-    //         alert("네트워크에 문제가 있습니다.\n잠시 후 다시 시도해주세요.");
-    //       } else {
-    //         console.error("데이터를 가져오는 중 오류 발생:", err);
-    //       }
-    //     });
-    // },
     reportDelete(b_c_id) {
       // 삭제할 데이터
       apiClient

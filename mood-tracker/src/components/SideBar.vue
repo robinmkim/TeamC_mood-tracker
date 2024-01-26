@@ -85,12 +85,29 @@
                     </span>
                   </div>
                 </div>
+                <div class="notiItemContent flex-1 flex h-14">
+                  <div
+                    class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
+                  >
+                    <span
+                      class="notiItemContentTime font-bold text-lg text-black"
+                      >{{ bean.m_name }}</span
+                    >
+                    <div
+                      class="notiItemContentMain w-auto flex items-center cursor-pointer"
+                    >
+                      <span class="notiUserName text-sm text-slate-400">
+                        @{{ bean.m_handle }}
+                      </span>
+                    </div>
+                  </div>
 
-                <div
-                  class="notiItemContentButton flex w-1/4 justify-center items-center"
-                ></div>
+                  <div
+                    class="notiItemContentButton flex w-1/4 justify-center items-center"
+                  ></div>
+                </div>
               </div>
-            </div>
+            </router-link>
           </div>
         </div>
 

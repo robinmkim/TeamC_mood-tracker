@@ -143,14 +143,14 @@
         </div>
         <a
           v-if="currentImageIndex > 1"
-          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer left-2.5 text-black"
+          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer left-2.5 text-slate-300 text-2xl"
           @click="prevImage"
         >
           &#10094;
         </a>
         <a
           v-if="currentImageIndex < board.mediaList.length"
-          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer right-2.5 text-black"
+          class="absolute top-1/2 transform -translate-y-1/2 cursor-pointer right-2.5 text-slate-300 text-2xl"
           @click="nextImage"
         >
           &#10095;
