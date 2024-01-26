@@ -102,8 +102,8 @@ export default {
     const onSubmit = handleSubmit(() => {
       console.log("id:" + id.value);
       console.log("password:" + password.value);
-      AuthService.login({ username: id.value, password: password.value }).then(
-        (response) => {
+      AuthService.login({ username: id.value, password: password.value })
+        .then((response) => {
           if (response.data.accessToken) {
             console.log(
               "response.data.accessToken:" + response.data.accessToken
@@ -117,8 +117,11 @@ export default {
               router.push("/");
             });
           }
-        }
-      );
+        })
+        .catch((error) => {
+          console.error("로그인 실패", error.response.data.message);
+          window.alert("다시 시도하세요!");
+        });
     });
 
     return {
