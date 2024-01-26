@@ -7,7 +7,6 @@ import com.teamc.moodtracker.dto.follow.MyFollow;
 import com.teamc.moodtracker.service.FollowService;
 import com.teamc.moodtracker.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/follow")
@@ -26,7 +24,7 @@ public class FollowController {
     private final FollowService followService;
 
     @Autowired
-    private final NotificationService notificationService; // 알림 전송
+    private final NotificationService notificationService;
 
     @PostMapping("")
     public ResponseEntity<String> makeFollow(@AuthenticationPrincipal MemberDto memberDto,
@@ -42,13 +40,12 @@ public class FollowController {
                 .build();
         try {
             followService.makeFollow(followRequestDTO);
-            notificationService.makeFollow_SaveNotificationAndSendAlert(followRequestDTO);// 알림 전송
+            notificationService.makeFollow_SaveNotificationAndSendAlert(followRequestDTO);
             return ResponseEntity.ok("Follow Success");
         } catch (DuplicateKeyException e) {
             followService.deleteFollow(followRequestDTO);
             return ResponseEntity.ok("Follow Cancel");
         }
-
     }
 
     @GetMapping("/myfollow")

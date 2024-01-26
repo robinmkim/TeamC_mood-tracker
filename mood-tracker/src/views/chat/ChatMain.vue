@@ -211,7 +211,7 @@ export default {
   },
   methods: {
     connect() {
-      const socket = new SockJS("http://192.168.0.84:8083/ws");
+      const socket = new SockJS("http://192.168.0.81:8083/ws");
       this.stompClient = Stomp.over(socket);
       this.stompClient.connect(
         {},
