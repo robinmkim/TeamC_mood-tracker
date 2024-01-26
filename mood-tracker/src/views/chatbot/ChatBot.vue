@@ -29,7 +29,10 @@
               <div class="rounded-lg bg-gray-300 p-2 w-64 text-wrap">
                 <span v-html="formatMessage(message.message)"></span>
               </div>
-              <div class="rounded-lg bg-gray-300 mt-3 p-2 w-52 text-wrap">
+              <div
+                v-if="message.musicTitle.length !== 0"
+                class="rounded-lg bg-gray-300 mt-3 p-2 w-52 text-wrap"
+              >
                 아래 제목을 누르면 해당 노래의 YouTube 영상으로 이동합니다<br />
                 <a
                   v-for="(item, index) in message.musicTitle"
@@ -99,6 +102,7 @@ export default {
           this.isLoading = false;
         })
         .catch((err) => {
+          alert("뭔가 오류가 생겼어요! 다시 시도해주세요!");
           console.log(err);
           this.isLoading = false;
         });

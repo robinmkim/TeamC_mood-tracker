@@ -10,17 +10,13 @@
       <div class="flex-1 w-full border-x">
         <!-- 여기서부터 ~~~ -->
         <div class="flex flex-col items-center justify-center">
-          <div class="p-5 mt-3 w-[700px] bg-slate-200">
-            <span
-              >얼굴을 분석하여 결과에 따라 음악을 추천합니다 <br />(ง ᵕᴗᵕ)ว
-            </span>
+          <div class="p-5 mt-12 w-[700px] bg-slate-200">
+            <span> AI가 사진 속 얼굴의 감정을 분석합니다 </span>
           </div>
 
           <!-- 클릭하여 파일 업로드 -->
-          <div class="flex mt-5">
+          <div class="flex mt-2">
             <span class="p-5 w-[700px] h-100 item-center text-center">
-              <p>⬇⬇ 선택 또는 드래그 하여 사진 업로드 ⬇⬇</p>
-
               <!-- <input
               type="file"
               ref="fileInput"
@@ -32,15 +28,17 @@
           </div>
           <!-- 드래그하여 파일 업로드-->
           <div
-            class="flex m-1 w-[550px] h-[450px] bg-[#eaeaea] hover:bg-[#dad9d9] duration-150 box-content text-center border-2 border-gray-200"
+            class="flex rounded-lg m-1 w-[550px] h-[450px] bg-[#eaeaea] duration-150 box-content text-center border-2 border-gray-200"
             @dragover.prevent="handleDragOver"
             @drop="handleDrop"
           >
             <div
-              class="flex flex-col items-center justify-center w-full h-full cursor-pointer"
+              class="flex flex-col items-center justify-center w-full h-full cursor-pointer hover:text-[#64CCC5]"
               @click="openFileInput"
             >
-              <p v-if="!image" class="cursor-pointer">---</p>
+              <p v-if="!image" class="cursor-pointer">
+                선택 또는 드래그 하여 사진 불러오기
+              </p>
               <input
                 type="file"
                 ref="fileInput"
