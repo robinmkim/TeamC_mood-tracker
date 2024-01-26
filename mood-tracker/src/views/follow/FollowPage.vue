@@ -39,77 +39,82 @@
               >
                 <div v-if="tab.id == 'follower'">
                   <!-- 인물 들어갈 자리  -->
-                  <div
-                    class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200"
-                  >
+                  <router-link :to="`${bean.m_id}`">
                     <div
-                      class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
+                      class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200"
                     >
-                      <img
-                        class="object-contain rounded-full"
-                        :src="`http://localhost:8083/images/${bean.m_img_name}`"
-                        alt="프로필 이미지"
-                      />
-                    </div>
-                    <div class="notiItemContent flex-1 flex h-14">
                       <div
-                        class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
+                        class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
                       >
-                        <span class="notiItemContentTime font-bold text-lg">{{
-                          bean.m_name
-                        }}</span>
-                        <div
-                          class="notiItemContentMain w-auto flex items-center cursor-pointer"
-                        >
-                          <span class="notiUserName text-sm text-slate-400">
-                            {{ bean.m_email }}
-                          </span>
-                        </div>
+                        <img
+                          class="object-contain rounded-full"
+                          :src="`http://localhost:8083/images/${bean.m_img_name}`"
+                          alt="프로필 이미지"
+                        />
                       </div>
+                      <div class="notiItemContent flex-1 flex h-14">
+                        <div
+                          class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
+                        >
+                          <span class="notiItemContentTime font-bold text-lg">{{
+                            bean.m_name
+                          }}</span>
+                          <div
+                            class="notiItemContentMain w-auto flex items-center cursor-pointer"
+                          >
+                            <span class="notiUserName text-sm text-slate-400">
+                              {{ bean.m_email }}
+                            </span>
+                          </div>
+                        </div>
 
-                      <div
-                        class="notiItemContentButton flex w-1/4 justify-center items-center"
-                      ></div>
+                        <div
+                          class="notiItemContentButton flex w-1/4 justify-center items-center"
+                        ></div>
+                      </div>
                     </div>
-                  </div>
+                  </router-link>
                   <!-- 인물 들어갈 자리 2 -->
                 </div>
 
                 <!--검색 게시글 목록-->
-                <div v-else-if="tab.id === 'following'">
-                  <div
-                    class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200"
-                  >
-                    <div
-                      class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
-                    >
-                      <img
-                        class="object-contain rounded-full"
-                        :src="`http://localhost:8083/images/${bean.m_img_name}`"
-                        alt="프로필 이미지"
-                      />
-                    </div>
-                    <div class="notiItemContent flex-1 flex h-14">
-                      <div
-                        class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
-                      >
-                        <span class="notiItemContentTime font-bold text-lg">{{
-                          bean.m_name
-                        }}</span>
-                        <div
-                          class="notiItemContentMain w-auto flex items-center cursor-pointer"
-                        >
-                          <span class="notiUserName text-sm text-slate-400">
-                            {{ bean.m_email }}
-                          </span>
-                        </div>
-                      </div>
 
+                <div v-else-if="tab.id === 'following'">
+                  <router-link :to="`${bean.m_id}`">
+                    <div
+                      class="notiItem followNoti flex justify-start p-4 mt-[-12px] border-b border-gray-200"
+                    >
                       <div
-                        class="notiItemContentButton flex w-1/4 justify-center items-center"
-                      ></div>
+                        class="notiItemImg z-0 h-14 w-14 overflow-hidden relative"
+                      >
+                        <img
+                          class="object-contain rounded-full"
+                          :src="`http://localhost:8083/images/${bean.m_img_name}`"
+                          alt="프로필 이미지"
+                        />
+                      </div>
+                      <div class="notiItemContent flex-1 flex h-14">
+                        <div
+                          class="notiItemContent_ justify-center flex flex-col w-3/4 text-left pl-3"
+                        >
+                          <span class="notiItemContentTime font-bold text-lg">{{
+                            bean.m_name
+                          }}</span>
+                          <div
+                            class="notiItemContentMain w-auto flex items-center cursor-pointer"
+                          >
+                            <span class="notiUserName text-sm text-slate-400">
+                              {{ bean.m_email }}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div
+                          class="notiItemContentButton flex w-1/4 justify-center items-center"
+                        ></div>
+                      </div>
                     </div>
-                  </div>
+                  </router-link>
                 </div>
               </div>
             </div>
