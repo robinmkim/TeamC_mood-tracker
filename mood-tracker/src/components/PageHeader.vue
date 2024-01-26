@@ -3,9 +3,9 @@
     class="bg-[#FFF2E2] w-full h-14 py-3 flex justify-end items-center shadow"
   >
     <div id="title" class="absolute left-1/2 transform -translate-x-1/2">
-      <router-link to="/timeline">
+      <a href="/timeline">
         <span class="text-2xl font-[400] text-[#5a5959]">Songtiment</span>
-      </router-link>
+      </a>
     </div>
     <div id="menu" class="flex mr-4">
       <div class="relative">
@@ -39,12 +39,14 @@
             ><span class="">마이페이지</span></router-link
           >
           <router-link
+            v-if="!isTokenPresent"
             to="/login"
             @click="toggleDropdown"
             class="hover:bg-slate-100"
             ><span class="">로그인</span></router-link
           >
           <span
+            v-else
             class="hover:bg-slate-100 cursor-pointer"
             @click="
               () => {
@@ -115,10 +117,10 @@ import { jwtDecode } from "jwt-decode";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { EventBus } from "./../utils/EventBus.js";
-import { watch, ref } from "vue";
+import { watch, ref, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import apiClient from "@/utils/apiClient.js";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 export default {
   name: "PageHeader",
   data() {
@@ -134,6 +136,13 @@ export default {
     const memberId = ref(null);
     const store = useStore(); // vuex store 가져오기
     const route = useRoute(); // route.path로 보고있는 페이지 경로 가져오기
+    const router = useRouter(); // router.push()로 페이지 이동
+    const token = ref(localStorage.getItem("jwtToken"));
+    const isTokenPresent = computed(() => token.value !== null);
+
+    watchEffect(() => {
+      token.value = localStorage.getItem("jwtToken");
+    });
     //
     watch(
       () => EventBus.myLoginEvent,
@@ -301,11 +310,21 @@ export default {
       store.commit("hideAlertNewChat");
     }
     //
+    const logout = () => {
+      localStorage.removeItem("jwtToken");
+      router.push({ path: "/login" });
+      token.value = null;
+      //
+      hideAlertNoticeIcon();
+      hideAlertChatIcon();
+      disconnect(); // 알림 웹소켓 연결 해제
+    };
     return {
       receivedMessage,
       stompClient,
       subscriptionId,
       memberId,
+      isTokenPresent,
       connect,
       disconnect,
       onMessageReceived,
@@ -314,6 +333,7 @@ export default {
       showAlertChatIcon,
       hideAlertChatIcon,
       initialConnentWS,
+      logout,
     };
   },
   created() {
@@ -323,14 +343,7 @@ export default {
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen;
     },
-    logout() {
-      localStorage.removeItem("jwtToken");
-      this.$router.push({ path: "/login" });
-      //
-      this.hideAlertNoticeIcon();
-      this.hideAlertChatIcon();
-      this.disconnect(); // 알림 웹소켓 연결 해제
-    },
+
     clickChatIcon() {
       this.hideAlertChatIcon();
     },
