@@ -111,9 +111,6 @@ import ReportComments from "@/views/admin/components/ReportComments.vue";
 import FaqList from "@/views/admin/components/FaqList.vue";
 import QnaList from "@/views/admin/components/QnaList.vue";
 
-// import Editor from "@toast-ui/editor";
-// import "@toast-ui/editor/dist/toastui-editor.css";
-
 export default {
   data() {
     return {

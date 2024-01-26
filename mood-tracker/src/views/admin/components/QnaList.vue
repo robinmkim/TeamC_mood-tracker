@@ -166,8 +166,7 @@
   </div>
 </template>
 <script>
-// import qnaInsert from "@/components/admin/QnaInsert";
-import apiClient from "@/utils/apiClient";
+import { apiClient2 as apiClient } from "@/utils/apiClient";
 
 export default {
   //   components: { qnaInsert },
@@ -225,7 +224,7 @@ export default {
     },
     qnaGetList() {
       this.requestBody = {
-        // 데이터 전송
+        // 검색 데이터 전송
         sk: this.search_key,
         sv: this.search_value,
         page: this.page,
